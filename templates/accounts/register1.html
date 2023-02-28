@@ -51,9 +51,9 @@
     <center>
     <div style="width: 80%;padding: 8px;background: rgb(15, 15, 15);margin-top: 2%;border-radius: 4px;margin-bottom: 2%;">
         <p class="heading">Registration Credentials</p>
-    <form style="color: white ;margin-top: 3%;width: 90%;" action="register" method="post">
+    <form style="color: white ;margin-top: 3%;width: 90%;" method="post" id="register" onSubmit="return checkPassword()">
         {% csrf_token %}
-        <input name="sent_otp" id="sent_otp" hidden>
+        <input value="" name="sent_otp" id="sent_otp" hidden>
         <div class="row g-4">
             <div class="col-sm-4">
                 <center><label style="font-size: 20px" for="fname" class="form-label">Firstname*</label></center>
@@ -65,7 +65,7 @@
             </div>
             <div class="col-sm-4">
                 <center><label style="font-size: 20px" for="username" class="form-label">Username*</label></center>
-                <input type="text" class="form-control" placeholder="Username" aria-label="First name" id="username" name="username" required>
+                <input type="text" class="form-control" placeholder="Username" aria-label="First name" id="username" name="username" minlength="8" required>
             </div>
             <div class="col-sm-7">
                 <center><label style="font-size: 20px" for="email" class="form-label">Email*</label></center>
@@ -77,14 +77,15 @@
             <div class="col-sm-5">
               <center><label style="font-size: 20px" for="otp" class="form-label">Email OTP*</label></center>
               <input type="number" class="form-control" placeholder="Enter OTP from Email" aria-label="otp" id="otp" name="otp" required>
-          </div>
+              <span style="display: none; color: red;" id="otp_info2"></span>
+            </div>
             <div class="col-sm-5">
                 <center><label style="font-size: 20px" for="password1" class="form-label">Password*</label></center>
-                <input type="text" class="form-control" placeholder="Password" aria-label="Password" id="password1" name="password1">
+                <input type="password" class="form-control" placeholder="Password" aria-label="Password" id="password1" name="password1" required>
             </div>
             <div class="col-sm-5">
                 <center><label style="font-size: 20px" for="password2" class="form-label">Confirm Password*</label></center>
-                <input type="text" class="form-control" placeholder="Retype Password" aria-label="Password" id="password2" name="password2">
+                <input type="password" class="form-control" placeholder="Retype Password" aria-label="Password" id="password2" name="password2" required>
             </div>
             <div class="col-sm-2">
               <center><label style="font-size: 10px;visibility: hidden;" for="" class="form-label" id="pass_infoo">Passwords Check</label></center>
@@ -92,8 +93,8 @@
             </div>
             <div class="col-md-6">
               <center><label style="font-size: 20px" for="country" class="form-label">Country*</label></center>
-              <select class="form-select" id="country" name="country" required>
-                <option >Select Your Country</option>
+              <select class="form-select" id="country" name="country" required="required">
+                <option value="">Select Your Country</option>
                 <option value="Nepal">Nepal</option>
               </select>
             </div>
@@ -109,14 +110,15 @@
             </div>
             <div class="col-md-12">
                 <center><label style="font-size: 20px" for="main_img" class="form-label">Profile Image</label></center>
-                <input class="form-control" type="file" id="main_img" name="main_img" required>
+                <input class="form-control" type="file" id="main_img" name="main_img">
             </div>
             <div>
               <center><img style="margin-bottom: 2%; padding: 5px; border-style: solid;color: rgb(78, 117, 167);display: none;" class="img_preview" id="img_preview" src="#" alt="  Main image  " ></center>
             </div>
         </div>
         <div style="margin-top: 2%;padding-top: 2%;">
-            <button style="margin-bottom: 1%;background:linear-gradient(to right, #ff416c, #ff4b2b) ;color: white;" type="submit" class="btn">Submit</button>
+          <p style="display: none;color: red;" id="form_info"></p>
+            <button style="margin-bottom: 1%;background:linear-gradient(to right, #ff416c, #ff4b2b) ;color: white;" type="submit" class="btn" id="form_submit">Submit</button>
             <a style="margin-bottom: 1%;background:linear-gradient(to right, #ff416c, #ff4b2b) ;color: white;" class='btn' href="login1" >Already have an account</a>
         </div>
       </form>
@@ -172,7 +174,7 @@
             success: function(data){
               $('#loadingbar').css("display","none");
               if(data.msg !="Error"){
-                $('#sent_otp').val(data.otp);
+                $('#sent_otp').val(data.otp_sent);
                 $('#otp_info').css('color','green');
                 $('#otp_info').css('display','inline');
                 countdown();
@@ -215,6 +217,15 @@
       });
     </script>
     <script>
+      $("#form_submit").on('click',function(e){
+        if($('#password1').val()==$('#password2').val()){
+          $("#form_submit").submit();
+        }else{
+          $("#form_info").html("Fix the above error");
+          $("#form_info").css("display","block");
+        }
+      })
+
       $("#country").on('change',function(e){
         if($("#country").val()=="Nepal"){
         $("#local_body").removeAttr("disabled");
@@ -222,6 +233,24 @@
         $("#local_body").prop("disabled",true);
       }
       })
+
+      function checkPassword(){
+        // console.log($("#sent_otp").val() +","+$('#otp').val());
+        if($('#password1').val()==$('#password2').val()){
+          if($("#sent_otp").val()==$('#otp').val()){
+            return true
+          }else{
+            $("#otp_info2").css("display","inline");
+            $("#otp_info2").css("color","red");
+            $("#otp_info2").html("<strong>Invalid OTP</strong>");
+            return false
+          }
+        }else{
+          $("#form_info").html("Fix the above error");
+          $("#form_info").css("display","block");
+          return false
+        }
+      }
     </script>
       <script>
         window.onload=function(){
