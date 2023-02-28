@@ -1,0 +1,8 @@
+<body style="background-color: cyan;">
+    <p style="font-size: 35;text-align: center;">A token has been sent to your email account, follow the link to verify it</p>
+    <p style="font-size:30 ;">You can close this page after you see the link in gmail!!
+    Check in spam folder if not found.</p>
+    </body>
+    {% for message in messages %}
+    <p style="border-style: double;width: 30%;background-color: aquamarine">{{message}}</p>
+    {% endfor %}
