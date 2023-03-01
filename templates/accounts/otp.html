@@ -26,7 +26,7 @@ body {
 .container {
     background: rgb(15, 15, 15);
     width: 350px;
-    height: 390px;
+    height: 420px;
     border-radius: 20px;
     display: flex;
     justify-content: center;
@@ -131,19 +131,24 @@ body {
     <input type="text" name="next" value="{{next}}" hidden>
     <div class="box">
         <p>Username*</p>
-        <div> <input type="text" required="required" name="username" placeholder="Enter your username"> </div>
+        <div> <input type="text" value="{{username}}" name="username" disabled> </div>
     </div>
+    <div class="box" >
+        <p>Email*</p>
+        <div> <input type="email" value="{{email}}" name="email" autocomplete="off" disabled> </div>
+    </div>
+    <center style="margin-top: 1%;"><button type="button" class="btn" id="edit_email" style=" margin-right: 4px;background-color: cyan;border: thin solid cyan;border-radius: 2px;">Edit</button><button type="button" class="btn" id="otp_btn" style="background-color: cyan;border: thin solid cyan;border-radius: 2px;">Send OTP</button></center>
     <div class="box" style="margin-bottom: 2%;">
-        <p>Password*</p>
-        <div> <input type="password" required="required" name="password" autocomplete="off" placeholder="Enter your password"> </div>
+        <p>OTP</p>
+        <div> <input type="number" name="otp" placeholder="Enter the OTP"> </div>
     </div>
     <div><button class="loginBtn">Login</button></div>
     <p class="text">Don't have an account? <a style="color:cyan ;text-decoration: none;" href="{% url 'register' %}"><strong>Signup</strong></a></p>   
-    </div>
-    <br> 
-    <center><span style="margin-top:20px;font-size: 25px;" id="form_info"></span></center>
+    <br>
+    <!-- <center style="background-color: black;padding-top: 4%;"><span style="font-size: 20px;color: red;" id="form_info">OTP verification not completed yet!<br>Click "Get OTP" to receive OTP in your registered email..</span></center>   -->
+</div>
 </form>
-
+<div style="display: block;position: absolute;color: red;margin-top: 550px;" id="pre_error"><center><span style="font-size: 20px;color: red;" id="form_info">OTP verification not completed yet!<br><span style="color: green;">Click "Get OTP" to receive OTP in your registered email..</span></span></center></div>
 <div style="display: none;" class="javascripts">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
     <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js" integrity="sha256-xLD7nhI62fcsEZK2/v8LsBcb4lG7dgULkuXoXB/j91c="crossorigin="anonymous"></script>

@@ -6,50 +6,51 @@ import uuid
 from django.conf import settings
 from django.core.mail import send_mail
 from django.http import JsonResponse
-import math, random
+import math, random,json
 
 #Login User
 def login1(request):
-    previous=request.META.get('HTTP_REFERER')
-    nextt=request.GET.get('next',None)
-    if nextt:
-        nextt=nextt[1:-1]
-    context={"previous":previous,"next":nextt}
+    # nextt=request.GET.get('next',None)
+    # if nextt:
+    #     nextt=nextt[1:-1]
+    # context={"next":nextt}
     if request.method== 'POST':
-        previous=request.POST.get('previous')
-        next=request.POST.get('next')
-        email=request.POST.get('email')
+        # next=request.POST.get('next')
+        # email=request.POST.get('email')
         username = request.POST.get('username')
         password = request.POST.get('password')
         user = auth.authenticate(username=username,password=password)
         user_obj=User.objects.filter(username=username).first()
         profile_obj=profile_obj = Profile.objects.filter(user=user_obj).first()
         if user_obj is None:
-            messages.info(request,'User Not found')
+            messages.error(request,'User Not found..')
             return redirect('login1')
         
         if not profile_obj.is_verified:
-            messages.info(request,'Email not verified yet')
-            u=User.objects.get(username=username)
-            prof=Profile.objects.get(user=u)
-            auth_token=prof.auth_tokens
-            send_mail_later(email,auth_token)
-            return redirect("token_sent")
+            context={'username':username,'email':user_obj.email}
+            return render(request,'accounts/otp.html',context)
+            # messages.error(request,'OTP verification not completed yet..<br>A OTP has been sent to your registered email.<br>Enter that OTP here to verify and login!')
+            # u=User.objects.get(username=username)
+            # prof=Profile.objects.get(user=u)
+            # auth_token=prof.auth_tokens
+            # send_mail_later(email,auth_token)
+            # return redirect("token_sent")
 
         if user is not None:
             auth.login(request,user)
             messages.info(request,'Logged in Successfully')
-            if next != 'None':
-                return redirect(next)
-            elif previous != 'None':
-                return redirect(previous)
-            else:
-                return redirect('/')
+            return redirect("blog")
+            # if next != 'None':
+            #     return redirect(next)
+            # elif previous != 'None':
+            #     return redirect(previous)
+            # else:
+            #     return redirect('/')
         else:
             messages.info(request,'Check your Credentials')
             return redirect('account/login1')
     else:
-        return render(request,'accounts/login1.html',context)    
+        return render(request,'accounts/login1.html')    
 
 
 #Register User for creating ac
@@ -68,30 +69,46 @@ def register(request):
         response={'otp_sent':'','msg':'Error'}
         return JsonResponse(response)
     if request.method == 'POST':
-        first_name = request.POST['first_name']
-        last_name = request.POST['last_name']
-        username = request.POST['username']
-        password1 = request.POST['password1']
-        password2 = request.POST['password2']
-        email = request.POST['email']
-        
-        if password1==password2:
+        first_name = request.POST.get('fname')
+        last_name = request.POST.get('lname')
+        username = request.POST.get('username')
+        password2 = request.POST.get('password2')
+        email = request.POST.get('email')
+        otp= request.POST.get('otp')
+        sent_otp=request.POST.get('sent_otp')
+        country=request.POST.get('country')
+        local_body=request.POST.get('local_body')
+        bio=request.POST.get('bio')
+        profile_image=request.FILES.get('main_img')
+
+        print(profile_image)
+        if otp==sent_otp:
             if User.objects.filter(username=username).exists():
-                messages.info(request,'Username Taken')
-                return redirect('register')
-            elif User.objects.filter(email=email).exists():
-                messages.info(request,'Email Taken')
-                return redirect('register')
+                prev_obj=User.objects.get(username=username)
+                if Profile.objects.filter(user=prev_obj).first() is not None:    
+                    list(messages.get_messages(request))
+                    messages.error(request,"Username Taken")
+                    return redirect('register')
+                else:
+                    prev_obj.delete()
+                    user_obj = User.objects.create_user(username=username, password=password2, email=email,first_name=first_name,last_name=last_name)
+                    user_obj.save()
+                    profile_obj=Profile.objects.create(user=user_obj,is_verified=True,country=country,local_address=local_body,bio=bio,profile_img=profile_image)
+                    profile_obj.save()
+                    list(messages.get_messages(request))
+                    messages.info(request,'User Registeration Successful..')
+                    return redirect('login1')
             else:   
-                user_obj = User.objects.create_user(username=username, password=password1, email=email,first_name=first_name,last_name=last_name)
+                user_obj = User.objects.create_user(username=username, password=password2, email=email,first_name=first_name,last_name=last_name)
                 user_obj.save()
-                auth_token=str(uuid.uuid4())
-                profile_obj=Profile.objects.create(user=user_obj,auth_tokens=auth_token)
+                profile_obj=Profile.objects.create(user=user_obj,is_verified=True,country=country,local_address=local_body,bio=bio,profile_img=profile_image)
                 profile_obj.save()
-                send_mail_later(email,auth_token)
-                return redirect('token_sent')
+                list(messages.get_messages(request))
+                messages.info(request,'User Registeration Successful..')
+                return redirect('login1')
         else:
-            messages.info(request,'password not matching..')    
+            list(messages.get_messages(request))
+            messages.error(request,"OTP Incorrect..") 
             return redirect('register') 
     else:
         return render(request,'accounts/register1.html')
