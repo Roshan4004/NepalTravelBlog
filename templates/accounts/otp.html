@@ -1,3 +1,4 @@
+{%load static%}
 <!doctype html>
 <html>
     <head>
@@ -19,14 +20,14 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 80vh;
+    height: 90vh;
     background-color: #000
 }
 
 .container {
     background: rgb(15, 15, 15);
     width: 350px;
-    height: 420px;
+    height: 500px;
     border-radius: 20px;
     display: flex;
     justify-content: center;
@@ -122,47 +123,176 @@ body {
 }
     </style>
 </head>
-<body oncontextmenu='return false' class='snippet-body'>
-<form action="login1" method="POST">
+<body class='snippet-body'>
+<form method="POST" id="mainform" onsubmit="verify()">
     {% csrf_token %}
     <div class="container">
     <p class="heading">Login Credentials</p>
-    <input type="text" name="previous" value="{{previous}}" hidden>
-    <input type="text" name="next" value="{{next}}" hidden>
+    <input type="text" value="" name="sent_otp" id="sent_otp" hidden>
+    <!-- <input type="text" name="previous" value="{{previous}}" hidden>
+    <input type="text" name="next" value="{{next}}" hidden> -->
     <div class="box">
         <p>Username*</p>
-        <div> <input type="text" value="{{username}}" name="username" disabled> </div>
+        <div> <input type="text" value="{{username}}" name="username" id="username" disabled> </div>
     </div>
     <div class="box" >
         <p>Email*</p>
-        <div> <input type="email" value="{{email}}" name="email" autocomplete="off" disabled> </div>
+        <div> <input type="email" value="{{email}}" name="email" id="email" autocomplete="off" disabled required> </div>
     </div>
-    <center style="margin-top: 1%;"><button type="button" class="btn" id="edit_email" style=" margin-right: 4px;background-color: cyan;border: thin solid cyan;border-radius: 2px;">Edit</button><button type="button" class="btn" id="otp_btn" style="background-color: cyan;border: thin solid cyan;border-radius: 2px;">Send OTP</button></center>
+    <center style="margin-top: 1%;"><button type="button" class="btn" id="edit_email" style=" margin-right: 4px;background-color: cyan;border: thin solid cyan;border-radius: 2px;">Edit email</button><button onclick="send_otp()" type="button" class="btn" id="otp_btn" style="background-color: cyan;border: thin solid cyan;border-radius: 2px;">Send OTP</button></center>
+    <br>
+    <center>
+    <span style="display: inline-block; color: red;padding-top: 2%;" id="otp_info"></span>
+    <span id="loadingbar" style="display: none;"><img style="margin-top: 2px;" src="{%static 'loading_bar3.gif'%}"></span>
+    </center>
     <div class="box" style="margin-bottom: 2%;">
         <p>OTP</p>
-        <div> <input type="number" name="otp" placeholder="Enter the OTP"> </div>
+        <div> <input type="number" id="otp" name="otp" placeholder="Enter the OTP" required> </div>
     </div>
-    <div><button class="loginBtn">Login</button></div>
+    <center><span style="color:red;padding-top: 1%;display: none;" id="otp_check_info">Wrong OTP..</span></center>
+    <div><button class="loginBtn" >Verify</button></div>
     <p class="text">Don't have an account? <a style="color:cyan ;text-decoration: none;" href="{% url 'register' %}"><strong>Signup</strong></a></p>   
     <br>
     <!-- <center style="background-color: black;padding-top: 4%;"><span style="font-size: 20px;color: red;" id="form_info">OTP verification not completed yet!<br>Click "Get OTP" to receive OTP in your registered email..</span></center>   -->
 </div>
 </form>
+{% if verified == 'False'%}
 <div style="display: block;position: absolute;color: red;margin-top: 550px;" id="pre_error"><center><span style="font-size: 20px;color: red;" id="form_info">OTP verification not completed yet!<br><span style="color: green;">Click "Get OTP" to receive OTP in your registered email..</span></span></center></div>
+{% else %}
+<div style="display: block;position: absolute;color: red;margin-top: 550px;" id="pre_error"><center><span style="font-size: 20px;color: green;" id="form_info">Successfully Verified..<br><span style="color: green;">Click <a style="color:cyan ;text-decoration: none;" href="{% url 'login1' %}"><strong>Here</strong></a> to proceed to login page</span></span></center></div>
+{%endif%}
 <div style="display: none;" class="javascripts">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
     <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js" integrity="sha256-xLD7nhI62fcsEZK2/v8LsBcb4lG7dgULkuXoXB/j91c="crossorigin="anonymous"></script>
     <script>
-        "{% for message in messages %}"
-        console.log("{{message}}")
-        "{%if message.tags == 'error'%}"
-        $("#form_info").css("color","red");
-        "{%else%}"
-        $("#form_info").css("color","green");
-        "{% endif %}"
-        $("#form_info").html("{{message}}");
-        $("#form_info").css("display","block");         
-        "{% endfor %}"
+    var interval;
+
+    function countdown() {
+    clearInterval(interval);
+    interval = setInterval( function() {
+    var timer = $('.js-timeout').html();
+    timer = timer.split(':');
+    var minutes = timer[0];
+    var seconds = timer[1];
+    seconds -= 1;
+    if (minutes < 0) return;
+    else if (seconds < 0 && minutes != 0) {
+        minutes -= 1;
+        seconds = 59;
+    }
+    else if (seconds < 10 && length.seconds != 2) seconds = '0' + seconds;
+
+    $('.js-timeout').html(minutes + ':' + seconds);
+
+    if (minutes == 0 && seconds == 0) {
+        clearInterval(interval);
+        console.log("over");
+        $('#otp_btn').prop('disabled',false);
+    };
+    }, 1000);
+    };
+    </script>
+    <script>
+        function verify(){
+        if ($('#sent_otp').val()==$('#otp').val()){
+            $.ajax({
+                type : "POST", 
+                url: "{% url 'login1' %}",
+                data: {
+                email:$('#email').val(),
+                username:$('#username').val(),
+                csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+                form:"verify",
+                },  
+                success: function(data){
+                $("#pre_error").css("display","block");
+                $('#loadingbar').css("display","none");
+                if(data.msg !="Error"){
+                    $("#form_info").css('color','green')
+                    $("#form_info").html('Successfully Verified..<br><span style="color: green;">Click <a style="color:cyan ;text-decoration: none;" href="{% url "login1" %}"><strong>Here</strong></a> to proceed to login page</span>');
+                    // countdown();
+                    // $('#otp_info').html(data.msg+" Resend after "+ "<span style='color:white' class='js-timeout'>1:30</span> mins.");
+                    // $('#otp_btn').html("Resend");
+                }else{
+                    $("#form_info").css('color','red');
+                    $("form_info").html(data.error);
+                }
+                },   
+                failure: function() {
+                    $("#pre_error").css("display","block"); 
+                    $("#form_info").css('color','red');
+                    $("form_info").html("Internal error, Please try later..");
+                } 
+            });
+        }else{
+            $("#otp_check_info").css("display","inline");
+        }
+        };
+
+        function send_otp() {
+        $('#otp_info').css('display','none');
+        $("#otp_btn").prop("disabled",true);
+        $('#loadingbar').css("display","inline");
+        var email=document.getElementById("email").value;
+        if(email !=""){
+          $.ajax({
+            type : "POST", 
+            url: "{% url 'login1' %}",
+            data: {
+            email:$('#email').val(),
+            csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+            form:"otp",
+            },  
+            success: function(data){
+              $("#pre_error").css("display","none");
+              $('#loadingbar').css("display","none");
+              if(data.msg !="Error"){
+                $('#sent_otp').val(data.otp_sent);
+                $('#otp_info').css('color','green');
+                $('#otp_info').css('display','inline');
+                countdown();
+                $('#otp_info').html(data.msg+" Resend after "+ "<span style='color:white' class='js-timeout'>1:30</span> mins.");
+                $('#otp_btn').html("Resend");
+              }else{
+                $("#otp_btn").prop("disabled",false);
+                $('#otp_info').css('color','red');
+                $('#otp_info').css('display','inline');
+                $('#otp_info').html('Internal Error, please try again later');
+              }
+            },   
+            failure: function() {
+              $("#otp_btn").prop("disabled",false);
+              $('#loadingbar').css("display","none");
+              $('#otp_info').css('color','red');
+              $('#otp_info').css('display','inline');
+              $('#otp_info').html('Internal Error, please try again later');
+            } 
+          });
+        }else{
+          $("#otp_btn").prop("disabled",false);
+          $('#loadingbar').css("display","none");
+          $('#otp_info').css('color','red');
+          $('#otp_info').css('display','inline');
+          $('#otp_info').html('Please provide Email for OTP!');
+        }
+      };
+
+      $("#edit_email").on('click',function(){
+        $('#email').prop('disabled',false);
+      });
+
+      function checkPassword(){
+        console.log(this.username);
+        console.log(this.email);
+        return false
+        // if($('#sent_otp').val()==$('#otp').val()){
+        //   return true
+        // }else{
+        //     console.log($('#sent_otp').val()+","+$('#otp').val())
+        //     $("#otp_check_info").css("display","inline");
+        //   return false
+        // }
+      };
     </script>
 
 </div>
