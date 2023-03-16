@@ -25,7 +25,6 @@ def login1(request):
             username=request.POST.get("username")
             email=request.POST.get("email")
             obj=User.objects.filter(username=username,email=email).first()
-            print(obj)
             if obj is not None:
                 profile_obj=Profile.objects.filter(user=obj).first()
                 profile_obj.is_verified=True
@@ -39,8 +38,6 @@ def login1(request):
         response={'otp_sent':'','msg':'Error'}
         return JsonResponse(response)
     if request.method== 'POST':
-        # next=request.POST.get('next')
-        # email=request.POST.get('email')
         username = request.POST.get('username')
         password = request.POST.get('password')
         user = auth.authenticate(username=username,password=password)
@@ -53,53 +50,19 @@ def login1(request):
         if not profile_obj.is_verified:
             context={'username':username,'email':user_obj.email,'verified':'False'}
             return render(request,'accounts/otp.html',context)
-            # messages.error(request,'OTP verification not completed yet..<br>A OTP has been sent to your registered email.<br>Enter that OTP here to verify and login!')
-            # u=User.objects.get(username=username)
-            # prof=Profile.objects.get(user=u)
-            # auth_token=prof.auth_tokens
-            # send_mail_later(email,auth_token)
-            # return redirect("token_sent")
 
         if user is not None:
             auth.login(request,user)
             list(messages.get_messages(request))
-            messages.info(request,'Logged in Successfully')
+            messages.info(request,'Logged in Successfully..')
             return redirect("blog")
-            # if next != 'None':
-            #     return redirect(next)
-            # elif previous != 'None':
-            #     return redirect(previous)
-            # else:
-            #     return redirect('/')
         else:
             list(messages.get_messages(request))
-            messages.info(request,'Check your Credentials')
-            return redirect('account/login1')
+            messages.info(request,'Check your Credentials..')
+            return redirect("login1")
     else:
         return render(request,'accounts/login1.html')    
-
-#Verify OTP incase user hasn't while registering
-def verify_otp(request):
-    if is_ajax(request=request):
-        username=request.POST.get("username")
-        email=request.POST.get("email")
-        obj=User.objects.filter(username=username,email=email).first()
-        if obj is not None:
-                profile_obj=Profile.objects.filter(user=obj).first()
-                profile_obj.is_verified=True
-                profile_obj.save(update_fields=["is_verified"])
-                response={'msg':'','error':''}
-                return JsonResponse(response)
-                return render(request,'accounts/otp.html',context)
-        else:
-            response={'msg':'error','error':'Credentials are wrong, could not verify'}
-            return JsonResponse(response)
-            list(messages.get_messages(request))
-            messages.error(request,"Credentials are wrong, can't verify.")
-            return redirect("login1")
-    return redirect("login1")
-
-
+    
 #Register User for creating ac
 def register(request):
     if is_ajax(request=request):

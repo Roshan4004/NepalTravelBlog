@@ -8,5 +8,4 @@ urlpatterns=[
     path('logout',views.logout,name="logout"),
     path('token',views.token_sent,name="token_sent"),
     path('verify/<auth_tokens>',views.verify,name="verify"),
-    path("verify_otp",views.verify_otp,name="verify_otp"),
 ]

@@ -2,6 +2,8 @@ from statistics import mode
 from django.db import models
 from django.contrib.auth.models import User
 # Create your models here.
+def get_default_profile_image():
+    return 'userimage/user-icon.png'
 
 class Profile(models.Model):
     user=models.OneToOneField(User,on_delete=models.CASCADE)
@@ -10,7 +12,7 @@ class Profile(models.Model):
     country=models.TextField(blank=False)
     local_address=models.TextField(blank=True,null=True)
     bio=models.TextField(blank=True)
-    profile_img=models.ImageField(default='userimage/user-icon.png',upload_to='userimage/')
+    profile_img=models.ImageField(default=get_default_profile_image,upload_to='userimage/',null=True,blank=True)
 
     def __str__(self):
         return self.user.username
