@@ -7,6 +7,7 @@ from django.shortcuts import redirect
 from django.db.models import Q
 from django.shortcuts import render,redirect,get_object_or_404
 from .forms import PostForm
+from django.contrib.auth.models import User
 
 #Showing the lists/posts
 def PostList(request):
@@ -106,7 +107,9 @@ def PostDetail(request,pk):
     liked=False
     if likes_connected.likes.filter(id=request.user.id).exists():
         liked=True
-    context={'post':post,'number_of_likes':likes_connected.number_of_likes(),'post_is_liked':liked,'comment':comment,'post_is_commented':commented}
+    author=post.author
+    author_posts=Post.objects.filter(author=author).exclude(id=post.id)
+    context={'post':post,'number_of_likes':likes_connected.number_of_likes(),'post_is_liked':liked,'comment':comment,'post_is_commented':commented,'author_posts':author_posts[:2]}
     # print(post.content)
     return render(request,'blog/detail.html',context)
 
@@ -160,6 +163,20 @@ def postcreate(request):
         Post.objects.create(title=title,local_body=local_body,local_name=local_name,main_img=main_img,content=content,author=request.user)
         return redirect("blog")
     return render(request, 'blog/post.html',context)
+
+#myblogs
+def myblogs(request,pk):
+    if request.user.is_authenticated:
+        if len(User.objects.filter(username=pk))<=0:
+            messages.error(request,'Profile not found for given username..')
+            return redirect("blog")
+        else:
+            user=User.objects.filter(username=pk).first()
+            posts=Post.objects.filter(author=user)
+            return render(request,'blog/myblogs.html',{'author':user,'posts':posts})
+    else:
+        messages.error(request,'You must be logged in to visit profiles..')
+        return redirect("blog")
 
 #for ajax
 def is_ajax(request):

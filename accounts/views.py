@@ -90,8 +90,7 @@ def register(request):
         local_body=request.POST.get('local_body')
         bio=request.POST.get('bio')
         profile_image=request.FILES.get('main_img')
-
-        print(profile_image)
+        
         if otp==sent_otp:
             if User.objects.filter(username=username).exists():
                 prev_obj=User.objects.get(username=username)

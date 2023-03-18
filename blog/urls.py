@@ -11,4 +11,5 @@ urlpatterns = [
     path('update/<int:pk>',views.UpdatePost,name="blogupdate"),
     path('delete/<int:pk>',views.DeletePost,name='blogdelete'),
     path('post/',views.postcreate,name="blogpost"),
+    path('myblogs/<slug:pk>',views.myblogs,name="myblogs"),
 ]

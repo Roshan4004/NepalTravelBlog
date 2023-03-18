@@ -38,7 +38,7 @@
   <a href="{% url 'blog' %}" >Home</a>
   <a href="{% url 'blogpost' %}">Post</a>
   <a href="{% url 'logout' %}">Logout</a>
-  <a href="#about" >Myblogs</a>
+  <a href="{% url 'myblogs' request.user.username%}" >Myblogs</a>
   <a href="javascript:void(0);" class="icon" onclick="myFunction()">
     <i class="fa fa-bars" aria-hidden="true"></i>
   </a>
@@ -136,15 +136,29 @@
       <div style="margin-bottom: 2%; padding-left:1%;padding-right: 1%; word-wrap: break-word;" class="col-sm-3"  >
         <div style="position: -webkit-sticky; position: sticky;top: 0%; border-radius:4px;padding: 1%;" class="bg-secondary">
           <center><h3 style="margin-top: 2%;background-color: white;border-radius: 3px;">About Author</h3>
-          <p style="font-size: 1.5rem;"><img style="border-radius: 3px;height: 25px;" src="{%  static 'user-icon.png'%}"> {{post.author}}</p>
+          <p style="font-size: 1.5rem;"><img style="border-radius: 3px;height: 25px;" src="http://127.0.0.1:8000/{{post.author.profile.get_pp}}"> {{post.author}}</p>
         </center>
+        <center><span style="font-size: large;">{{post.author.profile.bio}}</span></center>
           <ul>
-            <li><span>Date joined: <b>{{request.user.date_joined}} GMT</b></span></li>
-            <li><span>Last login: <b>{{request.user.last_login}} GMT</b></span></li>
+            <li><span>Date joined: <b>{{post.author.date_joined}} GMT</b></span></li>
+            <li><span>Last login: <b>{{post.author.last_login}} GMT</b></span></li>
           </ul>
-          <center><span style="font-size: large;">"It's not a bug; it's an undocumented feature"</span></center>
-          
-          
+          <a class="btn btn-primary" style="float: right;margin-top: 3px;" href="{% url 'myblogs' post.author.username %}">Profile</a>
+          <p>
+            {{post.author.profile.country}}<br>
+            {%if post.author.profile.country == 'Nepal'%}{{post.author.profile.local_address}}{% endif %}
+          </p>
+          {% if author_posts %}
+          <hr>
+            <center style="color:cyan;">Some Posts by Author:</center>
+          {% endif %}
+          {% for a_post in author_posts%}
+          <div style="background-color: aliceblue;border-radius: 2px;margin-bottom: 4px;margin-top: 4px;">
+            <p style="text-align: center;"><b>{{a_post.title}}</b></p>
+            <a style="float: right;" href="{% url 'blogdetail' a_post.id%}">Read More..</a>
+            <span>{{a_post.created|date:"M d, Y"}}</span>
+          </div>
+          {% endfor %}
         </div>
       </div>     
   </div>

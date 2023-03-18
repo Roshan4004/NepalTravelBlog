@@ -22,7 +22,7 @@
   <a href="{% url 'blog' %}" >Home</a>
   <a href="{% url 'blogpost' %}">Post</a>
   <a href="{% url 'logout' %}">Logout</a>
-  <a href="#about" class="active">Myblogs</a>
+  <a href="{% url 'myblogs' request.user.username%}" class="active">Myblogs</a>
   <a href="javascript:void(0);" class="icon" onclick="myFunction()">
     <i class="fa fa-bars" aria-hidden="true"></i>
   </a>

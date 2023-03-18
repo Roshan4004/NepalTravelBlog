@@ -1,0 +1,21 @@
+@import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap");
+
+:root {
+  --color: #3c3163;
+  --transition-time: 0.5s;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-size: 1px;
+  margin: 0;
+  font-family: "Quicksand", sans-serif;
+  /* background: #7f7fd5; */
+  background: linear-gradient(to right, #2b32b2, #1488cc);
+}
+.form_data{
+    padding: 2%;
+}
