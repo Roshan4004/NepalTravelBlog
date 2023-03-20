@@ -19,3 +19,12 @@ body {
 .form_data{
     padding: 2%;
 }
+#profile_section{
+  
+}
+@media screen and (min-width: 600px) {
+  #profile_section{
+    position: sticky;
+    top:1%;
+  }
+}

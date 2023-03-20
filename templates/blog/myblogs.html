@@ -38,55 +38,51 @@
 </div>
 </section >
   <div class="row g-0" style="padding: 1%;margin-top: 2%;padding-right: 1%;max-width: 100%;" >
-      <div style=" border-radius: 4px; word-wrap: break-word;height: 100%;max-width: 100%;padding: 1%; margin-bottom: 2%;" class="col-sm-6 bg-secondary">
-      <!-- <div style="float: right;">
-        <a class="btn btn-primary btn-sm" style="margin-bottom: 1%;">Change</a><br>
-        <span>{{author.username}}dsfsafasfafdasfsa</span><br>
-        Check<br>Check
-      </div> -->
-      <form>
-      <!-- <div>
-        <input type="file" name="img" hidden>
-        <center>
-            <b>{{author.username}}</b><br>
-            <img src="http://127.0.0.1:8000/{{author.profile.get_pp}}" style="margin-top: 3px;height:250px;border-radius: 3px;">
-        </center>
-      </div> -->
+    <div style=" border-radius: 4px; word-wrap: break-word;height: 100%;max-width: 100%;padding: 1%; margin-bottom: 2%;" class="col-sm-6 bg-secondary" id="profile_section">
       <a class="btn btn-primary btn-sm" style="margin-bottom: 1%;float: right;">Update</a>
       <p style="font-size: 1.3em;"><strong>Profile</strong></p>
-      <div class="row" style="margin-top: 1%">
-      <div class="col-sm-6">
-        <img src="http://127.0.0.1:8000/{{author.profile.get_pp}}" style="margin-top: 3px;width: 100%;border-radius: 3px;">
-        <!-- <center><input class="form-control" type="text" placeholder="Last Name" value="{{author.last_name}}" id="lname" hidden>
-        <span class="form_data" >{{author.last_name}}</span>
-        <input class="form-control" type="email" placeholder="Email" value="{{author.email}}" id="email" required hidden>
-        <span class="form_data">{{author.email}}</span></center> -->
+      <div class="row" style="margin-top: 1%;padding: 1%;">
+        <center><div class="col-xs-6 bg-light" style="border-radius: 1%;padding: 2px;max-width: 100%;">
+          <center><img src="http://127.0.0.1:8000/{{author.profile.get_pp}}" style="margin-top: 3px;height:250px;border-radius: 3px;max-width: 90%;"></center>
+        </div></center>
+        <div class="col-xs-6">
+          <p style="text-align: center;font-size:1.3em">
+          <span>{{author.first_name}}</span><span> {{author.last_name}}</span><br>
+          <span><img src="/static/blog/mail_logo.png" height="15px"> {{author.email}}</span><br><br>
+          {%if author.profile.local_address%}
+          <span style="font-size: 1em;">Is from <b>{{author.profile.country}}</b>.<br>{{author.profile.local_address}}</span>
+          {% else %}
+          <span style="font-size: 1em;">Is from <b>{{author.profile.country}}</b>.</span>
+          {% endif %}<br>
+          <span>Joined: {{author.date_joined|date:"M d, Y"}}</span><br>
+          <span style="color: cyan;">"{{author.profile.bio}}"</span>
+          </p>
+          <span style="float: right;">
+            {% if links.instagram != 'None'%}<a href="{{links.instagram}}"><img src="{% static 'blog/ig_icon.png'%}" style="height:20px"></a>{%endif%}
+            {% if links.twitter != 'None'%}<a style="margin-left: 2px;" href="{{links.twitter}}"><img src="{% static 'blog/twitter_icon.png'%}" style="height:20px"></a>{%endif%}
+            {% if links.facebook != 'None'%}<a style="margin-left: 2px;" href="{{links.facebook}}"><img src="{% static 'blog/fb_icon.png'%}" style="height:20px"></a>{%endif%}
+            {% if links.youtube != 'None'%}<a style="margin-left: 2px;" href="{{links.youtube}}"><img src="{% static 'blog/yt_icon.png'%}" style="height:20px"></a>{%endif%}
+          </span>
+          <span style="font-size: medium;">The user has <b>{{posts|length}}</b> posts.</span>
+
+        </div>
       </div>
-      <div class="col-sm-6">
-        <p style="text-align: center;font-size:1.3em">
-        <span>{{author.first_name}}</span><span> {{author.last_name}}</span>
-        <span>{{author.email}}</span><br><br>
-        {%if author.profile.country == 'Nepal'%}
-        <span style="font-size: 1em;">Is from <b>{{author.profile.country}}</b>.<br>{{author.profile.local_address}}</span>
-        {% else %}
-        <span style="font-size: 1em;">Is from <b>{{author.profile.country}}</b>.</span>
-        {% endif %}<br>
-        <span>Joined: {{author.date_joined|date:"M d, Y"}}</span><br>
-        <span style="color: cyan;">"{{author.profile.bio}}"</span>
-        </p>
-        <span style="font-size: medium;">The user has <b>{{posts|length}}</b> posts.</span>
-        <!-- <center><input class="form-control" type="text" placeholder="First Name" value="{{author.first_name}}" id="fname" required hidden>
-        <span class="form_data" >{{author.first_name}}</span>
-        <input class="form-control" type="text" placeholder="Bio" value="{{author.bio}}" id="bio" hidden>
-        <span class="form_data" >{{author.bio}}</span></center> -->
-      </div>
-      </div>
-      </form>
     </div>
 
       <div style="margin-bottom: 2%; padding-left:1%;padding-right: 1%; word-wrap: break-word;" class="col-sm-6"  >
-        <div style="background-color: antiquewhite;">
-            ok
+        <div style="background-color: antiquewhite;padding: 1%;border-radius: 4px;">
+            {% for post in posts%}
+            <div style="border: 1px solid black;border-radius: 3px;padding: 1%;">
+              <span style="float: right;">{{post.created}}</span>
+              <span><img src="/static/blog/location-icon.png" height="15px">{{post.styled_localbody}}</span><br>
+              <center><p style="font-weight: 1000;font-size: 1.3em;">{{post.title}}</p>
+              <img style="max-height: 250px;margin-bottom: 1%;max-width: 90%;" src="{{post.main_img.url}}"></center>
+              <span style="float: right;">{{post.number_of_likes|slice:2}}<img style="width: 20px;" src="{% static 'blog/love_icon2.png'%}"></span>
+              <span style="float: right;margin-right: 1%;">{{post.number_of_comment|slice:2}}<img style="width: 20px;" src="{% static 'blog/comment_icon.png'%}"></span>
+              <a class="btn btn-info btn-sm" href="{% url 'blogdetail' post.id %}">Continue..</a>
+            </div><br>
+           
+            {%endfor%}
         </div>
       </div>     
   </div>
@@ -97,6 +93,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
     <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js" integrity="sha256-xLD7nhI62fcsEZK2/v8LsBcb4lG7dgULkuXoXB/j91c="crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>    
+  <script>
+  </script>
 </div>
 </body>
 </html>

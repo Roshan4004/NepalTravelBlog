@@ -8,7 +8,7 @@ from django.db.models import Q
 from django.shortcuts import render,redirect,get_object_or_404
 from .forms import PostForm
 from django.contrib.auth.models import User
-
+import json
 #Showing the lists/posts
 def PostList(request):
     search_task=request.GET.get('search')
@@ -172,8 +172,9 @@ def myblogs(request,pk):
             return redirect("blog")
         else:
             user=User.objects.filter(username=pk).first()
+            links=json.loads(user.profile.links)
             posts=Post.objects.filter(author=user)
-            return render(request,'blog/myblogs.html',{'author':user,'posts':posts})
+            return render(request,'blog/myblogs.html',{'author':user,'posts':posts,'links':links})
     else:
         messages.error(request,'You must be logged in to visit profiles..')
         return redirect("blog")

@@ -105,9 +105,26 @@
               </select>
             </div>
             <div class="col-sm-12">
-                <center><label style="font-size: 20px" for="bio" class="form-label">Short Bio</label></center>
-                <input type="text" class="form-control" placeholder="Bio" aria-label="Last name" id="bio" name="bio">
+              <center><label style="font-size: 20px" for="bio" class="form-label">Short Bio</label></center>
+              <input type="text" class="form-control" placeholder="Bio" aria-label="Last name" id="bio" name="bio">
             </div>
+            <div class="col-sm-3">
+              <center><label style="font-size: 20px" for="twitter" class="form-label">Twitter Link</label></center>
+              <input type="text" class="form-control" placeholder="Twitter link" aria-label="Last name" id="twitter" name="twitter">
+            </div>
+            <div class="col-sm-3">
+              <center><label style="font-size: 20px" for="instagram" class="form-label">Instagram Link</label></center>
+              <input type="text" class="form-control" placeholder="Instagram link" aria-label="Last name" id="instagram" name="instagram">
+            </div>
+            <div class="col-sm-3">
+              <center><label style="font-size: 20px" for="facebook" class="form-label">Facebook Link</label></center>
+              <input type="text" class="form-control" placeholder="Facebook link" aria-label="Last name" id="facebook" name="facebook">
+            </div>
+            <div class="col-sm-3">
+              <center><label style="font-size: 20px" for="youtube" class="form-label">Youtube Link</label></center>
+              <input type="text" class="form-control" placeholder="Youtube link" aria-label="Last name" id="youtube" name="youtube">
+            </div>
+            <center><span style="display: none; color: red;font-size: large;" id="links_info">Invalid Link</span></center>
             <div class="col-md-12">
                 <center><label style="font-size: 20px" for="main_img" class="form-label">Profile Image</label></center>
                 <input class="form-control" type="file" id="main_img" name="main_img">
@@ -233,11 +250,11 @@
         $("#local_body").prop("disabled",true);
       }
       })
-
       function checkPassword(){
         // console.log($("#sent_otp").val() +","+$('#otp').val());
         if($('#password1').val()==$('#password2').val()){
           if($("#sent_otp").val()==$('#otp').val()){
+            // if($("#twitter".val()))
             return true
           }else{
             $("#otp_info2").css("display","inline");
@@ -251,6 +268,24 @@
           return false
         }
       }
+      const isValidUrl = urlString=> {
+	  	var urlPattern = new RegExp('^(https?:\\/\\/)?'+ // validate protocol
+	    '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // validate domain name
+	    '((\\d{1,3}\\.){3}\\d{1,3}))'+ // validate OR ip (v4) address
+	    '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // validate port and path
+	    '(\\?[;&a-z\\d%_.~+=-]*)?'+ // validate query string
+	    '(\\#[-a-z\\d_]*)?$','i'); // validate fragment locator
+	  return !!urlPattern.test(urlString);
+	}
+      $("#youtube, #twitter, #facebook, #instagram").change(function(){
+        if(isValidUrl(this.value)){
+          $("#links_info").css('display','none');
+        }else{
+          console.log(isValidUrl(this.value))
+          this.value="";
+          $("#links_info").css('display','block');
+        }
+      });
     </script>
       <script>
         window.onload=function(){

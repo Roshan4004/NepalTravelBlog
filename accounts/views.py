@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect,HttpResponse
 from django.contrib import messages
 from django.contrib.auth.models import User, auth
 from .models import Profile
@@ -90,7 +90,11 @@ def register(request):
         local_body=request.POST.get('local_body')
         bio=request.POST.get('bio')
         profile_image=request.FILES.get('main_img')
-        
+        links={"twitter":request.POST.get('twitter',"None"),"instagram":request.POST.get('instagram',"None"),"facebook":request.POST.get('facebook',"None"),"youtube":request.POST.get('youtube',"None")}
+        # twitter=request.POST.get('twitter')
+        # instagram=request.POST.get('instagram')
+        # facebook=request.POST.get('facebook')
+        # youtube=request.POST.get('youtube')
         if otp==sent_otp:
             if User.objects.filter(username=username).exists():
                 prev_obj=User.objects.get(username=username)
@@ -102,7 +106,7 @@ def register(request):
                     prev_obj.delete()
                     user_obj = User.objects.create_user(username=username, password=password2, email=email,first_name=first_name,last_name=last_name)
                     user_obj.save()
-                    profile_obj=Profile.objects.create(user=user_obj,is_verified=True,country=country,local_address=local_body,bio=bio,profile_img=profile_image)
+                    profile_obj=Profile.objects.create(user=user_obj,is_verified=True,country=country,local_address=local_body,bio=bio,profile_img=profile_image,links=dict(links))
                     profile_obj.save()
                     list(messages.get_messages(request))
                     messages.info(request,'User Registeration Successful..')
@@ -110,7 +114,7 @@ def register(request):
             else:   
                 user_obj = User.objects.create_user(username=username, password=password2, email=email,first_name=first_name,last_name=last_name)
                 user_obj.save()
-                profile_obj=Profile.objects.create(user=user_obj,is_verified=True,country=country,local_address=local_body,bio=bio,profile_img=profile_image)
+                profile_obj=Profile.objects.create(user=user_obj,is_verified=True,country=country,local_address=local_body,bio=bio,profile_img=profile_image,links=dict(links))
                 profile_obj.save()
                 list(messages.get_messages(request))
                 messages.info(request,'User Registeration Successful..')

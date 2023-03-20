@@ -11,6 +11,7 @@ class Profile(models.Model):
     country=models.TextField(blank=False)
     local_address=models.TextField(blank=True,null=True)
     bio=models.TextField(blank=True)
+    links=models.TextField(null=True)
     profile_img=models.ImageField(upload_to='userimage/',null=True,blank=True)
 
     def __str__(self):
