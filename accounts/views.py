@@ -91,10 +91,6 @@ def register(request):
         bio=request.POST.get('bio')
         profile_image=request.FILES.get('main_img')
         links={"twitter":request.POST.get('twitter',"None"),"instagram":request.POST.get('instagram',"None"),"facebook":request.POST.get('facebook',"None"),"youtube":request.POST.get('youtube',"None")}
-        # twitter=request.POST.get('twitter')
-        # instagram=request.POST.get('instagram')
-        # facebook=request.POST.get('facebook')
-        # youtube=request.POST.get('youtube')
         if otp==sent_otp:
             if User.objects.filter(username=username).exists():
                 prev_obj=User.objects.get(username=username)
@@ -106,7 +102,7 @@ def register(request):
                     prev_obj.delete()
                     user_obj = User.objects.create_user(username=username, password=password2, email=email,first_name=first_name,last_name=last_name)
                     user_obj.save()
-                    profile_obj=Profile.objects.create(user=user_obj,is_verified=True,country=country,local_address=local_body,bio=bio,profile_img=profile_image,links=dict(links))
+                    profile_obj=Profile.objects.create(user=user_obj,is_verified=True,country=country,local_address=local_body,bio=bio,profile_img=profile_image,links=json.dumps(links))
                     profile_obj.save()
                     list(messages.get_messages(request))
                     messages.info(request,'User Registeration Successful..')
@@ -114,7 +110,7 @@ def register(request):
             else:   
                 user_obj = User.objects.create_user(username=username, password=password2, email=email,first_name=first_name,last_name=last_name)
                 user_obj.save()
-                profile_obj=Profile.objects.create(user=user_obj,is_verified=True,country=country,local_address=local_body,bio=bio,profile_img=profile_image,links=dict(links))
+                profile_obj=Profile.objects.create(user=user_obj,is_verified=True,country=country,local_address=local_body,bio=bio,profile_img=profile_image,links=json.dumps(links))
                 profile_obj.save()
                 list(messages.get_messages(request))
                 messages.info(request,'User Registeration Successful..')
@@ -126,6 +122,44 @@ def register(request):
     else:
         return render(request,'accounts/register1.html')
 
+#Profile Update
+def profile_update(request,pk):
+    context={}
+    if request.method=="POST":
+        fname=request.POST.get("fname")
+        lname=request.POST.get("lname")
+        main_img=request.FILES.get("main_img")
+        country=request.POST.get("country")
+        local_body=request.POST.get("local_body")
+        bio=request.POST.get("bio")
+        links={"twitter":request.POST.get('twitter',"None"),"instagram":request.POST.get('instagram',"None"),"facebook":request.POST.get('facebook',"None"),"youtube":request.POST.get('youtube',"None")}
+        User.objects.filter(username=pk).update(first_name=fname,last_name=lname)
+        Profile.objects.filter(user=request.user).update(country=country,local_address=local_body,bio=bio,links=json.dumps(links))
+        if main_img:
+            obj=Profile.objects.get(user=request.user)
+            prev_pp=obj.profile_img
+            obj.profile_img=main_img
+            obj.save(update_fields=['profile_img'])
+            prev_pp.delete(False)
+        messages.info(request,"Profile Updated..")
+        return redirect("myblogs", pk=pk)
+    if request.user.is_authenticated:
+        user_obj=User.objects.filter(username=pk)
+        if pk == request.user.username:                
+            if len(user_obj)<1:
+                messages.error(request,'Profile not found for given username..')
+                return redirect("blog")
+            else:
+                context["user"]=user_obj.first()
+                links=json.loads(user_obj.first().profile.links)
+                context["links"]=links
+                return render(request,'accounts/profile_update.html',context)
+        else:
+            messages.error(request,"You aren't allowed to visit that page")
+            return redirect("myblogs", pk=pk)            
+    else:
+        messages.error(request,'You must be logged in to visit profiles..')
+        return redirect("blog")
 
 #Logout User
 def logout(request):
