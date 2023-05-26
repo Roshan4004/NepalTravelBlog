@@ -1,11 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import User
-from .myfunct import district, municipality
-from sorl import thumbnail 
-from ckeditor.fields import RichTextField
-from tinymce.models import HTMLField
-from ckeditor_uploader.fields import RichTextUploadingField 
-from django_quill.fields import QuillField
 # Create your models here.
 
 

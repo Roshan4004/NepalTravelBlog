@@ -1,10 +1,8 @@
 
-from django.forms import ImageField, ModelForm,TextInput, Textarea
+from django.forms import  ModelForm, Textarea
 from .models import Post,Comment
-from tinymce.widgets import TinyMCE
 from django import forms
-from django_summernote.widgets import SummernoteWidget, SummernoteInplaceWidget
-from ckeditor_uploader.widgets import CKEditorUploadingWidget 
+from django_summernote.widgets import SummernoteWidget
 
 class PostForm(ModelForm):
     content = forms.CharField(widget=SummernoteWidget(attrs={'summernote': {'width': '100%','placeholder':'Start typing..','border-color':'black','border-style':'solid','max-width':'100%'}}))
