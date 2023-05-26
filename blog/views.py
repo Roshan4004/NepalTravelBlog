@@ -152,6 +152,7 @@ def DeletePost(request,pk):
 #Posting new datas
 def postcreate(request):
     if not request.user.is_authenticated:
+        messages.error(request,'You must be logged in to post')
         return redirect("/account/login1")
     context={'form':PostForm}
     if request.method=="POST":

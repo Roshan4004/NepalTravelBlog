@@ -222,14 +222,16 @@
       };
 
       $('#password1, #password2').on('change', function() {
-        if($('#password1').val()==$('#password2').val()){
-          $('#pass_info').css('color','green');
-          $('#pass_info').css('display','inline');
-          $('#pass_info').html('Passwords Matching..');
-        }else{
-          $('#pass_info').css('color','red');
-          $('#pass_info').css('display','inline');
-          $('#pass_info').html('Passwords not Matching..');
+        if ($('#password2').val()!=""){
+            if($('#password1').val()==$('#password2').val()){
+            $('#pass_info').css('color','green');
+            $('#pass_info').css('display','inline');
+            $('#pass_info').html('Passwords Matching..');
+          }else{
+            $('#pass_info').css('color','red');
+            $('#pass_info').css('display','inline');
+            $('#pass_info').html('Passwords not Matching..');
+          }
         }
       });
     </script>
