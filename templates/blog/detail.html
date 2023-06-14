@@ -74,7 +74,7 @@
       </div><br>
         <center><p style="font-family: 'Courier New', Courier, monospace;font-size: 2.5rem;"><b>{{post.title}}</b></p></center>
         <div style=" border-radius: 7px; background-color: azure;border-style: solid;border-color:black;">
-          <center><img src="http://127.0.0.1:8000/media/{{post.main_img}}" style="padding: 1%; background-color: azure; max-width: 100%;height: 300px; "></center>
+          <center><img src="https://nep-travelblog.onrender.com/media/{{post.main_img}}" style="padding: 1%; background-color: azure; max-width: 100%;height: 300px; "></center>
         </div><br>
         <div id="content_div" class="clearfix" style=" font-family: 'Times New Roman', Times, serif; font-size: 1.2rem;max-height: 100%;border-color: antiquewhite;border-style: solid;padding:1%;border-radius: 7px;">
           <p>{{ post.content|safe }}</p>
@@ -137,7 +137,7 @@
       <div style="margin-bottom: 2%; padding-left:1%;padding-right: 1%; word-wrap: break-word;" class="col-sm-3"  >
         <div style="position: -webkit-sticky; position: sticky;top: 0%; border-radius:4px;padding: 1%;" class="bg-secondary">
           <center><h3 style="margin-top: 2%;background-color: white;border-radius: 3px;">About Author</h3>
-          <p style="font-size: 1.5rem;"><img style="border-radius: 3px;height: 25px;" src="http://127.0.0.1:8000/{{post.author.profile.get_pp}}"> {{post.author}}</p>
+          <p style="font-size: 1.5rem;"><img style="border-radius: 3px;height: 25px;" src="https://nep-travelblog.onrender.com/{{post.author.profile.get_pp}}"> {{post.author}}</p>
         </center>
         <center><span style="font-size: large;">{{post.author.profile.bio}}</span></center>
           <ul>
