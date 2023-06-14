@@ -1,11 +1,13 @@
 asgiref==3.7.2
 bleach==6.0.0
+dj-database-url==2.0.0
 Django==4.0.3
 django-ckeditor==6.5.1
 django-js-asset==2.0.0
 django-quill-editor==0.1.40
 django-summernote==0.8.20.0
 django-tinymce==3.5.0
+gunicorn==20.1.0
 Pillow==9.5.0
 six==1.16.0
 sorl-thumbnail==12.9.0
