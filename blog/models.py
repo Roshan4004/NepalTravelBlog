@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 
 class Post(models.Model):
     title=models.TextField(max_length=50,unique=True)
-    content=models.TextField()
+    content=models.TextField(blank=False)
     # content=RichTextUploadingField()
     created=models.DateTimeField(auto_now_add=True)
     author=models.ForeignKey(User,on_delete=models.CASCADE,related_name="posted_by")

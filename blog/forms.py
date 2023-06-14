@@ -5,7 +5,7 @@ from django import forms
 from django_summernote.widgets import SummernoteWidget
 
 class PostForm(ModelForm):
-    content = forms.CharField(widget=SummernoteWidget(attrs={'summernote': {'width': '100%','placeholder':'Start typing..','border-color':'black','border-style':'solid','max-width':'100%'}}))
+    content = forms.CharField(required=True,widget=SummernoteWidget(attrs={'summernote': {'width': '100%','placeholder':'Start typing..','border-color':'black','border-style':'solid','max-width':'100%','required': 'true'}}))
     class Meta:
         model = Post
         fields = ['content']

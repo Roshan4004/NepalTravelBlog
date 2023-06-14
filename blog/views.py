@@ -149,6 +149,14 @@ def DeletePost(request,pk):
             return redirect('blogdetail',pk=pk)
     return redirect("blog")
 
+import xml.etree.ElementTree,xml,re
+
+CLEANR = re.compile('<.*?>') 
+
+def cleanhtml(raw_html):
+  cleantext = re.sub(CLEANR, '', raw_html)
+  return cleantext
+
 #Posting new datas
 def postcreate(request):
     if not request.user.is_authenticated:
@@ -167,6 +175,7 @@ def postcreate(request):
 
 #myblogs
 def myblogs(request,pk):
+    pre_url = request.META.get('HTTP_REFERER')
     if request.user.is_authenticated:
         if len(User.objects.filter(username=pk))<=0:
             messages.error(request,'Profile not found for given username..')
@@ -177,6 +186,9 @@ def myblogs(request,pk):
             posts=Post.objects.filter(author=user)
             return render(request,'blog/myblogs.html',{'author':user,'posts':posts,'links':links})
     else:
+        if pre_url is not None:
+            messages.error(request,'You must be logged in to visit profiles..')
+            return redirect(pre_url)
         messages.error(request,'You must be logged in to visit profiles..')
         return redirect("blog")
 

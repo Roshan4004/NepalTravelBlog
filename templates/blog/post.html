@@ -37,7 +37,7 @@
 </div>
 </section>
 <center><section class="col-md-10" style="filter: brightness(100%);border-radius: 15px; background-color: rgb(202, 202, 17); padding: 10px; margin-top: 4%; margin-left: 2%;margin-right: 2%;margin-bottom: 2%; color: blue;">
-    <form method="POST" class="row g-3" enctype="multipart/form-data">
+    <form method="POST" class="row g-3" enctype="multipart/form-data" onSubmit="return form_validation()">
       {% csrf_token %}
       <div class="col-12">
         <center><label style="font-size: 20px;" for="title1" class="form-label">Title*</label></center>
@@ -70,6 +70,8 @@
       <button type="submit" class="btn btn-primary">Submit</button>
   </div>
     </form>
+    <br>
+    <span id="error" style="color: maroon;font-size: large;display: none;"><strong></strong></span>
 
 </section></center>
 <div class="javascripts" style="display: none;">
@@ -113,6 +115,18 @@
           img_preview.src = URL.createObjectURL(file)
         }
       }
+      
+        function form_validation(){
+          var iframe = document.getElementById("id_content_iframe");
+          var elmnt = iframe.contentWindow.document.getElementsByClassName("note-editable card-block")[0].textContent;
+          if( elmnt != ""){
+            return true
+          }else{
+            $('#error').html("Content field can't be empty!!").css('display','block')
+            return false
+          }
+        }
+    
     </script>
   </div>
 </body>

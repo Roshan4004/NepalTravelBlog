@@ -55,7 +55,7 @@ function checkstatus() {
   $.ajax({
     url: 'https://100014.pythonanywhere.com/en/live_status',
     type: 'POST',
-    data: { session_id:"f5u2udocbu8e3mg12hw9tb1h0h5wzcbe",product: "Living Lab Admin"},
+    data: { session_id:"e2zsbklgmfv94y1sfrs39zelsmi2aok3",product: "Living Lab Admin"},
     success: function(data) {
       console.log(data);
     },
@@ -65,7 +65,7 @@ function checkstatus() {
   });
 }
 
-setInterval(checkstatus, 60000);
+setInterval(checkstatus, 10000);
 
 </script>
 </body>
