@@ -95,6 +95,18 @@
     <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js" integrity="sha256-xLD7nhI62fcsEZK2/v8LsBcb4lG7dgULkuXoXB/j91c="crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>    
   <script>
+          function myFunction() {
+        var x = document.getElementById("myTopnav");
+        if (x.className === "topnav") {
+          x.style.removeProperty("max-height");
+          document.getElementById("myTopnav").style.maxHeight ="";
+          document.getElementById("profile").style.float="none";
+          x.className += " responsive";
+        } else {
+          document.getElementById("myTopnav").style.maxHeight ="50px";
+          x.className = "topnav";
+        }
+      }
     "{% for message in messages %}"
     document.getElementById("error_bar").innerHTML="{{message}}";
     document.getElementById("error_bar").style.display="block";       
