@@ -41,7 +41,7 @@
 <section class="cards-wrapper">
   {% for post in post_list%}
   <div class="card-grid-space">
-    <a class="card" href="{% url 'blogdetail' post.id %}" style="--bg-img: url(https://nep-travelblog.onrender.com/media/{{post.main_img}}?container=focus&resize_w=1500&url=https://nep-travelblog.onrender.com/media/{{post.main_img}})">
+    <a class="card" href="{% url 'blogdetail' post.id %}" style="--bg-img: url({{post.m_img_url}}?container=focus&resize_w=1500&url={{post.m_img_url}})">
       <div id="{{post.id}}post">
         <h1 id="{{post.id}}title">{{post.title}}</h1>
         <p id="{{post.id}}content">{{post.content|striptags|safe}}</p>

@@ -12,7 +12,8 @@ class Post(models.Model):
     updated_on=models.DateTimeField(auto_now=True)
     local_body=models.TextField()
     local_name=models.TextField()
-    main_img=models.ImageField(null=False,blank=False,unique=True,upload_to="uploads//")
+    main_img=models.ImageField(null=True,blank=True,unique=True,upload_to="uploads//")
+    m_img_url=models.TextField(max_length=500,unique=False)
     images=models.FileField(null=True,blank=True)
     likes = models.ManyToManyField(User, related_name='blogpost_like',blank=True)
 

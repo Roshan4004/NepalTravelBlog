@@ -40,6 +40,7 @@
 <center><section class="col-md-10" style="filter: brightness(100%);border-radius: 15px; background-color: rgb(202, 202, 17); padding: 10px; margin-top: 4%; margin-left: 2%;margin-right: 2%;margin-bottom: 2%; color: blue;">
     <form method="POST" class="row g-3" enctype="multipart/form-data">
       {% csrf_token %}
+      <input name="post" value="{{post}}" hidden>
       <div class="col-12">
         <center><label style="font-size: 20px;" for="title1" class="form-label" >Title</label></center>
         <input  type="text" class="form-control" id="title" placeholder="Enter title here" maxlength="50" name="title" value="{{post.title}}">
@@ -82,7 +83,7 @@
     <script>
       window.onload = function(){  
         document.getElementById("id_content_iframe").style.maxWidth="100%";
-        img_preview.src="{{post.main_img.url}}"
+        img_preview.src="{{post.m_img_url}}"
         start();
         };  
       function myFunction() {
