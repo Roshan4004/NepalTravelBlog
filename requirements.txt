@@ -1,5 +1,7 @@
 asgiref==3.7.2
 bleach==6.0.0
+certifi==2023.5.7
+cloudinary==1.33.0
 dj-database-url==2.0.0
 Django==4.0.3
 django-ckeditor==6.5.1
@@ -15,4 +17,5 @@ sorl-thumbnail==12.9.0
 sqlparse==0.4.4
 typing_extensions==4.6.3
 tzdata==2023.3
+urllib3==1.26.16
 webencodings==0.5.1
