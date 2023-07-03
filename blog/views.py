@@ -130,25 +130,25 @@ def UpdatePost(request,pk):
     post=Post.objects.get(id=pk)
     context={'post':post,'form':PostForm(request.POST or None, instance=post)}
     if request.method=="POST":
-        content_old=Post.objects.get(id=pk).content
+        # content_old=Post.objects.get(id=pk).content
         title=request.POST.get('title')
         local_body=request.POST.get('local_body')
         local_name=request.POST.get('local_name')
         main_img_new=request.FILES.get("main_img")
         content=request.POST.get('content')
         new_content=content
-        old_imgs=[]
-        new_imgs=[]
-        for url in re.findall(r"<img[^>]* src=\"([^\"]*)\"[^>]*>", content_old):
-            old_imgs.append(url)
-        for url in re.findall(r"<img[^>]* src=\"([^\"]*)\"[^>]*>", content):
-            new_imgs.append(url)
-            if not url in old_imgs:
-                upload=cloudinary.uploader.upload("https://nep-travelblog.onrender.com"+url, public_id = url[36:],folder="summernote")
-                new_content=new_content.replace(url,upload["url"])
-        for test in old_imgs:
-            if test not in new_imgs:
-                cloudinary.uploader.destroy("summernote/"+test[72:len(test)-4])
+        # old_imgs=[]
+        # new_imgs=[]
+        # for url in re.findall(r"<img[^>]* src=\"([^\"]*)\"[^>]*>", content_old):
+        #     old_imgs.append(url)
+        # for url in re.findall(r"<img[^>]* src=\"([^\"]*)\"[^>]*>", content):
+        #     new_imgs.append(url)
+        #     if not url in old_imgs:
+        #         upload=cloudinary.uploader.upload("https://NepTravelblog.pythonanywhere.com"+url, public_id = url[36:],folder="summernote")
+        #         new_content=new_content.replace(url,upload["url"])
+        # for test in old_imgs:
+        #     if test not in new_imgs:
+        #         cloudinary.uploader.destroy("summernote/"+test[72:len(test)-4])
         Post.objects.filter(id=pk).update(title=title,local_body=local_body,local_name=local_name,content=new_content)
         if main_img_new:
             obj=Post.objects.get(id=pk)
@@ -172,9 +172,9 @@ def DeletePost(request,pk):
             try:
                 # img=post.main_img
                 content=post.content
-                for url in re.findall(r"<img[^>]* src=\"([^\"]*)\"[^>]*>", content):
-                    public_id=url[72:len(url)-4]
-                    cloudinary.uploader.destroy("summernote/"+public_id)
+                # for url in re.findall(r"<img[^>]* src=\"([^\"]*)\"[^>]*>", content):
+                #     public_id=url[72:len(url)-4]
+                #     cloudinary.uploader.destroy("summernote/"+public_id)
                 m_img_url=post.m_img_url
                 cloudinary.uploader.destroy(m_img_url[61:len(m_img_url)-4])
                 post.delete()
@@ -202,9 +202,9 @@ def postcreate(request):
         content=request.POST.get('content')
         new_content=content
         m_img_url=cloudinary.uploader.upload(main_img,folder="main_imgs")
-        for url in re.findall(r"<img[^>]* src=\"([^\"]*)\"[^>]*>", content):
-            upload=cloudinary.uploader.upload("https://nep-travelblog.onrender.com"+url, public_id = url[36:],folder="summernote")
-            new_content=new_content.replace(url,upload["url"])
+        # for url in re.findall(r"<img[^>]* src=\"([^\"]*)\"[^>]*>", content):
+        #     upload=cloudinary.uploader.upload("https://NepTravelblog.pythonanywhere.com"+url, public_id = url[36:],folder="summernote")
+        #     new_content=new_content.replace(url,upload["url"])
         Post.objects.create(title=title,local_body=local_body,local_name=local_name,content=new_content,author=request.user,m_img_url=m_img_url["url"])
         return redirect("blog")
     return render(request, 'blog/post.html',context)
