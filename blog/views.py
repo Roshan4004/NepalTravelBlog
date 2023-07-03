@@ -9,16 +9,17 @@ from django.shortcuts import render,redirect,get_object_or_404
 from .forms import PostForm
 from django.contrib.auth.models import User
 import json
-import cloudinary
-import cloudinary.uploader
 from cloudinary_params import params
-
 #for cloudinary
-cloudinary.config( 
-  cloud_name = params["cloud_name"], 
-  api_key = params["api_key"], 
-  api_secret = params["api_secret"] 
+import cloudinary
+cloudinary.config(
+  api_proxy = "http://proxy.server:3128",
+  cloud_name = params["cloud_name"],
+  api_key = params["api_key"],
+  api_secret = params["api_secret"]
 )
+import cloudinary.uploader
+
 
 #Showing the lists/posts
 def PostList(request):
@@ -127,7 +128,7 @@ def PostDetail(request,pk):
 #Updating posts
 def UpdatePost(request,pk):
     post=Post.objects.get(id=pk)
-    context={'post':post,'form':PostForm(request.POST or None, instance=post)}    
+    context={'post':post,'form':PostForm(request.POST or None, instance=post)}
     if request.method=="POST":
         content_old=Post.objects.get(id=pk).content
         title=request.POST.get('title')
@@ -200,7 +201,7 @@ def postcreate(request):
         main_img=request.FILES.get("main_img")
         content=request.POST.get('content')
         new_content=content
-        m_img_url=cloudinary.uploader.upload(main_img,folder="main_imgs")    
+        m_img_url=cloudinary.uploader.upload(main_img,folder="main_imgs")
         for url in re.findall(r"<img[^>]* src=\"([^\"]*)\"[^>]*>", content):
             upload=cloudinary.uploader.upload("https://nep-travelblog.onrender.com"+url, public_id = url[36:],folder="summernote")
             new_content=new_content.replace(url,upload["url"])
