@@ -102,3 +102,6 @@ venv.bak/
 templates/test.html
 media/*
 /*myworld/
+
+# celery beat schedule file
+celerybeat-schedule

@@ -17,6 +17,8 @@ import os
 
 load_dotenv()
 
+GEMINI_KEY=os.environ.get("Api_key")
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -46,6 +48,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework'
 ]
 
 MIDDLEWARE = [
@@ -89,18 +92,18 @@ WSGI_APPLICATION = 'blogg.wsgi.application'
 #     }
 # }
 
-DATABASES = {
-    'default': dj_database_url.parse(os.environ.get("DATABASE_URL"),conn_max_age=600)
-}
+# DATABASES = {
+#     'default': dj_database_url.parse(os.environ.get("DATABASE_URL"),conn_max_age=600)
+# }
 
-# if not DEBUG:
-#     DATABASES = {'default': dj_database_url.parse(os.environ.get('DATABASE_URL'))}
-# else:
-#     DATABASES = {
-#         'default': {
-#             'ENGINE': 'django.db.backends.sqlite3',
-#             'NAME': 'db.sqlite3',
-#         }}
+if not DEBUG:
+    DATABASES = {'default': dj_database_url.parse(os.environ.get('DATABASE_URL'))}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite3',
+        }}
 
 
 # Password validation
@@ -156,8 +159,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
-EMAIL_HOST_USER = "neptravelblog@gmail.com"
-EMAIL_HOST_PASSWORD = "upsebawatmcyqxti"
+EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
 
 #summernote_settings
 SUMMERNOTE_THEME = 'bs4'
@@ -191,3 +194,11 @@ SUMMERNOTE_CONFIG = {
     'disable_attachment': False,
 }
 
+CELERYD_POOL = 'solo'  # or 'threads'
+
+CELERY_BROKER_URL=os.environ.get("Redis_URL")
+CELERY_RESULT_BACKEND = os.environ.get("Redis_URL")
+
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+# CELERY_TIMEZONE = 
