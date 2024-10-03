@@ -48,7 +48,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework'
+    'rest_framework',
+    'django_celery_beat'
 ]
 
 MIDDLEWARE = [
@@ -194,11 +195,11 @@ SUMMERNOTE_CONFIG = {
     'disable_attachment': False,
 }
 
-CELERYD_POOL = 'solo'  # or 'threads'
+# CELERY_POOL = 'solo'  # or 'threads'
 
 CELERY_BROKER_URL=os.environ.get("Redis_URL")
 CELERY_RESULT_BACKEND = os.environ.get("Redis_URL")
 
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
-# CELERY_TIMEZONE = 
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers.DatabaseScheduler'
