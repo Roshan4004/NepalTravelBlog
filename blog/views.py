@@ -11,13 +11,13 @@ from django.contrib.auth.models import User
 import json
 import cloudinary
 import cloudinary.uploader
-from cloudinary_params import params
+from blogg.settings import CLOUDINARY_NAME, CLOUDINARY_KEY, CLOUDINARY_SECRET
 
 #for cloudinary
 cloudinary.config( 
-  cloud_name = params["cloud_name"], 
-  api_key = params["api_key"], 
-  api_secret = params["api_secret"] 
+  cloud_name = CLOUDINARY_NAME, 
+  api_key =CLOUDINARY_KEY, 
+  api_secret = CLOUDINARY_SECRET
 )
 
 #Showing the lists/posts

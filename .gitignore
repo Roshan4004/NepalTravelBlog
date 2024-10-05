@@ -105,3 +105,4 @@ media/*
 
 # celery beat schedule file
 celerybeat-schedule
+cloudinary_params.py

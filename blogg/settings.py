@@ -18,6 +18,9 @@ import os
 load_dotenv()
 
 GEMINI_KEY=os.environ.get("Api_key")
+CLOUDINARY_NAME=os.environ.get("cloud_name")
+CLOUDINARY_KEY=os.environ.get("api_key")
+CLOUDINARY_SECRET=os.environ.get("api_secret")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
