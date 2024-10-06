@@ -3,7 +3,7 @@ from celery_app import app
 
 @app.task
 def call_api():
-    url = "https://api.example.com/your-endpoint"  # Replace with your API URL
+    url = "//////" 
     try:
         response = requests.get(url)
         response.raise_for_status()

@@ -1,6 +1,10 @@
 from celery import Celery
+from dotenv import load_dotenv
+import os
 
-app = Celery('tasks', broker='redis://:5pSsfS3zgZxASDWkIfVuFcOcUsjtrRCU@redis-16584.c264.ap-south-1-1.ec2.redns.redis-cloud.com:16584/0')
+load_dotenv()
+
+app = Celery('tasks',broker= os.getenv('REDIS_URL'))
 
 app.conf.imports = ['tasks']
 
