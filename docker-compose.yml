@@ -1,0 +1,7 @@
+services:
+  celery_worker:
+    build: .
+    environment:
+      - CELERY_BROKER_URL=redis://:5pSsfS3zgZxASDWkIfVuFcOcUsjtrRCU@redis-16584.c264.ap-south-1-1.ec2.redns.redis-cloud.com:16584/0
+    volumes:
+      - .:/app
