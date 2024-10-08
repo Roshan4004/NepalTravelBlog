@@ -1,14 +1,147 @@
 import requests
 from celery_app import app
+import google.generativeai as genai
+from dotenv import load_dotenv
+import os
+import re
+import base64
 
-@app.task
-def call_api():
-    url = "//////" 
+load_dotenv()
+
+genai.configure(api_key=os.getenv('GEMINI_KEY'))
+model = genai.GenerativeModel("gemini-1.5-flash")
+
+
+def get_blog_titles():
+    url = "https://example.com/api/blog-titles"
     try:
         response = requests.get(url)
         response.raise_for_status()
-        print(f"API call successful: {response.status_code}")
         return response.json()
     except requests.RequestException as e:
-        print(f"API call failed: {str(e)}")
+        print(f"Failed to get blog titles: {str(e)}")
         return None
+    
+def parse_ai_response(response):
+    title = re.search(r'### Blog Title:\n(.+?)(?=\n###)', response, re.DOTALL).group(1).strip()
+    address = re.search(r'### Blog Address:\n(.+?)(?=\n###)', response, re.DOTALL).group(1).strip()
+    content = re.search(r'### Blog Content:\n(.+?)(?=\n###)', response, re.DOTALL).group(1).strip()
+    image_prompt = re.search(r'### Image Generation Prompt:\n(.+?)(?=\n\n|$)', response, re.DOTALL).group(1).strip()
+
+    return {
+        "title": title,
+        "address": address,
+        "content": content,
+        "image_prompt": image_prompt,
+    }
+
+def generate_blog_content_and_image_prompt(blog_titles):
+    prompt = f"""
+Write a blog post about any specific location in Nepal, focusing on a detailed, lesser-known aspect or experience of the place, not just general information. For example, instead of "Visit to Pokhara," focus on a specific experience like "Pokhara's Lakeside Cafes during Sunrise."
+
+Do NOT write about the following topics, as blogs on these have already been written:
+- {blog_titles}
+
+Make sure to follow these guidelines:
+- Write the blog in a descriptive, engaging, and informative style.
+- Provide a **unique title** for the blog.
+- Specify the **exact address or location** of the place being described, so readers know where it is.
+- Avoid general descriptions and focus on unique experiences, hidden gems, or specific local attractions within Nepal.
+- Include relevant historical, cultural, or natural information that adds depth to the description.
+
+In addition to the blog content, also generate a **prompt for an AI image generator** that will capture the essence of the place you’re writing about. This prompt should help the AI generate a realistic and context-appropriate image. 
+
+Output Format:
+### Blog Title:
+[Title of the blog]
+
+### Blog Address:
+[Location/address details of the place being described]
+
+### Blog Content:
+[The actual blog content]
+
+### Image Generation Prompt:
+[Provide a highly specific, vivid, and detailed image prompt that describes the scene, ambiance, or key features of the place.]
+
+#### Example Output:
+
+### Blog Title:
+Sunrise at Pokhara's Hidden Lakeside Cafes
+
+### Blog Address:
+Lakeside Road, Sedi Heights, Pokhara, Nepal
+
+### Blog Content:
+Nestled along the quieter stretches of Pokhara’s lakeside, far from the bustling tourist spots, are a series of charming cafes that offer a serene, picturesque view of Phewa Lake during the early morning hours. These hidden gems allow visitors to soak in the tranquility of the lake, with the Annapurna range reflecting on the still waters as the sun slowly rises. The experience is made richer by the crisp morning air and the distant sound of prayer flags fluttering in the breeze...
+
+### Image Generation Prompt:
+A serene lakeside café in Pokhara at sunrise, with still waters of Phewa Lake reflecting the distant Annapurna mountains, a few locals sipping tea in outdoor seating, with prayer flags fluttering in the cool morning breeze.
+
+"""
+
+    try:
+        ai_response = model.generate_content(prompt)
+        final_resp=parse_ai_response(ai_response.text)
+        return final_resp
+    except Exception as e:
+        print(f"AI call failed: {str(e)}")
+        return None, None
+
+def generate_image(image_prompt):
+    url = f"https://image.pollinations.ai/prompt/{image_prompt}?width=768&height=800&model=FLUX&seed=1"
+    response = requests.get(url)
+
+    if response.status_code == 200:
+        image_base64 = base64.b64encode(response.content).decode('utf-8')
+        with open('image_base64.txt', 'w') as file:
+            file.write(image_base64)
+        return image_base64
+    else:
+        print(f"Image generation failed")
+        return None
+
+def post_blog(title, content, address, image_base64):
+    url = "https://example.com/api/post-blog"
+    payload = {
+        "title": title,
+        "content": content,
+        "address": address,
+        "image_base64": image_base64
+    }
+    
+    try:
+        response = requests.post(url, json=payload)
+        response.raise_for_status()
+        return response.text
+    except requests.RequestException as e:
+        print(f"Blog post failed: {str(e)}")
+        return None
+
+
+# @app.task
+def cron_blog_writer():
+    # blog_titles = get_blog_titles()
+    ok='a'
+    blog_titles=[]
+    if ok:
+        final_resp = generate_blog_content_and_image_prompt(blog_titles)
+        if final_resp:
+            image_base64 = generate_image(final_resp['image_prompt'])
+            return(final_resp)
+            if image_base64:
+                post_response = post_blog(
+                    title=blog_titles[0],
+                    content=final_resp['content'],
+                    address=final_resp['address'], 
+                    image_base64=image_base64
+                )
+                print(f"Blog posted: {post_response}")
+            else:
+                print("Image generation failed.")
+        else:
+            print("Failed to generate blog content or image prompt.")
+    else:
+        print("No blog titles available.")
+
+print(cron_blog_writer())

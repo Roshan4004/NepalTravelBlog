@@ -10,7 +10,7 @@ app.conf.imports = ['tasks']
 
 app.conf.beat_schedule = {
     'call-api-every-two-minutes': {
-        'task': 'tasks.call_api',
-        'schedule': 30.0,
+        'task': 'tasks.cron_blog_writer',
+        'schedule': 120.0,
     },
 }
