@@ -11,7 +11,12 @@ from django.contrib.auth.models import User
 import json
 import cloudinary
 import cloudinary.uploader
-from blogg.settings import CLOUDINARY_NAME, CLOUDINARY_KEY, CLOUDINARY_SECRET
+from blogg.settings import CLOUDINARY_NAME, CLOUDINARY_KEY, CLOUDINARY_SECRET, EMAIL_HOST_USER
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
+import base64
+from django.core.mail import send_mail
+import re
 
 #for cloudinary
 cloudinary.config( 
@@ -121,7 +126,6 @@ def PostDetail(request,pk):
     author=post.author
     author_posts=Post.objects.filter(author=author).exclude(id=post.id)
     context={'post':post,'number_of_likes':likes_connected.number_of_likes(),'post_is_liked':liked,'comment':comment,'post_is_commented':commented,'author_posts':author_posts[:2]}
-    # print(post.content)
     return render(request,'blog/detail.html',context)
 
 #Updating posts
@@ -143,7 +147,7 @@ def UpdatePost(request,pk):
         for url in re.findall(r"<img[^>]* src=\"([^\"]*)\"[^>]*>", content):
             new_imgs.append(url)
             if not url in old_imgs:
-                upload=cloudinary.uploader.upload("https://nep-travelblog.onrender.com"+url, public_id = url[36:],folder="summernote")
+                upload=cloudinary.uploader.upload(request.build_absolute_uri(url), public_id = url[36:],folder="summernote")
                 new_content=new_content.replace(url,upload["url"])
         for test in old_imgs:
             if test not in new_imgs:
@@ -185,8 +189,6 @@ def DeletePost(request,pk):
             return redirect('blogdetail',pk=pk)
     return redirect("blog")
 
-import re
-
 #Posting new datas
 def postcreate(request):
     if not request.user.is_authenticated:
@@ -202,7 +204,7 @@ def postcreate(request):
         new_content=content
         m_img_url=cloudinary.uploader.upload(main_img,folder="main_imgs")    
         for url in re.findall(r"<img[^>]* src=\"([^\"]*)\"[^>]*>", content):
-            upload=cloudinary.uploader.upload("https://nep-travelblog.onrender.com"+url, public_id = url[36:],folder="summernote")
+            upload=cloudinary.uploader.upload(request.build_absolute_uri(url), public_id = url[36:],folder="summernote")
             new_content=new_content.replace(url,upload["url"])
         Post.objects.create(title=title,local_body=local_body,local_name=local_name,content=new_content,author=request.user,m_img_url=m_img_url["url"])
         return redirect("blog")
@@ -226,6 +228,40 @@ def myblogs(request,pk):
             return redirect(pre_url)
         messages.error(request,'You must be logged in to visit profiles..')
         return redirect("blog")
+
+@api_view(['GET'])
+def get_titles(request):
+    o=Post.titles_list()
+    k=list(o)
+    return Response({'data':k})
+
+import io, base64
+from PIL import Image
+
+@api_view(['POST'])
+def post_ai(request):
+    title=request.data.get('title')
+    local_body=request.data.get('local_body')
+    main_img=request.data.get("main_img")
+    content=request.data.get('content')
+    
+    image = base64.b64decode(str(main_img))       
+    imagePath = 'temp_ai.jpeg'
+    img = Image.open(io.BytesIO(image))
+    img.save(imagePath, 'jpeg')
+
+    m_img_url=cloudinary.uploader.upload('temp_ai.jpeg',folder="main_imgs")    
+    Post.objects.create(title=title,local_body=local_body,local_name="NA",content=content,author=User.objects.get(id=2),m_img_url=m_img_url["url"])
+    send_mail_about_new_blog(title,content,m_img_url["url"])
+    return Response({"msg":"Done!"})
+
+def send_mail_about_new_blog(blog_title, blog_content, image):
+    subject = 'New Blog Post Added-AI'
+    message = f'Hi,\n\nA new blog post has been added.\n{blog_title}\nContent:{blog_content}\nImage:{image}'
+    email_from = EMAIL_HOST_USER
+    recipient_list = ['neptravelblog@gmail.com ']  # Replace with your email
+    send_mail(subject, message, email_from, recipient_list)
+
 
 #for ajax
 def is_ajax(request):

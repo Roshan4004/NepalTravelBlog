@@ -14,5 +14,7 @@ urlpatterns = [
     path('post/',views.postcreate,name="blogpost"),
     path('myblogs/<slug:pk>',views.myblogs,name="myblogs"),
     path('test/',test.ok,name="test"),
-    path('task_status/',test.task_status,name="task_status")
+    path('task_status/',test.task_status,name="task_status"),
+    path('get_titles/',views.get_titles,name="get_titles"),
+    path('post_ai/',views.post_ai,name="post_ai")
 ]

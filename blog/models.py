@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 
 
 class Post(models.Model):
-    title=models.TextField(max_length=50,unique=True)
+    title=models.TextField(max_length=200,unique=True)
     content=models.TextField(blank=False)
     # content=RichTextUploadingField()
     created=models.DateTimeField(auto_now_add=True)
@@ -12,7 +12,7 @@ class Post(models.Model):
     updated_on=models.DateTimeField(auto_now=True)
     local_body=models.TextField()
     local_name=models.TextField()
-    main_img=models.ImageField(null=True,blank=True,unique=True,upload_to="uploads//")
+    main_img=models.ImageField(null=True,blank=True,upload_to="uploads//")
     m_img_url=models.TextField(max_length=500,unique=False)
     images=models.FileField(null=True,blank=True)
     likes = models.ManyToManyField(User, related_name='blogpost_like',blank=True)
@@ -49,6 +49,9 @@ class Post(models.Model):
         else:
             return (str(a)+" comment")
         # return self.comments.count()
+    def titles_list():
+        ok=Post.objects.all().values_list('title',flat=True)
+        return ok
 
 class Comment(models.Model):
     post = models.ForeignKey(Post,on_delete=models.CASCADE,related_name='comments')

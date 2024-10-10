@@ -60,7 +60,11 @@
         <span style="color:black; float:left"><img height="15px" src="{% static 'blog/location-icon.png'%}"> {{post.styled_localbody}}</span>
       </div><br>
       <div style="margin-bottom: 11px;">
+        {% if post.local_name != 'NA'%}
         <span  style="color:black;">{{post.local_name}}</span>
+        {% else %}
+        <span  style="color:black;">&nbsp;</span>
+        {% endif %}
         <span style="color:black; float:right;margin-top: 1%;">{{post.created}} NST</span>
       </div>
       <div>
