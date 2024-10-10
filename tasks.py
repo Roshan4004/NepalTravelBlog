@@ -13,7 +13,7 @@ model = genai.GenerativeModel("gemini-1.5-flash")
 
 
 def get_blog_titles():
-    url = "https://example.com/api/blog-titles"
+    url = os.getenv('GET_TITLES')
     try:
         response = requests.get(url)
         response.raise_for_status()
@@ -48,6 +48,7 @@ Make sure to follow these guidelines:
 - Specify the **exact address or location** of the place being described, so readers know where it is.
 - Avoid general descriptions and focus on unique experiences, hidden gems, or specific local attractions within Nepal.
 - Include relevant historical, cultural, or natural information that adds depth to the description.
+-For bolding and spacing in content section, write in HTML. Don not use markdown
 
 In addition to the blog content, also generate a **prompt for an AI image generator** that will capture the essence of the place you’re writing about. This prompt should help the AI generate a realistic and context-appropriate image. 
 
@@ -59,7 +60,7 @@ Output Format:
 [Location/address details of the place being described]
 
 ### Blog Content:
-[The actual blog content]
+[The actual blog content. Write in HTML for bold and paragraph change.]
 
 ### Image Generation Prompt:
 [Provide a highly specific, vivid, and detailed image prompt that describes the scene, ambiance, or key features of the place.]
@@ -102,12 +103,12 @@ def generate_image(image_prompt):
         return None
 
 def post_blog(title, content, address, image_base64):
-    url = "https://example.com/api/post-blog"
+    url = os.getenv('POST_AI')
     payload = {
         "title": title,
         "content": content,
-        "address": address,
-        "image_base64": image_base64
+        "local_body": address,
+        "main_img": image_base64
     }
     
     try:
@@ -119,24 +120,23 @@ def post_blog(title, content, address, image_base64):
         return None
 
 
-# @app.task
+@app.task
 def cron_blog_writer():
-    # blog_titles = get_blog_titles()
-    ok='a'
-    blog_titles=[]
-    if ok:
+    blog_titles = get_blog_titles()['data']
+    if blog_titles or blog_titles==[]:
         final_resp = generate_blog_content_and_image_prompt(blog_titles)
         if final_resp:
             image_base64 = generate_image(final_resp['image_prompt'])
-            return(final_resp)
+            print(final_resp)
             if image_base64:
                 post_response = post_blog(
-                    title=blog_titles[0],
+                    title=final_resp['title'],
                     content=final_resp['content'],
                     address=final_resp['address'], 
                     image_base64=image_base64
                 )
                 print(f"Blog posted: {post_response}")
+                return(post_response)
             else:
                 print("Image generation failed.")
         else:
