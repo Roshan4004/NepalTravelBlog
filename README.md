@@ -39,4 +39,5 @@ With this automation, the blog remains active and regularly updated with fresh c
 ## Explore Celery Integration
 If you're interested in how Celery is set up separately for task management, check out the `celery_seperate` branch: [Separate Celery Branch](https://github.com/Roshan4004/NepalTravelBlog/tree/celery_seperate)
 
+If you want to read about the AI integration, please have a look at my post on [medium](https://medium.com/@gautamroshan4004/how-i-automated-my-travel-blog-using-ai-and-celery-a-developers-journey-c8174d4a235a)
 Thank you for reading!

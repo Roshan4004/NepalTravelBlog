@@ -10,7 +10,6 @@ from .forms import PostForm
 from django.contrib.auth.models import User
 import json
 import cloudinary
-import cloudinary.uploader
 from blogg.settings import CLOUDINARY_NAME, CLOUDINARY_KEY, CLOUDINARY_SECRET, EMAIL_HOST_USER
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
@@ -22,8 +21,11 @@ import re
 cloudinary.config( 
   cloud_name = CLOUDINARY_NAME, 
   api_key =CLOUDINARY_KEY, 
-  api_secret = CLOUDINARY_SECRET
+  api_secret = CLOUDINARY_SECRET,
+  api_proxy = "http://proxy.server:3128"
 )
+
+import cloudinary.uploader
 
 #Showing the lists/posts
 def PostList(request):
