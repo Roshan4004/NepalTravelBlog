@@ -26,7 +26,7 @@ Since this website is not used to write blogs by myself due to unrelated reasons
 - **Task Management** : Celery
 - **Message Broker**: Redis as of now, might change to RabbitMQ later
 
-## Updates (October 19, 2024)
+## Latest Update (October 19, 2024)
 The project is now automated to generate and post travel blogs daily using AI. This allows consistent content posting without manual input.
 
 - **AI Model**: Currently using Google Generative AI for blog generation.
