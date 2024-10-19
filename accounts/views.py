@@ -151,7 +151,7 @@ def profile_update(request,pk):
                 return redirect("blog")
             else:
                 context["user"]=user_obj.first()
-                links=json.loads(user_obj.first().profile.links)
+                links=json.loads(user_obj.first().profile.links.replace("'", '"'))
                 context["links"]=links
                 return render(request,'accounts/profile_update.html',context)
         else:
@@ -190,7 +190,7 @@ def verify(request , auth_tokens):
 #send mail
 def send_mail_later(email,token):
     subject='Your account need to be verified'
-    message=f'Hi, Paste the link to verify your account http://127.0.0.1:8000/accounts/verify/{token}'
+    message=f'Hi, Paste the link to verify your account https://neptravelblog.pythonanywhere.com/accounts/verify/{token}'
     email_from=settings.EMAIL_HOST_USER
     recipient_list=[email]
     send_mail(subject,message,email_from,recipient_list)
