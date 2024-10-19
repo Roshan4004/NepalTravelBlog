@@ -219,7 +219,7 @@ def myblogs(request,pk):
             return redirect("blog")
         else:
             user=User.objects.filter(username=pk).first()
-            links=json.loads(user.profile.links)
+            links=json.loads(user.profile.links.replace("'", '"'))
             posts=Post.objects.filter(author=user)
             return render(request,'blog/myblogs.html',{'author':user,'posts':posts,'links':links})
     else:
