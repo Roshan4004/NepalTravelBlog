@@ -1,0 +1,46 @@
+.top-main{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    font-size: larger;
+}
+
+.main-buttons{
+    display:flex;
+    justify-content:space-evenly;
+    gap: 5px
+}
+
+.top-sub{
+    display: flex;
+    flex-direction: row;
+    justify-content: left;
+    gap:5px;
+    margin-top: 3px;
+}
+.top-sub button{
+    text-decoration: none;
+    border-radius: 10px;
+    background-color:#ff9966;
+    border: solid 1px;
+    padding: 5px;
+    font-size: large;
+}
+
+@media screen and (max-width: 1300px) {
+    .top-main{
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 3px;
+    }
+
+}
+
+@media screen and (max-width: 850px) {
+    .top-main{
+        flex-direction: column;
+    }
+    .main-buttons{
+        justify-content: center;
+    }
+}

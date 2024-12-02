@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="{%static 'blog/css/details_html.css'%}">
   <link rel="stylesheet" href="{% static 'navbar.css'%}">  
+  <link rel="stylesheet" href="{% static 'detail.css'%}">  
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/themes/base/jquery-ui.min.css" integrity="sha512-ELV+xyi8IhEApPS/pSj66+Jiw+sOT1Mqkzlh8ExXihe4zfqbWkxPRi8wptXIO9g73FSlhmquFlUOuMSoXz5IRw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
 </head>
@@ -55,27 +56,26 @@
 </section >
   <div class="row g-0" style="padding: 1%;margin-top: 2%;padding-right: 1%;max-width: 100%;" >
       <div style=" border-radius: 4px; word-wrap: break-word;height: 100%;max-width: 100%;padding: 1%; margin-bottom: 2%;" class="col-sm-9 bg-secondary">
-      <div style="margin-bottom: 7px;">
-        {% if post.author == request.user%}<span style="float: right;"><a style="margin-right: 4px;" href="{% url 'blogupdate' post.id%}" class="btn btn-primary btn-sm">Update</a><a onclick="document.getElementById('mainpart').style.display='none';document.getElementById('fordelete').style.display='block';" class="btn btn-danger btn-sm">Delete</a></span>{% endif %}
-        <span style="color:black; float:left"><img height="15px" src="{% static 'blog/location-icon.png'%}"> {{post.styled_localbody}}</span>
-      </div><br>
-      <div style="margin-bottom: 11px;">
-        {% if post.local_name != 'NA'%}
-        <span  style="color:black;">{{post.local_name}}</span>
-        {% else %}
-        <span  style="color:black;">&nbsp;</span>
-        {% endif %}
-        <span style="color:black; float:right;margin-top: 1%;">{{post.created}} NST</span>
-      </div>
-      <div>
-        <a style=" float:left" onclick="location.hash = 'comment_area'"><img style=" width: 30px;margin-bottom: 1%;" src="{% static 'blog/comment_icon.png'%}"></a><strong style="margin-left: 3px;"><span > {{post.number_of_comment}} </span></strong>
+      <center><div class="top-main">
+        <span style="color:black"><img height="28px" src="{% static 'blog/location-icon.png'%}"> {{post.styled_localbody}}</span>
+        <span style="color:black">{{post.created}} NST</span>
+        <div class="main-buttons">
+          {% if post.author == request.user%}
+              <a style="margin-right: 4px;" href="{% url 'blogupdate' post.id%}" class="btn btn-primary btn-md">Update</a>
+              <a onclick="document.getElementById('mainpart').style.display='none';document.getElementById('fordelete').style.display='block';" class="btn btn-danger btn-md">Delete</a>
+          {% endif %}
+          <span style="color:black"><img height="45px" src="{% static 'blog/read.png'%}"></span>
+        </div>
+      </div><center>
+      <div class="top-sub">
+        <button onclick="location.hash = 'comment_area'"><img style=" width: 30px;margin-bottom: 1%;" src="{% static 'blog/comment_icon.png'%}"><strong> {{post.number_of_comment|make_list|first}}</strong></button>
         {% if post_is_liked == True %}
-        <a style=" float:right" onclick="likefunction()" ><img id="like_button" style="background-color: red; width: 30px;border-radius: 20px;;border-style: solid;border-color: black;border-width:1.5px;padding:15%;" src="{% static 'blog/love_icon2.png'%}"></a><strong style=" float:right;margin-right: 3px;"><span id="number_of_likes"> {{number_of_likes}}</span></strong>
+        <button onclick="likefunction()"><img id="like_button" style="width:35px" src="{% static 'blog/heart-filled2.png'%}"><strong style=" margin-right: 3px;"><span id="number_of_likes"> {{number_of_likes|make_list|first}}</span></strong></button>
         {%else%}
-        <a style=" float:right" onclick="likefunction()" ><img id="like_button" style="width: 30px;border-radius: 20px;border-style: solid;border-color: black;border-width:1.5px;padding: 15%;" src="{% static 'blog/love_icon2.png'%}"></a><strong style=" float:right;margin-right: 3px;"><span id="number_of_likes"> {{number_of_likes}}</span></strong>
+        <button onclick="likefunction()"><img id="like_button" style="width:35px" src="{% static 'blog/heart2.png'%}"><strong style=" margin-right: 3px;"><span id="number_of_likes"> {{number_of_likes|make_list|first}}</span></strong></button>
         {% endif %}
-        <br><span style="float:right;display: none;color: red;" id="like_info">Hello</span>
-      </div><br>
+        <span style="float: right; display: none; color: blue;font-size:20px" id="like_info">You have to login to like a post..</span>
+      </div>
         <center><p style="font-family: 'Courier New', Courier, monospace;font-size: 2.5rem;"><b>{{post.title}}</b></p></center>
         <div style=" border-radius: 7px; background-color: azure;border-style: solid;border-color:black;">
           <center><img src="{{post.m_img_url}}" style="padding: 1%; background-color: azure; max-width: 100%;height: 300px; "></center>
@@ -269,11 +269,14 @@
           form:"likefunction",
           },           
           success: function(data){
-            if (data.color!=""){
-            $('#like_button').css('background-color',data.color);      
-            $('#number_of_likes').html(" "+data.new_number_of_likes); 
+            
+            let num_of_likes=data.new_number_of_likes==""?"":data.new_number_of_likes[0];
+            if (data.color!="red"){
+            $('#number_of_likes').html(" "+num_of_likes);   
+            $('#like_button').attr("src","{% static 'blog/heart2.png'%}")
             }else{  
-              $('#number_of_likes').html(" "+data.new_number_of_likes); 
+              $('#number_of_likes').html(" "+num_of_likes); 
+              $('#like_button').attr("src","{% static 'blog/heart-filled2.png'%}")
             }
           },   
           failure: function() {
@@ -283,6 +286,8 @@
         "{% else %}"
         $('#like_info').css("display","inline");
         $('#like_info').html("You have to login to like a post..");   
+        $('#like_info').delay(3000).hide(0);
+        
         "{% endif %}"
       };   
     </script>
