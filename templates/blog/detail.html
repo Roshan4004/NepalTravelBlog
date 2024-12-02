@@ -56,7 +56,7 @@
 </section >
   <div class="row g-0" style="padding: 1%;margin-top: 2%;padding-right: 1%;max-width: 100%;" >
       <div style=" border-radius: 4px; word-wrap: break-word;height: 100%;max-width: 100%;padding: 1%; margin-bottom: 2%;" class="col-sm-9 bg-secondary">
-      <center><div class="top-main">
+      <div class="top-main">
         <span style="color:black"><img height="28px" src="{% static 'blog/location-icon.png'%}"> {{post.styled_localbody}}</span>
         <span style="color:black">{{post.created}} NST</span>
         <div class="main-buttons">
@@ -66,7 +66,7 @@
           {% endif %}
           <span style="color:black"><img height="45px" src="{% static 'blog/read.png'%}"></span>
         </div>
-      </div><center>
+      </div>
       <div class="top-sub">
         <button onclick="location.hash = 'comment_area'"><img style=" width: 30px;margin-bottom: 1%;" src="{% static 'blog/comment_icon.png'%}"><strong> {{post.number_of_comment|make_list|first}}</strong></button>
         {% if post_is_liked == True %}
@@ -113,12 +113,12 @@
           <div><p style="margin-top:1.5%;display:none;white-space: pre-line" id="cmnt_body_new{{cmnt.id}}"></p></div>
           </div>
           <center>
-            {% if request.user in cmnt.cmnt_likes.all %}
-            <div style="margin-top: 1%;"><a onclick="commlikefunction('{{cmnt.id}}')"><img id="commlike_button{{cmnt.id}}" style="background-color: red; width: 30px;border-radius: 20px;border-style: solid;border-color: black;border-width:1.5px;padding: 0.5%;" src="{% static 'blog/love_icon2.png'%}"></a><strong><span id="number_of_comment_likes{{cmnt.id}}"> {{cmnt.number_of_comment_likes}}</span></strong></div>
+            {% if request.user in cmnt.cmnt_likes.all %}        
+            <button class="comm-button" onclick="commlikefunction('{{cmnt.id}}')"><img id="commlike_button{{cmnt.id}}" style="width:25px" src="{% static 'blog/heart-filled2.png'%}"><strong style=" margin-right: 3px;"><span id="number_of_comment_likes{{cmnt.id}}"> {{cmnt.number_of_comment_likes|make_list|first}}</span></strong></button>
             {% else %}
-            <div style="margin-top: 1%;"><a onclick="commlikefunction('{{cmnt.id}}')"><img id="commlike_button{{cmnt.id}}" style="width: 30px;border-radius: 20px;border-style: solid;border-color: black;border-width:1.5px;padding: 0.5%;" src="{% static 'blog/love_icon2.png'%}"></a><strong><span id="number_of_comment_likes{{cmnt.id}}"> {{cmnt.number_of_comment_likes}}</span></strong></div>
+            <button class="comm-button" onclick="commlikefunction('{{cmnt.id}}')"><img id="commlike_button{{cmnt.id}}" style="width:25px" src="{% static 'blog/heart2.png'%}"><strong style=" margin-right: 3px;"><span id="number_of_comment_likes{{cmnt.id}}"> {{cmnt.number_of_comment_likes|make_list|first}}</span></strong></button>
             {% endif %}
-            <span><strong id="cmntupdate_info{{cmnt.id}}"></strong></span>
+            <span><strong style="display: none; color: blue;font-size:17px" id="cmntupdate_info{{cmnt.id}}"></strong></span>
           </center>
           {% if post_is_commented and cmnt.user == request.user%}
           <form id="cmntupdateform" style="margin-top: 1%; display:none" name="cmntupdateform">
@@ -242,11 +242,14 @@
           form:"cmntlikefunction",
           },           
           success: function(data){
-            if (data.color!=""){
-            document.getElementById("commlike_button"+a).style.backgroundColor=data.color;
-            document.getElementById("number_of_comment_likes"+a).innerHTML=" "+data.new_number_of_comm_likes;
+            
+            let num_of_comm_likes=data.new_number_of_comm_likes==""?"":data.new_number_of_comm_likes[0];
+            if (data.color!="red"){
+            $("#commlike_button"+a).attr("src","{% static 'blog/heart2.png'%}")
+            document.getElementById("number_of_comment_likes"+a).innerHTML=" "+num_of_comm_likes;
             }else{  
-              document.getElementById("number_of_comment_likes"+a).innerHTML=" "+data.new_number_of_comm_likes;
+              $("#commlike_button"+a).attr("src","{% static 'blog/heart-filled2.png'%}")
+              document.getElementById("number_of_comment_likes"+a).innerHTML=" "+num_of_comm_likes;
             }
           },   
           failure: function() {
@@ -255,8 +258,8 @@
         });
         "{% else %}"
         $('#cmntupdate_info'+a).css("display","inline");
-        $('#cmntupdate_info'+a).css("color","red");
-        $('#cmntupdate_info'+a).html("You have to login to like a post..");   
+        $('#cmntupdate_info'+a).html("You have to login to like a comment!");   
+        $('#cmntupdate_info'+a).delay(3000).hide(0);
         "{% endif %}"
       };
 
