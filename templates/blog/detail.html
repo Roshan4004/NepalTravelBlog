@@ -64,7 +64,7 @@
               <a style="margin-right: 4px;" href="{% url 'blogupdate' post.id%}" class="btn btn-primary btn-md">Update</a>
               <a onclick="document.getElementById('mainpart').style.display='none';document.getElementById('fordelete').style.display='block';" class="btn btn-danger btn-md">Delete</a>
           {% endif %}
-          <span style="color:black"><img height="45px" src="{% static 'blog/read.png'%}"></span>
+          <button class="read-button" style="color:black"><img height="45px" src="{% static 'blog/read.png'%}"><span class="tooltiptext">Read Aloud</span></button>
         </div>
       </div>
       <div class="top-sub">

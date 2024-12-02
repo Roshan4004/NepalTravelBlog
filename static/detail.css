@@ -37,6 +37,31 @@
     margin-top: 4px;
 }
 
+.read-button{
+    text-decoration: none;
+    border-radius: 4px;
+    background-color: bisque;
+    border: solid 1px;
+}
+
+.read-button:hover .tooltiptext{
+    visibility: visible;
+}
+
+.tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 6px;
+    position: absolute;
+    z-index: 2;
+    margin-left: -70px; 
+    bottom: 72%;
+  }
+
 @media screen and (max-width: 1300px) {
     .top-main{
         flex-wrap: wrap;
