@@ -62,6 +62,31 @@
     bottom: 72%;
   }
 
+.read-box{
+    display: flex; 
+    justify-content:flex-end;
+    margin-top: 1%;
+}
+
+.read-box-sub{
+    border: solid black 1px;
+    padding: 4px;
+    display: flex;
+    justify-content: center;
+    gap:4px;
+}
+.selectbox-read{
+    padding: 2px;
+    text-decoration: none;
+    font-size: 1rem;
+    
+}
+.read-box-sub button{
+    text-decoration: none;
+    background-color: rgba(var(--bs-secondary-rgb),var(--bs-bg-opacity)) !important;
+    border: none;
+}
+
 @media screen and (max-width: 1300px) {
     .top-main{
         flex-wrap: wrap;
