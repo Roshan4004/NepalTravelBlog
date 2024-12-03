@@ -2,9 +2,13 @@
 const synth = window.speechSynthesis;
 
 function read(){
-      $(".read-box").css("display","flex");
-      $("#play-button").attr("src","/static/blog/pause.png")
-
+      if($(".read-box").css("display")=="flex"){
+         $(".read-box").css("display","none");
+         synth.cancel()
+         $("#play-button").attr("src","/static/blog/play.png")
+      }else{
+         $(".read-box").css("display","flex");
+      }
 }
 
 
@@ -20,7 +24,6 @@ $("#play-button").on('click',function(e){
    }else{
       get_contents();
       $("#play-button").attr("src","/static/blog/pause.png")      
-
    }
 
 })

@@ -58,12 +58,11 @@
     border-radius: 6px;
     position: absolute;
     z-index: 2;
-    margin-left: -70px; 
-    bottom: 72%;
+    margin-left: 0.5rem;
   }
 
 .read-box{
-    display: flex; 
+    display: none; 
     justify-content:flex-end;
     margin-top: 1%;
 }
