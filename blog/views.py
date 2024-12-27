@@ -235,7 +235,8 @@ def myblogs(request,pk):
 def get_titles(request):
     o=Post.titles_list()
     k=list(o)
-    return Response({'data':k})
+    next_id = Post.objects.latest('created').id+1
+    return Response({'data':k,'next':next_id})
 
 import io, base64
 from PIL import Image
