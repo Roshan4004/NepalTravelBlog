@@ -13,5 +13,6 @@ urlpatterns = [
     path('post/',views.postcreate,name="blogpost"),
     path('myblogs/<slug:pk>',views.myblogs,name="myblogs"),
     path('get_titles/',views.get_titles,name="get_titles"),
-    path('post_ai/',views.post_ai,name="post_ai")
+    path('post_ai/',views.post_ai,name="post_ai"),
+    path('audio_visual/',views.audio_visual,name="audio_visual")
 ]
