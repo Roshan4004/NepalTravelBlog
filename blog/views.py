@@ -16,6 +16,7 @@ from rest_framework.decorators import api_view
 import base64
 from django.core.mail import send_mail
 import re
+import requests
 
 #for cloudinary
 cloudinary.config( 
@@ -266,11 +267,39 @@ def send_mail_about_new_blog(blog_title, blog_content, image):
     recipient_list = ['neptravelblog@gmail.com ']  # Replace with your email
     send_mail(subject, message, email_from, recipient_list)
 
+def audio_to_base64(audio_url):
+    try:
+        response = requests.get(audio_url)
+        response.raise_for_status()
+        audio_base64 = base64.b64encode(response.content).decode('utf-8')
+        return audio_base64
+    except requests.exceptions.RequestException as e:
+        print(f"Error fetching audio file: {e}")
+        return None
+
+def read_json_transcript(json_url):
+    try:
+        response = requests.get(json_url)
+        response.raise_for_status()
+        json_data = response.json()
+        return json_data
+    except requests.exceptions.RequestException as e:
+        print(f"Error fetching JSON file: {e}")
+        return None
+    except json.JSONDecodeError as e:
+        print(f"Error decoding JSON content: {e}")
+        return None
+
 @api_view(['POST'])
 def audio_visual(request):
+    final_data=[]
     q=request.data.get("post_num")
     data=Post.objects.get(id=q).for_avatar
-    return Response({"for_avatar":data})
+    total=len(data[0])
+    for i in range(total):
+        message={"text":"Random","facialExpression": "smile","animation": "Idle","audio":audio_to_base64(data[0][i]),"lipsync":read_json_transcript(data[1][i])}
+        final_data.append(message)
+    return Response({"for_avatar":final_data})
 
 #for ajax
 def is_ajax(request):
