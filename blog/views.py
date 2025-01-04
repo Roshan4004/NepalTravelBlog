@@ -248,9 +248,6 @@ def post_ai(request):
     main_img=request.data.get("main_img")
     content=request.data.get('content')
     for_avatar=request.data.get('for_avatar')
-    print(type(for_avatar))
-    for_avatar_json=json.loads(for_avatar)
-    print(type(for_avatar))
     
     image = base64.b64decode(str(main_img))       
     imagePath = 'temp_ai.jpeg'
@@ -258,7 +255,7 @@ def post_ai(request):
     img.save(imagePath, 'jpeg')
 
     m_img_url=cloudinary.uploader.upload('temp_ai.jpeg',folder="main_imgs")    
-    Post.objects.create(title=title,local_body=local_body,local_name="NA",content=content,author=User.objects.get(id=2),m_img_url=m_img_url["url"])
+    Post.objects.create(title=title,local_body=local_body,local_name="NA",content=content,author=User.objects.get(id=2),m_img_url=m_img_url["url"],for_avatar=for_avatar)
     send_mail_about_new_blog(title,content,m_img_url["url"])
     return Response({"msg":"Done!"})
 
