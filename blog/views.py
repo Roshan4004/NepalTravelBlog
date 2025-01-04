@@ -247,6 +247,10 @@ def post_ai(request):
     local_body=request.data.get('local_body')
     main_img=request.data.get("main_img")
     content=request.data.get('content')
+    for_avatar=request.data.get('for_avatar')
+    print(type(for_avatar))
+    for_avatar_json=json.loads(for_avatar)
+    print(type(for_avatar))
     
     image = base64.b64decode(str(main_img))       
     imagePath = 'temp_ai.jpeg'
@@ -265,6 +269,11 @@ def send_mail_about_new_blog(blog_title, blog_content, image):
     recipient_list = ['neptravelblog@gmail.com ']  # Replace with your email
     send_mail(subject, message, email_from, recipient_list)
 
+@api_view(['POST'])
+def audio_visual(request):
+    q=request.data.get("post_num")
+    data=Post.objects.get(id=q).for_avatar()
+    return Response({"for_avatar":data})
 
 #for ajax
 def is_ajax(request):

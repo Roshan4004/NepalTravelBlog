@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from jsonfield import JSONField
 # Create your models here.
 
 
@@ -16,6 +17,7 @@ class Post(models.Model):
     m_img_url=models.TextField(max_length=500,unique=False)
     images=models.FileField(null=True,blank=True)
     likes = models.ManyToManyField(User, related_name='blogpost_like',blank=True)
+    for_avatar=JSONField(blank=True, null=True)
 
     class Meta:
         ordering=['-created']
