@@ -297,9 +297,9 @@ def audio_visual(request):
     data=Post.objects.get(id=q).for_avatar
     total=len(data[0])
     for i in range(total):
-        message={"text":"Random","facialExpression": "smile","animation": "Idle","audio":audio_to_base64(data[0][i]),"lipsync":read_json_transcript(data[1][i])}
+        message={"text":"Random","facialExpression": "smile","animation": "Idle","audio":audio_to_base64(data[0][i]),"lipsync":read_json_transcript(data[1][i]),}
         final_data.append(message)
-    return Response({"for_avatar":final_data})
+    return Response({"messages":final_data})
 
 #for ajax
 def is_ajax(request):
