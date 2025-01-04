@@ -22,7 +22,7 @@ cloudinary.config(
   cloud_name = CLOUDINARY_NAME, 
   api_key =CLOUDINARY_KEY, 
   api_secret = CLOUDINARY_SECRET,
-  api_proxy = "http://proxy.server:3128"
+#   api_proxy = "http://proxy.server:3128"
 )
 
 import cloudinary.uploader
@@ -269,7 +269,7 @@ def send_mail_about_new_blog(blog_title, blog_content, image):
 @api_view(['POST'])
 def audio_visual(request):
     q=request.data.get("post_num")
-    data=Post.objects.get(id=q).for_avatar()
+    data=Post.objects.get(id=q).for_avatar
     return Response({"for_avatar":data})
 
 #for ajax
