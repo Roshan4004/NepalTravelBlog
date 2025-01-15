@@ -48,6 +48,19 @@ Taking the blog project a step further, an AI avatar feature will be integrated 
 
 With this feature, the travel blog will not only provide engaging content but also an immersive and interactive user experience.
 
+## Update (January 15, 2025)
+The project now has an AI avatar which recites the blog contents for you!
+
+- **Recitation Option**: Users can choose to have the blog recited in Nepali or English.
+- **In Avatar Options**: Users can select play/pause and reset option for respective performation of avatar.
+- **In the html page**: A fully responsive sidebar is shown which includes the avatar when selected an language. Options to minimize and maximixe the avatar in mobile view..
+
+### Future:
+- A better translator will be used for translation of blog contents to nepali.
+- Currently used Google's TTS is not perfect so, a better and flexible tts will be used.
+
+**(Note: Only blogs written by the "automatic blog writer" has ability to show AI avatars but later it will be available for user written blogs as well.)**
+
 ## Explore Celery Integration
 If you're interested in how Celery is set up separately for task management, check out the `celery_seperate` branch: [Separate Celery Branch](https://github.com/Roshan4004/NepalTravelBlog/tree/celery_seperate)
 
