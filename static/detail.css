@@ -47,9 +47,14 @@
     border-radius: 4px;
     background-color: bisque;
     border: solid 1px;
+    position: relative;
 }
 
 .read-button:hover .tooltiptext{
+    visibility: visible;
+}
+
+#avatar_read_button:hover .tooltiptext_ai{
     visibility: visible;
 }
 
@@ -65,6 +70,20 @@
     z-index: 2;
     margin-left: 0.5rem;
   }
+
+  .tooltiptext_ai {
+    visibility: hidden;
+    width: 120px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 6px;
+    position: absolute;
+    z-index: 2;
+    margin-right: 0.5rem;
+    right:3rem;
+}
 
 .read-box{
     display: none; 

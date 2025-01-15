@@ -10,7 +10,7 @@ __pycache__/
 .Python
 build/
 develop-eggs/
-dist/
+# dist/
 downloads/
 eggs/
 .eggs/
@@ -110,3 +110,4 @@ cloudinary_params.py
 templates/blog/test.html
 static/models/
 static/textures/
+dist.zip

@@ -68,7 +68,7 @@
                 <a style="margin-right: 4px;" href="{% url 'blogupdate' post.id%}" class="btn btn-primary btn-md">Update</a>
                 <a onclick="document.getElementById('mainpart').style.display='none';document.getElementById('fordelete').style.display='block';" class="btn btn-danger btn-md">Delete</a>
             {% endif %}
-            <button onclick="avatar_options()" class="read-button" style="color:black"><img height="45px" src="{% static 'blog/ai.png'%}"><span class="tooltiptext" id="tooltip-avatar">AI narration video</span></button>
+            <button onclick="avatar_options()" class="read-button" style="color:black" id="avatar_read_button"><span class="tooltiptext_ai" id="tooltip-avatar">AI narration video</span><img height="45px" src="{% static 'blog/ai.png'%}"></button>
             <button onclick="read()" class="read-button" style="color:black"><img height="45px" src="{% static 'blog/read.png'%}"><span class="tooltiptext">Read Aloud</span></button>
           </div>
         </div>
@@ -232,7 +232,7 @@
     </div>
 
     <div class="sidebar" id="sidebar-avatar" style="display: none;top: 25%;">
-      <div id="root" data-avatarId="{{post.id}}" data-language=""></div>
+      <div id="root" data-avatarId="{{post.id}}" data-language="" data-token="{{csrf_token}}"></div>
     </div>
   </div>
 
@@ -520,7 +520,7 @@
     window.addEventListener('load', adjustRootDiv);
     window.addEventListener('resize', adjustRootDiv);
     </script>
-    <script src="{% static 'dist/assets/index-c858e8b5.js' %}"></script>
+    <script src="{% static 'dist/assets/index-b101d2d1.js' %}"></script>
     <script src="{% static 'blog/js/for-read.js' %}"></script>
     {% comment %} <script src="{% static 'blog/js/react-handling.js' %}" type="module"></script> {% endcomment %}
 
