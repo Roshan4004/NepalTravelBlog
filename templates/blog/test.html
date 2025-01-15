@@ -1,3 +1,4 @@
+{%load static%}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,33 +7,46 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body>
-    <button id="mybtn">Click</button>
-    <!-- <script>
-        $('#mybtn').on('click',function(){
-            $.ajax({
-            type : "POST", 
-            url: "https://100014.pythonanywhere.com/en/live_status",
-            data: {
-            uid:'1ray4cdm0xt9q52uoxjxyx2dob9vz6d2',
-            product:'Client_admin',
-            csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
-            },  
-            success: function(data){
-              console.log(data);
-            },   
-            failure: function() {
-            console.log("Not")
-            } 
-          });
-        })
-    </script> -->
+  <button onclick="javascript:change()">Here...</button>
+  <button onclick="javascript:caller()">Here...Caller</button>
+
+    <div id="root" style="height:90vh;max-width:450px" data-avatarId="11" data-language="en"></div>
+    <script src="{% static 'dist/assets/index-1785e332.js' %}"></script>
     <script>
+      let okkk=1
+      function change(){
+        lang=document.getElementById("root").getAttribute('data-language');
+        if(lang=="en"){
+          document.getElementById("root").setAttribute('data-language',"np");
+        }else{
+          document.getElementById("root").setAttribute('data-language',"en");
+        }
+      }
 
-checkstatus()
+      function caller(){
+        closeReactApp();
+      }
 
-function checkstatus() {
+      const reactRoot = document.getElementById("root");
+
+      function closeReactApp() {
+        var language=document.getElementById("root").getAttribute('data-language');
+        console.log(language);
+          if (reactRoot) {
+            if (window.resetAudio) {
+              window.resetAudio(language); 
+            }
+          }
+      }
+    </script>
+
+    <script>
+{% comment %} checkstatus() {% endcomment %}
+
+{% comment %} function checkstatus() {
   var lav = document.getElementById("useronline-status-icons");
 
 
@@ -65,7 +79,7 @@ function checkstatus() {
   });
 }
 
-setInterval(checkstatus, 10000);
+setInterval(checkstatus, 10000); {% endcomment %}
 
 </script>
 </body>

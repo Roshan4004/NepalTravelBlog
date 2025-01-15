@@ -17,6 +17,7 @@ import base64
 from django.core.mail import send_mail
 import re
 import requests
+from django.views.decorators.csrf import csrf_exempt
 
 #for cloudinary
 cloudinary.config( 
@@ -290,15 +291,22 @@ def read_json_transcript(json_url):
         print(f"Error decoding JSON content: {e}")
         return None
 
+@csrf_exempt
 @api_view(['POST'])
 def audio_visual(request):
     final_data=[]
     q=request.data.get("post_num")
+    l=request.data.get("language")
     data=Post.objects.get(id=q).for_avatar
     total=len(data[0])
-    for i in range(total):
-        message={"text":"Random","facialExpression": "smile","animation": "Idle","audio":audio_to_base64(data[0][i]),"lipsync":read_json_transcript(data[1][i]),}
-        final_data.append(message)
+    if l == "en" or l == "default":
+        for i in range(total):
+            message={"text":"Random","facialExpression": "smile","animation": "Idle","audio":audio_to_base64(data[0][i]),"lipsync":read_json_transcript(data[1][i]),}
+            final_data.append(message)
+    else:
+        for i in range(total):
+            message={"text":"Random","facialExpression": "smile","animation": "Idle","audio":audio_to_base64(data[2][i]),"lipsync":read_json_transcript(data[3][i]),}
+            final_data.append(message)
     return Response({"messages":final_data})
 
 #for ajax

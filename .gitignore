@@ -106,3 +106,7 @@ media/*
 # celery beat schedule file
 celerybeat-schedule
 cloudinary_params.py
+
+templates/blog/test.html
+static/models/
+static/textures/

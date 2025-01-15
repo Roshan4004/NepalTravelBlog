@@ -31,14 +31,14 @@
 <div id="mainpart" style="display:block">
 <section >
   <div>
-    <p style="font-size:7vh;text-align: center;color: rgb(192, 53, 53);">
+    <p id="header-Nepal">
         🇳🇵 Travel to Nepal 🇳🇵
     </p>
 </div>
 <div style="max-height: 50px;" class="topnav" id="myTopnav">
   <a href="{% url 'blog' %}" >Home</a>
   <a href="{% url 'blogpost' %}">Post</a>
-  <a href="{% url 'logout' %}">Logout</a>
+  {% if request.user.is_authenticated%}<a href="{% url 'logout' %}">Logout</a>{%else%}<a href="{% url 'login1' %}">Login</a>{%endif%}
   {% if request.user.is_authenticated%}<a href="{% url 'myblogs' request.user.username%}" >Myblogs</a>
   <a href="javascript:void(0);" class="icon" onclick="myFunction()">
     <i class="fa fa-bars" aria-hidden="true"></i>
@@ -54,27 +54,51 @@
 </div>
 <center><div id="error_bar" style="display: none; padding: 2px;margin-left: 1%;margin-right: 1%; margin-top: 1%;border-radius: 4px;background-color: yellow;font-size: 1.5rem;">Not found</div></center>
 </section >
-  <div class="row g-0" style="padding: 1%;margin-top: 2%;padding-right: 1%;max-width: 100%;" >
-      <div style=" border-radius: 4px; word-wrap: break-word;height: 100%;max-width: 100%;padding: 1%; margin-bottom: 2%;" class="col-sm-9 bg-secondary">
-      <div class="top-main">
-        <span style="color:black"><img height="28px" src="{% static 'blog/location-icon.png'%}"> {{post.styled_localbody}}</span>
-        <span style="color:black">{{post.created}} NST</span>
-        <div class="main-buttons">
-          {% if post.author == request.user%}
-              <a style="margin-right: 4px;" href="{% url 'blogupdate' post.id%}" class="btn btn-primary btn-md">Update</a>
-              <a onclick="document.getElementById('mainpart').style.display='none';document.getElementById('fordelete').style.display='block';" class="btn btn-danger btn-md">Delete</a>
-          {% endif %}
-          <button onclick="read()" class="read-button" style="color:black"><img height="45px" src="{% static 'blog/read.png'%}"><span class="tooltiptext">Read Aloud</span></button>
+
+  <div class="both-wrapper">
+    <!-- Main Part or bigger part of content -->
+    <div class="mainbar bg-secondary" >
+      <div>
+        <!-- Header part of content having date, location.. -->
+        <div class="top-main">
+          <span style="color:black"><img height="28px" src="{% static 'blog/location-icon.png'%}"> {{post.styled_localbody}}</span>
+          <span style="color:black">{{post.created}} NST</span>
+          <div class="main-buttons">
+            {% if post.author == request.user%}
+                <a style="margin-right: 4px;" href="{% url 'blogupdate' post.id%}" class="btn btn-primary btn-md">Update</a>
+                <a onclick="document.getElementById('mainpart').style.display='none';document.getElementById('fordelete').style.display='block';" class="btn btn-danger btn-md">Delete</a>
+            {% endif %}
+            <button onclick="avatar_options()" class="read-button" style="color:black"><img height="45px" src="{% static 'blog/ai.png'%}"><span class="tooltiptext" id="tooltip-avatar">AI narration video</span></button>
+            <button onclick="read()" class="read-button" style="color:black"><img height="45px" src="{% static 'blog/read.png'%}"><span class="tooltiptext">Read Aloud</span></button>
+          </div>
         </div>
       </div>
-      <center><div class="read-box" id="read-box" >
-        <div class="read-box-sub">
-            <select class="selectbox-read">
-              <option value="en" selected>English</option>
-            </select>
-            <button><img id="play-button" height="25px" src="{% static 'blog/play.png'%}"></button>
+      <!-- OPTIONS FOR READ ALOUD -->
+      <center>
+        <div class="read-box" id="read-box" >
+          <div class="read-box-sub">
+              <select class="selectbox-read">
+                <option value="en" selected>English</option>
+              </select>
+              <button class="read-sub-button"><img id="play-button" height="25px" src="{% static 'blog/play.png'%}"></button>
+          </div>
         </div>
-      </div></center>
+      </center>
+      <!-- OPTIONS FOR AVATAR -->
+      <center>
+        <div class="read-box" id="avatar-box">
+          <div class="read-box-sub">
+              <select class="selectbox-avatar" id="avatar-select">
+                <option value="">Select</option>
+                <option value="en">English</option>
+                <option value="ne">Nepali</option>
+              </select>
+              <button id="avatar-select-button" class="btn btn-primary btn-sm">Load Avatar</button>
+              <button class="read-sub-button" style="display: none;" id="min-button-wrapper"><img id="min-button" height="25px" src="{% static 'blog/min.png'%}"></button>
+          </div>
+        </div>
+      </center>
+      <!-- Options for Liking and Comment Location -->
       <div class="top-sub">
         <button onclick="location.hash = 'comment_area'"><img style=" width: 30px;margin-bottom: 1%;" src="{% static 'blog/comment_icon.png'%}"><strong> {{post.number_of_comment|make_list|first}}</strong></button>
         {% if post_is_liked == True %}
@@ -84,166 +108,200 @@
         {% endif %}
         <span style="float: right; display: none; color: blue;font-size:20px" id="like_info">You have to login to like a post..</span>
       </div>
-        <center><p style="font-family: 'Courier New', Courier, monospace;font-size: 2.5rem;"><b>{{post.title}}</b></p></center>
-        <div style=" border-radius: 7px; background-color: azure;border-style: solid;border-color:black;">
-          <center><img src="{{post.m_img_url}}" style="padding: 1%; background-color: azure; max-width: 100%;height: 300px; "></center>
-        </div><br>
-        <div id="content_div" class="clearfix" style=" font-family: 'Times New Roman', Times, serif; font-size: 1.2rem;max-height: 100%;border-color: antiquewhite;border-style: solid;padding:1%;border-radius: 7px;">
-          {{ post.content|safe }}
-        </div>
-        <div id="comment_area" style="border-color: antiquewhite;border-style: solid; margin-top: 2%; border-radius:4px;padding: 1%;" class="bg-secondary">
-          <h3 style="margin-top: 2%;background-color: white;border-radius: 3px;padding: 1%;">Top Comments ({{post.number_of_comment}})</h3>
-          {% if not post_is_commented and request.user.is_authenticated %}
-          <form id="commentform" style="display:block" method="POST" name="commentform">
-            {% csrf_token %}
+      
+      <!-- Avatar part for mobile devices -->
+      <div id="avatar-mobile" style="margin-top: 2%;display: none;">
+       
+      </div>
+      <!-- Title of the Blog -->
+      <center>
+        <p style="font-family: 'Courier New', Courier, monospace;font-size: 2rem;font-weight: 1000;">{{post.title}}</p>
+      </center>
+       <!-- Image of the Blog --> 
+      <div style=" border-radius: 7px; background-color: azure;border-style: solid;border-color:black;">
+        <center><img src="{{post.m_img_url}}" style="padding: 1%; background-color: azure; max-width: 100%;height: 300px; "></center>
+      </div><br>
+      <!-- Content of the Blog -->
+      <div id="content_div" class="clearfix" style=" font-family: 'Times New Roman', Times, serif; font-size: 1.2rem;max-height: 100%;border-color: antiquewhite;border-style: solid;border-radius: 7px;">
+        {{ post.content|safe }}
+      </div>
+      
+      <!-- Comment Area of the Blog -->
+      <div id="comment_area" style="border-color: antiquewhite;border-style: solid; margin-top: 2%; border-radius:4px;padding: 1%;" class="bg-secondary">
+        <!-- Comments Header -->
+        <h3 style="margin-top: 2%;background-color: white;border-radius: 3px;padding: 1%;">Top Comments ({{post.number_of_comment}})</h3>
+        {% if not post_is_commented and request.user.is_authenticated %}
+        <!-- Showing the comment form if user authenticated -->
+        <form id="commentform" style="display:block" method="POST" name="commentform">
+          {% csrf_token %}
           <div id="parent" class="form-group">
             <textarea class="autoexpand" type="text" name="comment" id="comment" placeholder="Type your Comment here!!"></textarea>
             <span class="icon-user"><img src="{% static 'user-icon.png'%}" width="30px"></span>
           </div>
           <input type="reset" value ="Cancel" style="float: left; display: none;margin-top: 1%;margin-right: 1%;" id="cmnt_cancel" class="btn btn-danger">
           <button id="cmnt_submit" style="display: none; margin-top: 1%;" type="submit" class=" btn btn-warning">Submit</button>
-          </form>
-          {% endif %}
-          {% for cmnt in comment%}
-          <div style="border-radius: 3px; margin-top: 6px;padding: 5px;border-color: black;border-style: solid;">
-          <div style=" padding: 2px;">
-            <span style="float:right;font-size: 1.2rem;">
-              {% if post_is_commented and cmnt.user == request.user%}
-              <button  onclick="deletecmnt('{{cmnt.id}}')" class="btn btn-danger btn-sm">Delete</button>
-              <button style="margin-left: 3px;" onclick="updatecmnt()" class="btn btn-warning btn-sm">Edit</button>
-              {% endif %}  
-              <strong>{{cmnt.user}}</strong></span>
-              <img width="30px" src="{% static 'user-icon.png'%}"> <span style="font-weight: 700;">{{cmnt.created_on|date:"M d, Y"}}</span> <p>
-          </div>
-          <div style="border-radius: 5px; padding: 2px;" class="bg-light">
-          
-          <div id="cmnt_body_old{{cmnt.id}}"><p style="white-space: pre-line" id="cmnt_body_old{{cmnt.id}}">{{cmnt.body|linebreaks}}</p></div>
-          <div><p style="margin-top:1.5%;display:none;white-space: pre-line" id="cmnt_body_new{{cmnt.id}}"></p></div>
-          </div>
-          <center>
-            {% if request.user in cmnt.cmnt_likes.all %}        
-            <button class="comm-button" onclick="commlikefunction('{{cmnt.id}}')"><img id="commlike_button{{cmnt.id}}" style="width:25px" src="{% static 'blog/heart-filled2.png'%}"><strong style=" margin-right: 3px;"><span id="number_of_comment_likes{{cmnt.id}}"> {{cmnt.number_of_comment_likes|make_list|first}}</span></strong></button>
-            {% else %}
-            <button class="comm-button" onclick="commlikefunction('{{cmnt.id}}')"><img id="commlike_button{{cmnt.id}}" style="width:25px" src="{% static 'blog/heart2.png'%}"><strong style=" margin-right: 3px;"><span id="number_of_comment_likes{{cmnt.id}}"> {{cmnt.number_of_comment_likes|make_list|first}}</span></strong></button>
-            {% endif %}
-            <span><strong style="display: none; color: blue;font-size:17px" id="cmntupdate_info{{cmnt.id}}"></strong></span>
-          </center>
-          {% if post_is_commented and cmnt.user == request.user%}
-          <form id="cmntupdateform" style="margin-top: 1%; display:none" name="cmntupdateform">
-          {% csrf_token%}
-            <div class="form-group">
-            <input type="text" id="cmnt_id" value="{{cmnt.id}}" hidden>
-            <input type="text" id="cmnt_real_body" value="{{cmnt.body}}" hidden>
-            <textarea type="text" name="commentupdate" id="commentupdate" placeholder="Type your Comment here!!">{{cmnt.body}}</textarea>
-            <span class="icon-user"><img src="{% static 'user-icon.png'%}" width="30px"></span>
-          </div>
-          <input type="reset" value ="Cancel" onclick="cmntupdate_cancel()" style="float: left; display: none;margin-top: 1%;margin-right: 1%;" id="cmntupdatecancel" class="btn btn-danger">
-          <button id="cmntupdate_submit" style="display: none; margin-top: 1%" type="submit" class=" btn btn-warning">Update</button>  
         </form>
-          {%endif%}  
-        </div>
-          {% endfor %}
-        </div>
+        {% endif %}
+
+        <!-- Showing the Comments of Blog -->
+        {% for cmnt in comment%}
+          <div style="border-radius: 3px; margin-top: 6px;padding: 5px;border-color: black;border-style: solid;">
+            <div style=" padding: 2px;">
+              <!-- Showing edit and delete buttons if user's comment matches -->
+              <span style="float:right;font-size: 1.2rem;">
+                {% if post_is_commented and cmnt.user == request.user%}
+                  <button  onclick="deletecmnt('{{cmnt.id}}')" class="btn btn-danger btn-sm">Delete</button>
+                  <button style="margin-left: 3px;" onclick="updatecmnt()" class="btn btn-warning btn-sm">Edit</button>
+                {% endif %}  
+                <strong>{{cmnt.user}}</strong></span>
+                <!-- Commented date -->
+                <img width="30px" src="{% static 'user-icon.png'%}"> <span style="font-weight: 700;">{{cmnt.created_on|date:"M d, Y"}}</span> <p>
+            </div>
+
+            <!-- Comment's actual Body -->
+            <div style="border-radius: 5px; padding: 2px;" class="bg-light">
+              <div id="cmnt_body_old{{cmnt.id}}"><p style="white-space: pre-line" id="cmnt_body_old{{cmnt.id}}">{{cmnt.body|linebreaks}}</p></div>
+              <div><p style="margin-top:1.5%;display:none;white-space: pre-line" id="cmnt_body_new{{cmnt.id}}"></p></div>
+            </div>
+
+            <!-- Checking likes and showing like button accordingly -->
+            <center>
+              {% if request.user in cmnt.cmnt_likes.all %}        
+              <button class="comm-button" onclick="commlikefunction('{{cmnt.id}}')"><img id="commlike_button{{cmnt.id}}" style="width:25px" src="{% static 'blog/heart-filled2.png'%}"><strong style=" margin-right: 3px;"><span id="number_of_comment_likes{{cmnt.id}}"> {{cmnt.number_of_comment_likes|make_list|first}}</span></strong></button>
+              {% else %}
+              <button class="comm-button" onclick="commlikefunction('{{cmnt.id}}')"><img id="commlike_button{{cmnt.id}}" style="width:25px" src="{% static 'blog/heart2.png'%}"><strong style=" margin-right: 3px;"><span id="number_of_comment_likes{{cmnt.id}}"> {{cmnt.number_of_comment_likes|make_list|first}}</span></strong></button>
+              {% endif %}
+              <span><strong style="display: none; color: blue;font-size:17px" id="cmntupdate_info{{cmnt.id}}"></strong></span>
+            </center>
+
+            <!-- Showing edit form when commented user clicks edit.. -->
+            {% if post_is_commented and cmnt.user == request.user%}
+              <form id="cmntupdateform" style="margin-top: 1%; display:none" name="cmntupdateform">
+                {% csrf_token%}
+                <div class="form-group">
+                  <input type="text" id="cmnt_id" value="{{cmnt.id}}" hidden>
+                  <input type="text" id="cmnt_real_body" value="{{cmnt.body}}" hidden>
+                  <textarea type="text" name="commentupdate" id="commentupdate" placeholder="Type your Comment here!!">{{cmnt.body}}</textarea>
+                  <span class="icon-user"><img src="{% static 'user-icon.png'%}" width="30px"></span>
+                </div>
+                <input type="reset" value ="Cancel" onclick="cmntupdate_cancel()" style="float: left; display: none;margin-top: 1%;margin-right: 1%;" id="cmntupdatecancel" class="btn btn-danger">
+                <button id="cmntupdate_submit" style="display: none; margin-top: 1%" type="submit" class=" btn btn-warning">Update</button>  
+              </form>
+            {%endif%}  
+          </div>
+        {% endfor %}
       </div>
-    
-      <div style="margin-bottom: 2%; padding-left:1%;padding-right: 1%; word-wrap: break-word;" class="col-sm-3"  >
-        <div style="position: -webkit-sticky; position: sticky;top: 0%; border-radius:4px;padding: 1%;" class="bg-secondary">
-          <center><h3 style="margin-top: 2%;background-color: white;border-radius: 3px;">About Author</h3>
+    </div>
+
+    <!-- AUTHOR's part of the blog -->
+    <div class="sidebar bg-secondary" id="sidebar-user">
+      <div style="position: -webkit-sticky; position: sticky;padding: 1%;top: 0%;">
+        <!-- Header and Author's Username -->
+        <center>
+          <h3 style="margin-top: 2%;background-color: white;border-radius: 3px;">About Author</h3>
           <p style="font-size: 1.5rem;"><img style="border-radius: 3px;height: 25px;" src="/{{post.author.profile.get_pp}}"> {{post.author}}</p>
         </center>
+        <!-- Author's bio -->
         <center><span style="font-size: large;">{{post.author.profile.bio}}</span></center>
-          <ul>
-            <li><span>Date joined: <b>{{post.author.date_joined}} GMT</b></span></li>
-            <li><span>Last login: <b>{{post.author.last_login}} GMT</b></span></li>
-          </ul>
-          <a class="btn btn-primary" style="float: right;margin-top: 3px;" href="{% url 'myblogs' post.author.username %}">Profile</a>
-          <p>
-            {{post.author.profile.country}}<br>
-            {%if post.author.profile.country == 'Nepal'%}{{post.author.profile.local_address}}{% endif %}
-          </p>
-          {% if author_posts %}
+        <!-- Author's date joined and login date -->
+        <ul>
+          <li><span>Date joined: <b>{{post.author.date_joined}} GMT</b></span></li>
+          <li><span>Last login: <b>{{post.author.last_login}} GMT</b></span></li>
+        </ul>
+        <a class="btn btn-primary" style="float: right;margin-top: 3px;" href="{% url 'myblogs' post.author.username %}">Profile</a>
+        
+        <!-- Author's Country -->
+        <p>
+          {{post.author.profile.country}}<br>
+          {%if post.author.profile.country == 'Nepal'%}{{post.author.profile.local_address}}{% endif %}
+        </p>
+
+        <!-- Showing other posts of Author if available -->
+        {% if author_posts %}
           <hr>
             <center style="color:cyan;">Some Posts by Author:</center>
-          {% endif %}
-          {% for a_post in author_posts%}
+        {% endif %}
+        {% for a_post in author_posts%}
           <div style="background-color: aliceblue;border-radius: 2px;margin-bottom: 4px;margin-top: 4px;">
             <p style="text-align: center;"><b>{{a_post.title}}</b></p>
             <a style="float: right;" href="{% url 'blogdetail' a_post.id%}">Read More..</a>
             <span>{{a_post.created|date:"M d, Y"}}</span>
           </div>
-          {% endfor %}
-        </div>
-      </div>     
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="sidebar" id="sidebar-avatar" style="display: none;top: 25%;">
+      <div id="root" data-avatarId="{{post.id}}" data-language=""></div>
+    </div>
   </div>
 
-</section>
 </div>
-<div class="javascript" style="display: none;">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js" integrity="sha256-xLD7nhI62fcsEZK2/v8LsBcb4lG7dgULkuXoXB/j91c="crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
-    <script src="{% static 'blog/js/for-read.js' %}"></script>
     <script>
+    var $jq = jQuery.noConflict();
       function deletecmnt(id) {
-        $.ajax({
+        $jq.ajax({
           type : "POST", 
           url: "{% url 'blogdetail' post.id%}",
           data: {
           cmnt_id:id,
-          csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+          csrfmiddlewaretoken:$jq('input[name=csrfmiddlewaretoken]').val(),
           form:"commentdeletefunction",
           },  
           success: function(data){
             if(data.msg !="Error"){
               window.location.assign("{% url 'blogdetail' post.id%}")
             }else{
-              $('#cmntupdate_info'+id).css("color","red");
-              $('#cmntupdate_info'+id).html("Error");
+              $jq('#cmntupdate_info'+id).css("color","red");
+              $jq('#cmntupdate_info'+id).html("Error");
             }
           },   
           failure: function() {
-            $('#output').html("Error")
+            $jq('#output').html("Error")
           } 
         });
       }
 
-      $('#cmntupdateform').on('submit', function(e){
+      $jq('#cmntupdateform').on('submit', function(e){
         e.preventDefault();
         a=document.getElementById("commentupdate").value;
         id=document.getElementById('cmnt_id').value;
         // console.log("here")
-        $.ajax({
+        $jq.ajax({
           type : "POST", 
           url: "{% url 'blogdetail' post.id%}",
           data: {
-          cmnt_id:$('#cmnt_id').val(),
-          new_body:$('#commentupdate').val(),
-          csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+          cmnt_id:$jq('#cmnt_id').val(),
+          new_body:$jq('#commentupdate').val(),
+          csrfmiddlewaretoken:$jq('input[name=csrfmiddlewaretoken]').val(),
           form:"cmntupdatefunction",
           },           
           success: function(data){
             if(data.msg != "Error"){
-              $('#cmnt_body_old'+id).css("display","none");
+              $jq('#cmnt_body_old'+id).css("display","none");
               document.getElementById('cmnt_body_new'+id).innerHTML=data.updated_body;
-              $('#cmnt_body_new'+id).css("display","block");
-              $('#cmntupdateform').css("display","none");
-              $('#cmntupdate_info'+id).css("color","lightgreen");
-              $('#cmntupdate_info'+id).html("Comment Updated..");
+              $jq('#cmnt_body_new'+id).css("display","block");
+              $jq('#cmntupdateform').css("display","none");
+              $jq('#cmntupdate_info'+id).css("color","lightgreen");
+              $jq('#cmntupdate_info'+id).html("Comment Updated..");
             }else{
-              $('#cmntupdate_info'+id).css("color","red");
-              $('#cmntupdate_info'+id).html("Error");
+              $jq('#cmntupdate_info'+id).css("color","red");
+              $jq('#cmntupdate_info'+id).html("Error");
               
             }
           },   
           failure: function() {
-            $('#output').html("Error")
+            $jq('#output').html("Error")
           }
         });
       });
 
       function commlikefunction(a){
         "{% if request.user.is_authenticated%}"     
-        $.ajax({
+        $jq.ajax({
           type : "GET", 
           url: "{% url 'blogdetail' post.id%}",
           data: {
@@ -254,27 +312,27 @@
             
             let num_of_comm_likes=data.new_number_of_comm_likes==""?"":data.new_number_of_comm_likes[0];
             if (data.color!="red"){
-            $("#commlike_button"+a).attr("src","{% static 'blog/heart2.png'%}")
+            $jq("#commlike_button"+a).attr("src","{% static 'blog/heart2.png'%}")
             document.getElementById("number_of_comment_likes"+a).innerHTML=" "+num_of_comm_likes;
             }else{  
-              $("#commlike_button"+a).attr("src","{% static 'blog/heart-filled2.png'%}")
+              $jq("#commlike_button"+a).attr("src","{% static 'blog/heart-filled2.png'%}")
               document.getElementById("number_of_comment_likes"+a).innerHTML=" "+num_of_comm_likes;
             }
           },   
           failure: function() {
-            $('#output').html("Error")
+            $jq('#output').html("Error")
           }
         });
         "{% else %}"
-        $('#cmntupdate_info'+a).css("display","inline");
-        $('#cmntupdate_info'+a).html("You have to login to like a comment!");   
-        $('#cmntupdate_info'+a).delay(3000).hide(0);
+        $jq('#cmntupdate_info'+a).css("display","inline");
+        $jq('#cmntupdate_info'+a).html("You have to login to like a comment!");   
+        $jq('#cmntupdate_info'+a).delay(3000).hide(0);
         "{% endif %}"
       };
 
       function likefunction(){
         "{% if request.user.is_authenticated%}"  
-        $.ajax({
+        $jq.ajax({
           type : "GET", 
           url: "{% url 'blogdetail' post.id%}",
           data: {
@@ -284,21 +342,21 @@
             
             let num_of_likes=data.new_number_of_likes==""?"":data.new_number_of_likes[0];
             if (data.color!="red"){
-            $('#number_of_likes').html(" "+num_of_likes);   
-            $('#like_button').attr("src","{% static 'blog/heart2.png'%}")
+            $jq('#number_of_likes').html(" "+num_of_likes);   
+            $jq('#like_button').attr("src","{% static 'blog/heart2.png'%}")
             }else{  
-              $('#number_of_likes').html(" "+num_of_likes); 
-              $('#like_button').attr("src","{% static 'blog/heart-filled2.png'%}")
+              $jq('#number_of_likes').html(" "+num_of_likes); 
+              $jq('#like_button').attr("src","{% static 'blog/heart-filled2.png'%}")
             }
           },   
           failure: function() {
-            $('#output').html("Error")
+            $jq('#output').html("Error")
           }
         });
         "{% else %}"
-        $('#like_info').css("display","inline");
-        $('#like_info').html("You have to login to like a post..");   
-        $('#like_info').delay(3000).hide(0);
+        $jq('#like_info').css("display","inline");
+        $jq('#like_info').html("You have to login to like a post..");   
+        $jq('#like_info').delay(3000).hide(0);
         
         "{% endif %}"
       };   
@@ -309,44 +367,44 @@
         location.hash = "comment_area"
       }
       function cmntupdate_cancel(){
-        $('#commentupdate').css('height','170px');
+        $jq('#commentupdate').css('height','170px');
         document.getElementById("cmntupdateform").style.display="none";
       };
       function updatecmnt(){
-        $(".icon-user").css('display','block');
+        $jq(".icon-user").css('display','block');
         document.getElementById("cmntupdateform").style.display="block";
       };
       if("{{post_is_commented}}"!="True" &&  "{{request.user.is_authenticated}}"=="True"){
         var count=0;
-        let prev_value = $('#comment').val();
+        let prev_value = $jq('#comment').val();
         let prev= prev_value.length;
         document.getElementById("comment").addEventListener('input', function() {
-          var a =$('.icon-user').css('display');
+          var a =$jq('.icon-user').css('display');
           if (a != "none"){
             let new_len=this.value.length;
             let diff= new_len-prev;
             if(diff>1){
-              $('.icon-user').css('display','none')
+              $jq('.icon-user').css('display','none')
             }else{
               prev=new_len;
             }
             prev_val=this.value;
           }
         });
-        $('#comment').keyup(function(e) {
+        $jq('#comment').keyup(function(e) {
           if (e.keyCode==13){
             count+=1;
             var el=document.getElementById("comment");
             height=el.offsetHeight;
             var newHeight = height + 25;
             if( count>=70 || newHeight>=1950){
-              $('.icon-user').css('display','none');
+              $jq('.icon-user').css('display','none');
             }
             el.style.height=newHeight+'px'
           }
         });
         document.getElementById("cmnt_cancel").onclick=function(){
-          $('#comment').css('height','170px');
+          $jq('#comment').css('height','170px');
           document.getElementById("cmnt_submit").style.display="none";
           document.getElementById("cmnt_cancel").style.display="none";
         };
@@ -358,22 +416,22 @@
           document.getElementById("cmnt_submit").style.display="block";}
       }else if("{{request.user.is_authenticated}}"=="True"){
         var count1=0;
-        let prev_value1 = $('#commentupdate').val();
+        let prev_value1 = $jq('#commentupdate').val();
         let prev1= prev_value1.length;
         document.getElementById("commentupdate").addEventListener('input', function() {
-          var a1 =$('.icon-user').css('display');
+          var a1 =$jq('.icon-user').css('display');
           if (a1 != "none"){
             let new_len1=this.value.length;
             let diff1= new_len1-prev1;
             if(diff1>1){
-              $('.icon-user').css('display','none')
+              $jq('.icon-user').css('display','none')
             }else{
               prev1=new_len1;
             }
             prev_val1=this.value1;
           }
         });
-        $('#commentupdate').keyup(function(e1) {
+        $jq('#commentupdate').keyup(function(e1) {
         
           if (e1.keyCode==13){
             count1+=1;
@@ -381,7 +439,7 @@
             height1=el1.offsetHeight;
             var newHeight1 = height1 + 25;
             if( count1>=70 || newHeight1>=1950){
-              $('.icon-user').css('display','none');
+              $jq('.icon-user').css('display','none');
             }
             el1.style.height=newHeight1+'px'
           }
@@ -393,9 +451,9 @@
           }
           function myFunction(x) {
             if (x.matches) { 
-              $(".icon-user").css('display','none');
+              $jq(".icon-user").css('display','none');
             } else {
-              $(".icon-user").css('display','block');
+              $jq(".icon-user").css('display','block');
             }
           }
           var x = window.matchMedia("(max-width: 900px)")
@@ -406,17 +464,17 @@
           document.getElementById("cmntupdatecancel").style.display="block";
       }};
       function myFunction() {
-      var x = document.getElementById("myTopnav");
-      if (x.className === "topnav") {
-        x.style.removeProperty("max-height");
-        document.getElementById("myTopnav").style.maxHeight ="";
-        document.getElementById("profile").style.float="none";
-        x.className += " responsive";
-      } else {
-        document.getElementById("myTopnav").style.maxHeight ="50px";
-        x.className = "topnav";
-      }
-    };
+        var x = document.getElementById("myTopnav");
+        if (x.className === "topnav") {
+          x.style.removeProperty("max-height");
+          document.getElementById("myTopnav").style.maxHeight ="";
+          document.getElementById("profile").style.float="none";
+          x.className += " responsive";
+        } else {
+          document.getElementById("myTopnav").style.maxHeight ="50px";
+          x.className = "topnav";
+        }
+      };
     var getDivId=document.getElementById("content_div");
     allowed_widths=["50%"]
     for(j=0;j < getDivId.getElementsByTagName('img').length;j++)
@@ -435,9 +493,37 @@
     document.getElementById("error_bar").innerHTML="{{message}}";
     document.getElementById("error_bar").style.display="block";       
   "{% endfor %}"
+
+    // Function to move the #root div based on screen size
+    function adjustRootDiv() {
+        const rootDiv = document.getElementById('root');
+        const avatarMobile = document.getElementById('avatar-mobile');
+        const parentWrapper = document.querySelector('#sidebar-avatar'); 
+
+        if (window.innerWidth <= 768) {
+            if (avatarMobile && !avatarMobile.contains(rootDiv)) {
+                $jq("#play-pause-wrapper").css("margin-bottom","-5vh");
+                if($jq("#avatar-select-button").html()=="Close Avatar"){
+                  $jq("#min-button-wrapper").css("display","block");
+                }
+                avatarMobile.appendChild(rootDiv);
+            }
+        } else {
+            if (parentWrapper && !parentWrapper.contains(rootDiv)) {
+              $jq("#play-pause-wrapper").css("margin-bottom","-8vh");
+              $jq("#min-button-wrapper").css("display","none");
+                parentWrapper.appendChild(rootDiv);
+            }
+        }
+      }
+
+    window.addEventListener('load', adjustRootDiv);
+    window.addEventListener('resize', adjustRootDiv);
     </script>
+    <script src="{% static 'dist/assets/index-c858e8b5.js' %}"></script>
+    <script src="{% static 'blog/js/for-read.js' %}"></script>
+    {% comment %} <script src="{% static 'blog/js/react-handling.js' %}" type="module"></script> {% endcomment %}
+
     
-    
-</div>
 </body>
 </html>
