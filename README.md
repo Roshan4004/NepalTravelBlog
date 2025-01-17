@@ -65,5 +65,6 @@ The project now has an AI avatar which recites the blog contents for you!
 If you're interested in how Celery is set up separately for task management, check out the `celery_seperate` branch: [Separate Celery Branch](https://github.com/Roshan4004/NepalTravelBlog/tree/celery_seperate)
 
 If you want to read about the AI integration, please have a look at my post on [medium](https://medium.com/@gautamroshan4004/how-i-automated-my-travel-blog-using-ai-and-celery-a-developers-journey-c8174d4a235a)
+If you want to read about the avatar integration, please have a look at this post on [medium](https://medium.com/@roshan4004/revamping-my-travel-blog-with-an-ai-avatar-reciter-e49dfa1378d9)
 
 Thank you for reading!
