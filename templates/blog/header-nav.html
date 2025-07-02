@@ -1,0 +1,118 @@
+  <header id="mainHeader" class="secondary-bg py-8 transition-all duration-300">
+    <div class="container mx-auto px-4">
+      <div class="flex flex-col items-center">
+        <h1 class="text-4xl md:text-5xl font-bold text-center mb-2">
+          <span class="accent-text font-serif">🇳🇵 Travel to Nepal 🇳🇵</span>
+        </h1>
+        <p class="secondary-text text-center text-lg">Discover the beauty of the Himalayas</p>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navbar (this will become sticky on scroll) -->
+  <nav id="mainNav" class="secondary-bg border-y border-color">
+    <div class="container mx-auto px-4">
+      <!-- Desktop Navigation -->
+      <div class="desktop-menu py-3">
+        <div class="flex justify-between items-center">
+          <div class="flex space-x-8">
+            <a href="{% url 'blog' %}" class="nav-link primary-text hover:text-gray-600 transition font-bold">Home</a>
+            <a href="{% url 'blogpost' %}" class="nav-link font-bold primary-text hover:text-gray-600 transition">Post</a>
+            {% if request.user.is_authenticated %}
+              <a href="{% url 'logout' %}" class="nav-link font-bold primary-text hover:text-gray-600 transition">Logout</a>
+            {% else %}
+              <a href="{% url 'login1' %}" class="nav-link font-bold primary-text hover:text-gray-600 transition">Login</a>
+            {% endif %}
+            {% if request.user.is_authenticated %}
+              <a href="{% url 'myblogs' request.user.username %}" class="nav-link font-bold primary-text hover:text-gray-600 transition">My Blogs</a>
+            {% endif %}
+          </div>
+          
+          <div class="flex items-center space-x-4">
+            <div class="font-medium secondary-text">
+              Hello, {% if request.user.is_authenticated %}{{request.user.username}}{% else %}Guest{% endif %}
+            </div>
+            
+            <div class="relative">
+              <form action="{% url 'blog'%}" class="flex">
+                <input type="text" placeholder="Search..." name="search" class="py-2 px-4 rounded-l-lg border border-color focus:outline-none focus:ring-2 focus:ring-red-300 secondary-bg">
+                <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-4 rounded-r-lg transition">
+                  <i class="fas fa-search"></i>
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Mobile Navigation -->
+      <div class="mobile-menu py-3">
+        <div class="flex justify-between items-center">
+          <button id="mobileMenuButton" class="p-2 rounded-lg hover-bg">
+            <i class="fas fa-bars text-xl"></i>
+          </button>
+          
+          <div class="relative">
+            <form action="{% url 'blog'%}" class="flex">
+              <input type="text" placeholder="Search..." name="search" class="py-2 px-4 rounded-l-lg border border-color focus:outline-none focus:ring-2 focus:ring-red-300 secondary-bg w-32 md:w-auto">
+              <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-4 rounded-r-lg transition">
+                <i class="fas fa-search"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+        
+        <!-- Mobile menu items -->
+        <div id="mobileMenuItems" class="mt-4 hidden pb-4">
+          <div class="flex flex-col space-y-3">
+            <a href="{% url 'blog' %}" class="nav-link font-bold primary-text hover:text-red-600 transition py-2 px-4 rounded-lg hover-bg">Home</a>
+            <a href="{% url 'blogpost' %}" class="nav-link font-bold primary-text hover:text-red-600 transition py-2 px-4 rounded-lg hover-bg">Post</a>
+            {% if request.user.is_authenticated %}
+              <a href="{% url 'logout' %}" class="nav-link font-bold primary-text hover:text-red-600 transition py-2 px-4 rounded-lg hover-bg">Logout</a>
+            {% else %}
+              <a href="{% url 'login1' %}" class="nav-link font-bold primary-text hover:text-red-600 transition py-2 px-4 rounded-lg hover-bg">Login</a>
+            {% endif %}
+            {% if request.user.is_authenticated %}
+              <a href="{% url 'myblogs' request.user.username %}" class="nav-link font-bold primary-text hover:text-red-600 transition py-2 px-4 rounded-lg hover-bg">My Blogs</a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <script>
+
+        // Mobile menu toggle
+    const mobileMenuButton = document.getElementById('mobileMenuButton');
+    const mobileMenuItems = document.getElementById('mobileMenuItems');
+    
+    mobileMenuButton.addEventListener('click', () => {
+      mobileMenuItems.classList.toggle('hidden');
+    });
+
+        // Sticky navbar on scroll
+    const mainHeader = document.getElementById('mainHeader');
+    const mainNav = document.getElementById('mainNav');
+    let lastScrollY = window.scrollY;
+    
+    window.addEventListener('scroll', () => {
+      if (lastScrollY < window.scrollY && window.scrollY > 100) {
+        // Scrolling down - hide header and make navbar sticky
+        mainHeader.style.transform = 'translateY(-100%)';
+        mainHeader.style.opacity = '0';
+        mainNav.classList.add('sticky-nav');
+      } else {
+        // Scrolling up - show header
+        mainHeader.style.transform = 'translateY(0)';
+        mainHeader.style.opacity = '1';
+        
+        // If we're at the top, remove sticky class
+        if (window.scrollY < 50) {
+          mainNav.classList.remove('sticky-nav');
+        }
+      }
+      
+      lastScrollY = window.scrollY;
+    });
+  </script>

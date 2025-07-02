@@ -1,17 +1,8 @@
 const synth = window.speechSynthesis;
 var $jq = jQuery.noConflict();
-function read(){
-   var $jq = jQuery.noConflict();
-      if($jq("#read-box").css("display")=="flex"){
-         $jq("#read-box").css("display","none");
-         synth.cancel()
-         $jq("#play-button").attr("src","/static/blog/play.png")
-      }else{
-         $jq("#read-box").css("display","flex");
-      }
-}
 
 function avatar_options(){
+   console.log("HIII")
    var $jq = jQuery.noConflict();
       if($jq("#avatar-box").css("display")=="flex"){
          $jq("#avatar-box").css("display","none");
@@ -96,7 +87,6 @@ const reactRoot = document.getElementById("root");
 
 function closeReactApp() {
    var language=$jq("#root").attr('data-language');
-   console.log(language);
     if (reactRoot) {
       if (window.resetAudio) {
          window.resetAudio(language); 
@@ -125,10 +115,3 @@ function get_contents(){
    let split=$jq('div#content_div').html().split('\n\n')
    split.forEach(function(item){speak(item.replace(/<[^>]*>/g, ''))})
 }
-
-function speak(ok) {
-   utterance = new SpeechSynthesisUtterance(ok);
-   voices = synth.getVoices();
-   utterance.voice = voices[4];
-   synth.speak(utterance);
- }

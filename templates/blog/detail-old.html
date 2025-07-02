@@ -1,443 +1,559 @@
-{%load static%}
+{% load static %}
 <!DOCTYPE html>
-<html lang="en" >
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Posts</title>
+  <title>{{ post.title }} - Travel to Nepal</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-  <link rel="stylesheet" href="{%static 'blog/css/details_html.css'%}">
-  <link rel="stylesheet" href="{% static 'navbar.css'%}">  
-  <link rel="stylesheet" href="{% static 'detail.css'%}">  
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/themes/base/jquery-ui.min.css" integrity="sha512-ELV+xyi8IhEApPS/pSj66+Jiw+sOT1Mqkzlh8ExXihe4zfqbWkxPRi8wptXIO9g73FSlhmquFlUOuMSoXz5IRw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- Theme CSS -->
+  <link rel="stylesheet" href="{% static 'blog/new-design/main.css' %}">
+  <link rel="stylesheet" href="{% static 'blog/new-design/header.css' %}">
+  <link rel="stylesheet" href="{% static 'blog/new-design/detail.css' %}">
+
 </head>
-<body>
-<div id="fordelete" >
-  <span onclick="document.getElementById('fordelete').style.display='none';document.getElementById('mainpart').style.display='block';" class="close" title="Close Modal">×</span>
-  <form class="modal-content" method="post" action="{% url 'blogdelete' post.id%}">
-    {% csrf_token %}
-    <div class="container">
-      <h1>Delete Post</h1>
-      <p>Are you sure you want to delete your blog?</p>
-      <div class="clearfix">
-        <button class="btn btn-secondary btn-lg" type="button" onclick="document.getElementById('fordelete').style.display='none';;document.getElementById('mainpart').style.display='block';">Cancel</button>
-        <button class="btn btn-danger btn-lg" type="submit">Delete</button>
-      </div><br><br>
-      <p><h3 style="color:yellow;">{{post.title}}</h3></p>
-    </div>
-  </form>
-</div>
-<div id="mainpart" style="display:block">
-<section >
-  <div>
-    <p style="font-size:7vh;text-align: center;color: rgb(192, 53, 53);">
-        🇳🇵 Travel to Nepal 🇳🇵
-    </p>
-</div>
-<div style="max-height: 50px;" class="topnav" id="myTopnav">
-  <a href="{% url 'blog' %}" >Home</a>
-  <a href="{% url 'blogpost' %}">Post</a>
-  <a href="{% url 'logout' %}">Logout</a>
-  {% if request.user.is_authenticated%}<a href="{% url 'myblogs' request.user.username%}" >Myblogs</a>
-  <a href="javascript:void(0);" class="icon" onclick="myFunction()">
-    <i class="fa fa-bars" aria-hidden="true"></i>
-  </a>
-  <a style="pointer-events: none;" id="profile" href="#">Hello, {{request.user.username}}</a>{%endif%}
-  <div class="search-container">
-    <form action="{% url 'blog'%}">
+<body class="primary-bg">
+  <!-- Header & Navigation -->
+  {% include 'blog/header-nav.html' %}
 
-      <input type="text" placeholder="Search.." name="search">
-      <button type="submit"><i class="fa fa-search"></i></button>
-    </form>
-  </div>
-</div>
-<center><div id="error_bar" style="display: none; padding: 2px;margin-left: 1%;margin-right: 1%; margin-top: 1%;border-radius: 4px;background-color: yellow;font-size: 1.5rem;">Not found</div></center>
-</section >
-  <div class="row g-0" style="padding: 1%;margin-top: 2%;padding-right: 1%;max-width: 100%;" >
-      <div style=" border-radius: 4px; word-wrap: break-word;height: 100%;max-width: 100%;padding: 1%; margin-bottom: 2%;" class="col-sm-9 bg-secondary">
-      <div class="top-main">
-        <span style="color:black"><img height="28px" src="{% static 'blog/location-icon.png'%}"> {{post.styled_localbody}}</span>
-        <span style="color:black">{{post.created}} NST</span>
-        <div class="main-buttons">
-          {% if post.author == request.user%}
-              <a style="margin-right: 4px;" href="{% url 'blogupdate' post.id%}" class="btn btn-primary btn-md">Update</a>
-              <a onclick="document.getElementById('mainpart').style.display='none';document.getElementById('fordelete').style.display='block';" class="btn btn-danger btn-md">Delete</a>
-          {% endif %}
-          <button onclick="read()" class="read-button" style="color:black"><img height="45px" src="{% static 'blog/read.png'%}"><span class="tooltiptext">Read Aloud</span></button>
+  <!-- Delete Confirmation Modal -->
+  <div id="fordelete" class="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center hidden">
+    <div class="secondary-bg rounded-xl shadow-xl max-w-md w-full mx-4">
+      <div class="p-6">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-xl font-bold primary-text">Delete Post</h3>
+          <button onclick="document.getElementById('fordelete').classList.add('hidden');document.getElementById('mainpart').classList.remove('hidden');" 
+                  class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
         </div>
-      </div>
-      <center><div class="read-box" id="read-box" >
-        <div class="read-box-sub">
-            <select class="selectbox-read">
-              <option value="en" selected>English</option>
-            </select>
-            <button><img id="play-button" height="25px" src="{% static 'blog/play.png'%}"></button>
-        </div>
-      </div></center>
-      <div class="top-sub">
-        <button onclick="location.hash = 'comment_area'"><img style=" width: 30px;margin-bottom: 1%;" src="{% static 'blog/comment_icon.png'%}"><strong> {{post.number_of_comment|make_list|first}}</strong></button>
-        {% if post_is_liked == True %}
-        <button onclick="likefunction()"><img id="like_button" style="width:35px" src="{% static 'blog/heart-filled2.png'%}"><strong style=" margin-right: 3px;"><span id="number_of_likes"> {{number_of_likes|make_list|first}}</span></strong></button>
-        {%else%}
-        <button onclick="likefunction()"><img id="like_button" style="width:35px" src="{% static 'blog/heart2.png'%}"><strong style=" margin-right: 3px;"><span id="number_of_likes"> {{number_of_likes|make_list|first}}</span></strong></button>
-        {% endif %}
-        <span style="float: right; display: none; color: blue;font-size:20px" id="like_info">You have to login to like a post..</span>
-      </div>
-        <center><p style="font-family: 'Courier New', Courier, monospace;font-size: 2.5rem;"><b>{{post.title}}</b></p></center>
-        <div style=" border-radius: 7px; background-color: azure;border-style: solid;border-color:black;">
-          <center><img src="{{post.m_img_url}}" style="padding: 1%; background-color: azure; max-width: 100%;height: 300px; "></center>
-        </div><br>
-        <div id="content_div" class="clearfix" style=" font-family: 'Times New Roman', Times, serif; font-size: 1.2rem;max-height: 100%;border-color: antiquewhite;border-style: solid;padding:1%;border-radius: 7px;">
-          {{ post.content|safe }}
-        </div>
-        <div id="comment_area" style="border-color: antiquewhite;border-style: solid; margin-top: 2%; border-radius:4px;padding: 1%;" class="bg-secondary">
-          <h3 style="margin-top: 2%;background-color: white;border-radius: 3px;padding: 1%;">Top Comments ({{post.number_of_comment}})</h3>
-          {% if not post_is_commented and request.user.is_authenticated %}
-          <form id="commentform" style="display:block" method="POST" name="commentform">
-            {% csrf_token %}
-          <div id="parent" class="form-group">
-            <textarea class="autoexpand" type="text" name="comment" id="comment" placeholder="Type your Comment here!!"></textarea>
-            <span class="icon-user"><img src="{% static 'user-icon.png'%}" width="30px"></span>
+        
+        <p class="mb-4 secondary-text">Are you sure you want to delete your blog?</p>
+        
+        <form method="post" action="{% url 'blogdelete' post.id %}">
+          {% csrf_token %}
+          <div class="mb-4">
+            <h4 class="font-bold text-lg accent-text">{{ post.title }}</h4>
           </div>
-          <input type="reset" value ="Cancel" style="float: left; display: none;margin-top: 1%;margin-right: 1%;" id="cmnt_cancel" class="btn btn-danger">
-          <button id="cmnt_submit" style="display: none; margin-top: 1%;" type="submit" class=" btn btn-warning">Submit</button>
-          </form>
-          {% endif %}
-          {% for cmnt in comment%}
-          <div style="border-radius: 3px; margin-top: 6px;padding: 5px;border-color: black;border-style: solid;">
-          <div style=" padding: 2px;">
-            <span style="float:right;font-size: 1.2rem;">
-              {% if post_is_commented and cmnt.user == request.user%}
-              <button  onclick="deletecmnt('{{cmnt.id}}')" class="btn btn-danger btn-sm">Delete</button>
-              <button style="margin-left: 3px;" onclick="updatecmnt()" class="btn btn-warning btn-sm">Edit</button>
-              {% endif %}  
-              <strong>{{cmnt.user}}</strong></span>
-              <img width="30px" src="{% static 'user-icon.png'%}"> <span style="font-weight: 700;">{{cmnt.created_on|date:"M d, Y"}}</span> <p>
-          </div>
-          <div style="border-radius: 5px; padding: 2px;" class="bg-light">
           
-          <div id="cmnt_body_old{{cmnt.id}}"><p style="white-space: pre-line" id="cmnt_body_old{{cmnt.id}}">{{cmnt.body|linebreaks}}</p></div>
-          <div><p style="margin-top:1.5%;display:none;white-space: pre-line" id="cmnt_body_new{{cmnt.id}}"></p></div>
+          <div class="flex justify-end space-x-3">
+            <button type="button" 
+                    onclick="document.getElementById('fordelete').classList.add('hidden');document.getElementById('mainpart').classList.remove('hidden');"
+                    class="secondary-bg border border-color hover-bg px-4 py-2 rounded-lg transition">
+              Cancel
+            </button>
+            <button type="submit" 
+                    class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition">
+              Delete
+            </button>
           </div>
-          <center>
-            {% if request.user in cmnt.cmnt_likes.all %}        
-            <button class="comm-button" onclick="commlikefunction('{{cmnt.id}}')"><img id="commlike_button{{cmnt.id}}" style="width:25px" src="{% static 'blog/heart-filled2.png'%}"><strong style=" margin-right: 3px;"><span id="number_of_comment_likes{{cmnt.id}}"> {{cmnt.number_of_comment_likes|make_list|first}}</span></strong></button>
-            {% else %}
-            <button class="comm-button" onclick="commlikefunction('{{cmnt.id}}')"><img id="commlike_button{{cmnt.id}}" style="width:25px" src="{% static 'blog/heart2.png'%}"><strong style=" margin-right: 3px;"><span id="number_of_comment_likes{{cmnt.id}}"> {{cmnt.number_of_comment_likes|make_list|first}}</span></strong></button>
-            {% endif %}
-            <span><strong style="display: none; color: blue;font-size:17px" id="cmntupdate_info{{cmnt.id}}"></strong></span>
-          </center>
-          {% if post_is_commented and cmnt.user == request.user%}
-          <form id="cmntupdateform" style="margin-top: 1%; display:none" name="cmntupdateform">
-          {% csrf_token%}
-            <div class="form-group">
-            <input type="text" id="cmnt_id" value="{{cmnt.id}}" hidden>
-            <input type="text" id="cmnt_real_body" value="{{cmnt.body}}" hidden>
-            <textarea type="text" name="commentupdate" id="commentupdate" placeholder="Type your Comment here!!">{{cmnt.body}}</textarea>
-            <span class="icon-user"><img src="{% static 'user-icon.png'%}" width="30px"></span>
-          </div>
-          <input type="reset" value ="Cancel" onclick="cmntupdate_cancel()" style="float: left; display: none;margin-top: 1%;margin-right: 1%;" id="cmntupdatecancel" class="btn btn-danger">
-          <button id="cmntupdate_submit" style="display: none; margin-top: 1%" type="submit" class=" btn btn-warning">Update</button>  
         </form>
-          {%endif%}  
-        </div>
-          {% endfor %}
-        </div>
       </div>
-    
-      <div style="margin-bottom: 2%; padding-left:1%;padding-right: 1%; word-wrap: break-word;" class="col-sm-3"  >
-        <div style="position: -webkit-sticky; position: sticky;top: 0%; border-radius:4px;padding: 1%;" class="bg-secondary">
-          <center><h3 style="margin-top: 2%;background-color: white;border-radius: 3px;">About Author</h3>
-          <p style="font-size: 1.5rem;"><img style="border-radius: 3px;height: 25px;" src="/{{post.author.profile.get_pp}}"> {{post.author}}</p>
-        </center>
-        <center><span style="font-size: large;">{{post.author.profile.bio}}</span></center>
-          <ul>
-            <li><span>Date joined: <b>{{post.author.date_joined}} GMT</b></span></li>
-            <li><span>Last login: <b>{{post.author.last_login}} GMT</b></span></li>
-          </ul>
-          <a class="btn btn-primary" style="float: right;margin-top: 3px;" href="{% url 'myblogs' post.author.username %}">Profile</a>
-          <p>
-            {{post.author.profile.country}}<br>
-            {%if post.author.profile.country == 'Nepal'%}{{post.author.profile.local_address}}{% endif %}
-          </p>
-          {% if author_posts %}
-          <hr>
-            <center style="color:cyan;">Some Posts by Author:</center>
-          {% endif %}
-          {% for a_post in author_posts%}
-          <div style="background-color: aliceblue;border-radius: 2px;margin-bottom: 4px;margin-top: 4px;">
-            <p style="text-align: center;"><b>{{a_post.title}}</b></p>
-            <a style="float: right;" href="{% url 'blogdetail' a_post.id%}">Read More..</a>
-            <span>{{a_post.created|date:"M d, Y"}}</span>
-          </div>
-          {% endfor %}
-        </div>
-      </div>     
+    </div>
   </div>
 
-</section>
-</div>
-<div class="javascript" style="display: none;">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
-    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js" integrity="sha256-xLD7nhI62fcsEZK2/v8LsBcb4lG7dgULkuXoXB/j91c="crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
-    <script src="{% static 'blog/js/for-read.js' %}"></script>
-    <script>
-      function deletecmnt(id) {
-        $.ajax({
-          type : "POST", 
-          url: "{% url 'blogdetail' post.id%}",
-          data: {
-          cmnt_id:id,
-          csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
-          form:"commentdeletefunction",
-          },  
-          success: function(data){
-            if(data.msg !="Error"){
-              window.location.assign("{% url 'blogdetail' post.id%}")
-            }else{
-              $('#cmntupdate_info'+id).css("color","red");
-              $('#cmntupdate_info'+id).html("Error");
-            }
-          },   
-          failure: function() {
-            $('#output').html("Error")
-          } 
-        });
-      }
-
-      $('#cmntupdateform').on('submit', function(e){
-        e.preventDefault();
-        a=document.getElementById("commentupdate").value;
-        id=document.getElementById('cmnt_id').value;
-        // console.log("here")
-        $.ajax({
-          type : "POST", 
-          url: "{% url 'blogdetail' post.id%}",
-          data: {
-          cmnt_id:$('#cmnt_id').val(),
-          new_body:$('#commentupdate').val(),
-          csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
-          form:"cmntupdatefunction",
-          },           
-          success: function(data){
-            if(data.msg != "Error"){
-              $('#cmnt_body_old'+id).css("display","none");
-              document.getElementById('cmnt_body_new'+id).innerHTML=data.updated_body;
-              $('#cmnt_body_new'+id).css("display","block");
-              $('#cmntupdateform').css("display","none");
-              $('#cmntupdate_info'+id).css("color","lightgreen");
-              $('#cmntupdate_info'+id).html("Comment Updated..");
-            }else{
-              $('#cmntupdate_info'+id).css("color","red");
-              $('#cmntupdate_info'+id).html("Error");
+  <!-- Main Content -->
+  <div id="mainpart" class="blog-container px-4 py-8">
+    <div class="mb-8">
+      <!-- Hero Section -->
+      <div class="blog-hero-image mb-8" style="background-image: url('{{ post.m_img_url }}')">
+        <div class="blog-overlay">
+          <div class="flex justify-between items-end">
+            <div>
+              <h1 class="text-3xl md:text-4xl font-bold mb-2">{{ post.title }}</h1>
+              <div class="flex items-center space-x-4">
+                <span class="flex items-center">
+                  <i class="fas fa-map-marker-alt mr-2"></i> {{ post.styled_localbody }}
+                </span>
+                <span>
+                  <i class="fas fa-clock mr-2"></i> {{ post.created }} NST
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Action Buttons -->
+      <div class="flex flex-wrap gap-3 mb-8">
+        {% if post.author == request.user %}
+          <a href="{% url 'blogupdate' post.id %}" 
+             class="action-button secondary-bg border border-color">
+            <i class="fas fa-edit mr-2"></i> Update
+          </a>
+          
+          <button onclick="document.getElementById('fordelete').classList.remove('hidden');document.getElementById('mainpart').classList.add('hidden');"
+                  class="action-button bg-red-100 text-red-700 hover:bg-red-200">
+            <i class="fas fa-trash mr-2"></i> Delete
+          </button>
+        {% endif %}
+        
+        <button onclick="avatar_options()" 
+                class="action-button secondary-bg border border-color group relative">
+          <i class="fas fa-robot mr-2"></i> AI Narration
+          <span class="tooltip group-hover:opacity-100">AI narration video</span>
+        </button>
+      </div>
+      
+      <!-- Content Stats -->
+      <div class="flex items-center justify-between mb-8 py-3 px-4 secondary-bg rounded-xl border border-color">
+        <button onclick="location.hash = 'comment_area'" 
+                class="flex items-center space-x-2 hover-bg px-3 py-2 rounded-lg">
+          <i class="fas fa-comment text-blue-500"></i>
+          <span class="font-medium">{{ post.number_of_comment|make_list|first }}</span>
+          <span class="secondary-text hidden md:inline">Comments</span>
+        </button>
+        
+        <div class="flex items-center space-x-2">
+          {% if post_is_liked == True %}
+            <button onclick="likefunction()" 
+                    class="like-button flex items-center space-x-2 text-red-500">
+              <i class="fas fa-heart" id="like_icon"></i>
+              <span id="number_of_likes" class="font-medium ml-1">{{ number_of_likes|make_list|first }}</span>
+            </button>
+          {% else %}
+            <button onclick="likefunction()" 
+                    class="like-button flex items-center space-x-2 hover:text-red-500">
+              <i class="far fa-heart " id="like_icon"></i>
+              <span id="number_of_likes" class="font-medium ml-1">{{ number_of_likes|make_list|first }}</span>
+            </button>
+          {% endif %}
+          <span class="secondary-text hidden md:inline">Likes</span>
+        </div>
+        
+        <div class="flex items-center space-x-2">
+          <i class="far fa-eye text-purple-500"></i>
+          <span class="font-medium">1.2K</span>
+          <span class="secondary-text hidden md:inline">Views</span>
+        </div>
+      </div>
+      
+      <!-- Blog Content -->
+      <div class="blog-content secondary-bg rounded-2xl p-6 md:p-10 mb-8 border border-color">
+        {{ post.content|safe }}
+      </div>
+      
+      <!-- Author and Content Sidebar -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Author Section -->
+        <div class="author-card secondary-bg rounded-2xl p-6 border border-color lg:order-2">
+          <div class="flex flex-col items-center mb-6">
+            <div class="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden mb-4">
+              <img src="/{{ post.author.profile.get_pp }}" alt="{{ post.author }}'s profile" class="w-full h-full object-cover">
+            </div>
+            <h3 class="text-xl font-bold mb-1">{{ post.author }}</h3>
+            <p class="secondary-text text-center mb-4">{{ post.author.profile.bio }}</p>
+            
+            <div class="w-full mb-4">
+              <div class="flex items-center mb-2">
+                <i class="fas fa-map-marker-alt mr-2 accent-text"></i>
+                <span>
+                  {% if post.author.profile.country == 'Nepal' %}
+                    {{ post.author.profile.local_address }}
+                  {% else %}
+                    {{ post.author.profile.country }}
+                  {% endif %}
+                </span>
+              </div>
               
-            }
-          },   
-          failure: function() {
-            $('#output').html("Error")
-          }
-        });
-      });
-
-      function commlikefunction(a){
-        "{% if request.user.is_authenticated%}"     
-        $.ajax({
-          type : "GET", 
-          url: "{% url 'blogdetail' post.id%}",
-          data: {
-            cmnt_id:a,
-          form:"cmntlikefunction",
-          },           
-          success: function(data){
+              <div class="flex items-center mb-2">
+                <i class="fas fa-calendar-alt mr-2 accent-text"></i>
+                <span>Joined: {{ post.author.date_joined|date:"M d, Y" }}</span>
+              </div>
+              
+              <div class="flex items-center">
+                <i class="fas fa-sign-in-alt mr-2 accent-text"></i>
+                <span>Last login: {{ post.author.last_login|date:"M d, Y" }}</span>
+              </div>
+            </div>
             
-            let num_of_comm_likes=data.new_number_of_comm_likes==""?"":data.new_number_of_comm_likes[0];
-            if (data.color!="red"){
-            $("#commlike_button"+a).attr("src","{% static 'blog/heart2.png'%}")
-            document.getElementById("number_of_comment_likes"+a).innerHTML=" "+num_of_comm_likes;
-            }else{  
-              $("#commlike_button"+a).attr("src","{% static 'blog/heart-filled2.png'%}")
-              document.getElementById("number_of_comment_likes"+a).innerHTML=" "+num_of_comm_likes;
-            }
-          },   
-          failure: function() {
-            $('#output').html("Error")
-          }
-        });
-        "{% else %}"
-        $('#cmntupdate_info'+a).css("display","inline");
-        $('#cmntupdate_info'+a).html("You have to login to like a comment!");   
-        $('#cmntupdate_info'+a).delay(3000).hide(0);
-        "{% endif %}"
-      };
-
-      function likefunction(){
-        "{% if request.user.is_authenticated%}"  
-        $.ajax({
-          type : "GET", 
-          url: "{% url 'blogdetail' post.id%}",
-          data: {
-          form:"likefunction",
-          },           
-          success: function(data){
-            
-            let num_of_likes=data.new_number_of_likes==""?"":data.new_number_of_likes[0];
-            if (data.color!="red"){
-            $('#number_of_likes').html(" "+num_of_likes);   
-            $('#like_button').attr("src","{% static 'blog/heart2.png'%}")
-            }else{  
-              $('#number_of_likes').html(" "+num_of_likes); 
-              $('#like_button').attr("src","{% static 'blog/heart-filled2.png'%}")
-            }
-          },   
-          failure: function() {
-            $('#output').html("Error")
-          }
-        });
-        "{% else %}"
-        $('#like_info').css("display","inline");
-        $('#like_info').html("You have to login to like a post..");   
-        $('#like_info').delay(3000).hide(0);
+            <a href="{% url 'myblogs' post.author.username %}" 
+               class="w-full bg-blue-500 hover:bg-blue-600 text-white text-center py-2 rounded-lg transition">
+              View Profile
+            </a>
+          </div>
+          
+          <!-- Author's Other Posts -->
+          {% if author_posts %}
+            <div class="pt-4 border-t border-color">
+              <h4 class="text-lg font-bold mb-4 accent-text">More from this author</h4>
+              <div class="space-y-4">
+                {% for a_post in author_posts %}
+                  <a href="{% url 'blogdetail' a_post.id %}" 
+                     class="flex items-center space-x-3 hover-bg p-3 rounded-lg transition">
+                    <div class="w-16 h-16 rounded-lg overflow-hidden bg-gray-200">
+                      <img src="{{ a_post.m_img_url }}" alt="{{ a_post.title }}" class="w-full h-full object-cover">
+                    </div>
+                    <div>
+                      <h5 class="font-bold line-clamp-1">{{ a_post.title }}</h5>
+                      <p class="text-sm secondary-text">{{ a_post.created|date:"M d, Y" }}</p>
+                    </div>
+                  </a>
+                {% endfor %}
+              </div>
+            </div>
+          {% endif %}
+        </div>
         
-        "{% endif %}"
-      };   
-    </script>
-    <script class="javascripts">
+        <!-- Comments Section -->
+        <div id="comment_area" class="secondary-bg rounded-2xl p-6 border border-color lg:col-span-2">
+          <div class="flex justify-between items-center mb-6">
+            <h3 class="text-xl font-bold">Comments ({{ post.number_of_comment }})</h3>
+          </div>
+          
+          <!-- Comment Form -->
+          {% if not post_is_commented and request.user.is_authenticated %}
+            <form id="commentform" method="POST" name="commentform" class="mb-8">
+              {% csrf_token %}
+              <div class="flex space-x-3 mb-3">
+                <div class="comment-avatar">
+                  <i class="fas fa-user text-lg"></i>
+                </div>
+                <div class="flex-1">
+                  <textarea class="w-full px-4 py-3 rounded-lg border border-color focus:outline-none focus:ring-2 focus:ring-blue-300 secondary-bg" 
+                            name="comment" id="comment" 
+                            placeholder="Share your thoughts..."></textarea>
+                </div>
+              </div>
+              <div class="flex justify-end space-x-3">
+                <button type="reset" id="cmnt_cancel" class="secondary-bg border border-color hover-bg px-4 py-2 rounded-lg transition hidden">
+                  Cancel
+                </button>
+                <button type="submit" id="cmnt_submit" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition">
+                  Post Comment
+                </button>
+              </div>
+            </form>
+          {% endif %}
+          
+          <!-- Comments List -->
+          <div class="space-y-6">
+            {% for cmnt in comment %}
+              <div class="comment-box secondary-bg rounded-xl p-4 border border-color">
+                <div class="flex justify-between items-start mb-3">
+                  <div class="flex items-center space-x-3">
+                    <div class="comment-avatar">
+                      <i class="fas fa-user text-lg"></i>
+                    </div>
+                    <div>
+                      <h4 class="font-bold">{{ cmnt.user }}</h4>
+                      <p class="text-sm secondary-text">{{ cmnt.created_on|date:"M d, Y" }}</p>
+                    </div>
+                  </div>
+                  
+                  {% if post_is_commented and cmnt.user == request.user %}
+                    <div class="flex space-x-2">
+                      <button onclick="deletecmnt('{{ cmnt.id }}')" 
+                              class="text-red-500 hover:text-red-700">
+                        <i class="fas fa-trash"></i>
+                      </button>
+                      <button onclick="updatecmnt('{{ cmnt.id }}')" id="commentupdate" 
+                              class="text-blue-500 hover:text-blue-700">
+                        <i class="fas fa-edit"></i>
+                      </button>
+                    </div>
+                  {% endif %}
+                </div>
+                
+                <div class="mb-4">
+                  <div id="cmnt_body_old{{ cmnt.id }}">
+                    <p class="whitespace-pre-line">{{ cmnt.body|linebreaks }}</p>
+                  </div>
+                  <div id="cmnt_body_new{{ cmnt.id }}" class="hidden"></div>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                  {% if request.user in cmnt.cmnt_likes.all %}        
+                    <button onclick="commlikefunction('{{ cmnt.id }}')" 
+                            class="cmnt-like-button text-red-500">
+                      <i class="fas fa-heart" id="cmnt_like_icon"></i>
+                      <span id="number_of_comment_likes{{ cmnt.id }}" class="ml-1">{{ cmnt.number_of_comment_likes|make_list|first }}</span>
+                    </button>
+                  {% else %}
+                    <button onclick="commlikefunction('{{ cmnt.id }}')" 
+                            class="cmnt-like-button hover:text-red-500">
+                      <i class="far fa-heart" id="cmnt_like_icon"></i>
+                      <span id="number_of_comment_likes{{ cmnt.id }}" class="ml-1">{{ cmnt.number_of_comment_likes|make_list|first }}</span>
+                    </button>
+                  {% endif %}
+                  
+                  <span id="cmntupdate_info{{ cmnt.id }}" class="cmnt-info bg-blue-100 text-blue-800 hidden"></span>
+                </div>
+                
+                <!-- Comment Edit Form -->
+                {% if post_is_commented and cmnt.user == request.user %}
+                  <form class="cmntupdateform mt-4 hidden" name="cmntupdateform" id="cmntupdateform">
+                    {% csrf_token %}
+                    <div class="flex space-x-3">
+                      <div class="comment-avatar">
+                        <i class="fas fa-user text-lg"></i>
+                      </div>
+                      <div class="flex-1">
+                        <input type="text" id="cmnt_id{{ cmnt.id }}" value="{{ cmnt.id }}" hidden>
+                        <input type="text" id="cmnt_real_body{{ cmnt.id }}" value="{{ cmnt.body }}" hidden>
+                        <textarea class="w-full px-4 py-3 rounded-lg border border-color focus:outline-none focus:ring-2 focus:ring-blue-300 secondary-bg " 
+                                  name="commentupdate" id="commentupdate{{ cmnt.id }}">{{ cmnt.body }}</textarea>
+                      </div>
+                    </div>
+                    <div class="flex justify-end space-x-3 mt-3">
+                      <button type="reset" onclick="cmntupdate_cancel('{{ cmnt.id }}')" 
+                              class="secondary-bg border border-color hover-bg px-4 py-2 rounded-lg transition">
+                        Cancel
+                      </button>
+                      <button type="submit" 
+                              class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition">
+                        Update
+                      </button>
+                    </div>
+                  </form>
+                {% endif %}
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+      <div id="toast" class="hidden fixed top-4 right-4 text-white px-4 py-3 rounded shadow-lg z-50 transition-opacity duration-300 z-[9999]">
+      <span id="toastMessage">Notification</span>
+    </div>
 
-      function take_to_cmnt(){
-        location.hash = "comment_area"
+  <!-- Footer -->
+  {% include 'blog/footer.html' %}
+
+  <!-- JavaScript Libraries -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <!-- Main JavaScript -->
+  <script>
+    var $jq = jQuery.noConflict();
+  </script>
+<script>
+  // Post like function
+function likefunction(){
+  "{% if request.user.is_authenticated %}"
+  $jq.ajax({
+      type : "GET", 
+      url: "{% url 'blogdetail' post.id %}",
+      data: {
+      form: "likefunction",
+      },           
+      success: function(data){
+      let num_of_likes = data.new_number_of_likes == "" ? "" : data.new_number_of_likes[0];
+      
+      if (data.color != "red") {
+          $jq('#number_of_likes').html(" "+num_of_likes);   
+          $jq('#like_icon').removeClass('fas').addClass('far');
+          $jq('.like-button').removeClass('text-red-500').addClass('hover:text-red-500');
+          
+      } else {  
+          $jq('#number_of_likes').html(" "+num_of_likes); 
+          $jq('#like_icon').removeClass('far').addClass('fas');
+          $jq('.like-button').removeClass('hover:text-red-500').addClass('text-red-500');
+
       }
-      function cmntupdate_cancel(){
-        $('#commentupdate').css('height','170px');
-        document.getElementById("cmntupdateform").style.display="none";
-      };
-      function updatecmnt(){
-        $(".icon-user").css('display','block');
-        document.getElementById("cmntupdateform").style.display="block";
-      };
-      if("{{post_is_commented}}"!="True" &&  "{{request.user.is_authenticated}}"=="True"){
-        var count=0;
-        let prev_value = $('#comment').val();
-        let prev= prev_value.length;
-        document.getElementById("comment").addEventListener('input', function() {
-          var a =$('.icon-user').css('display');
-          if (a != "none"){
-            let new_len=this.value.length;
-            let diff= new_len-prev;
-            if(diff>1){
-              $('.icon-user').css('display','none')
-            }else{
-              prev=new_len;
-            }
-            prev_val=this.value;
-          }
-        });
-        $('#comment').keyup(function(e) {
-          if (e.keyCode==13){
-            count+=1;
-            var el=document.getElementById("comment");
-            height=el.offsetHeight;
-            var newHeight = height + 25;
-            if( count>=70 || newHeight>=1950){
-              $('.icon-user').css('display','none');
-            }
-            el.style.height=newHeight+'px'
-          }
-        });
-        document.getElementById("cmnt_cancel").onclick=function(){
-          $('#comment').css('height','170px');
-          document.getElementById("cmnt_submit").style.display="none";
-          document.getElementById("cmnt_cancel").style.display="none";
-        };
-        document.getElementById("comment").onclick=function(){
-          "{%if not request.user.is_authenticated %}"
-          window.location.assign("{% url 'login1'%}")
-          "{% endif%}"
-          document.getElementById("cmnt_cancel").style.display="block";
-          document.getElementById("cmnt_submit").style.display="block";}
-      }else if("{{request.user.is_authenticated}}"=="True"){
-        var count1=0;
-        let prev_value1 = $('#commentupdate').val();
-        let prev1= prev_value1.length;
-        document.getElementById("commentupdate").addEventListener('input', function() {
-          var a1 =$('.icon-user').css('display');
-          if (a1 != "none"){
-            let new_len1=this.value.length;
-            let diff1= new_len1-prev1;
-            if(diff1>1){
-              $('.icon-user').css('display','none')
-            }else{
-              prev1=new_len1;
-            }
-            prev_val1=this.value1;
-          }
-        });
-        $('#commentupdate').keyup(function(e1) {
+      },   
+      error: function() {
+      console.log("Error occurred");
+      }
+  });
+  "{% else %}"
+  showToast("You have to login to like a post..", 'error');
+  "{% endif %}"
+}
+
+function commlikefunction(a){
+  "{% if request.user.is_authenticated %}"
+    $jq.ajax({
+      type : "GET", 
+      url: "{% url 'blogdetail' post.id %}",
+      data: {
+        cmnt_id: a,
+        form: "cmntlikefunction",
+      },           
+      success: function(data){
+        let num_of_comm_likes = data.new_number_of_comm_likes == "" ? "" : data.new_number_of_comm_likes[0];
         
-          if (e1.keyCode==13){
-            count1+=1;
-            var el1=document.getElementById("commentupdate");
-            height1=el1.offsetHeight;
-            var newHeight1 = height1 + 25;
-            if( count1>=70 || newHeight1>=1950){
-              $('.icon-user').css('display','none');
-            }
-            el1.style.height=newHeight1+'px'
-          }
-        });
-        document.getElementById("commentupdate").onclick=function(){
-          commentupdate_box=document.getElementById("commentupdate");
-          if (commentupdate_box.clientHeight < commentupdate_box.scrollHeight){
-            commentupdate_box.style.height=commentupdate_box.scrollHeight+120+"px";
-          }
-          function myFunction(x) {
-            if (x.matches) { 
-              $(".icon-user").css('display','none');
-            } else {
-              $(".icon-user").css('display','block');
-            }
-          }
-          var x = window.matchMedia("(max-width: 900px)")
-          myFunction(x)
-          x.addListener(myFunction)
+        if (data.color != "red") {
+          $jq('#number_of_comment_likes'+a).html(" "+num_of_comm_likes);
 
-          document.getElementById("cmntupdate_submit").style.display="block"; 
-          document.getElementById("cmntupdatecancel").style.display="block";
-      }};
-      function myFunction() {
-      var x = document.getElementById("myTopnav");
-      if (x.className === "topnav") {
-        x.style.removeProperty("max-height");
-        document.getElementById("myTopnav").style.maxHeight ="";
-        document.getElementById("profile").style.float="none";
-        x.className += " responsive";
-      } else {
-        document.getElementById("myTopnav").style.maxHeight ="50px";
-        x.className = "topnav";
-      }
-    };
-    var getDivId=document.getElementById("content_div");
-    allowed_widths=["50%"]
-    for(j=0;j < getDivId.getElementsByTagName('img').length;j++)
-    {
-      old_width=getDivId.getElementsByTagName('img')[j].style.width;
-        if(old_width.indexOf('px') >= 0 || old_width==""){
-          getDivId.getElementsByTagName('img')[j].style.width ="100%";
+          $jq('#cmnt_like_icon').removeClass('fas').addClass('far');
+          $jq('.cmnt-like-button').removeClass('text-red-500').addClass('hover:text-red-500');
+        } else {  
+          $jq('#number_of_comment_likes'+a).html(" "+num_of_comm_likes);
+          // $jq('#commlike_button'+a).removeClass('far').addClass('fas');
+          $jq('#cmnt_like_icon').removeClass('far').addClass('fas');
+          $jq('.cmnt-like-button').removeClass('hover:text-red-500').addClass('text-red-500');
         }
+      },   
+      error: function() {
+        console.log("Error occurred");
+      }
+    });
+  "{% else %}"
+    showToast("You have to login to like a comment!.", 'error');
+  "{% endif %}"
+}
+
+function deletecmnt(id) {
+  $jq.ajax({
+    type : "POST", 
+    url: "{% url 'blogdetail' post.id %}",
+    data: {
+      cmnt_id: id,
+      csrfmiddlewaretoken: $jq('input[name=csrfmiddlewaretoken]').val(),
+      form: "commentdeletefunction",
+    },  
+    success: function(data){
+      if(data.msg != "Error"){
+        window.location.assign("{% url 'blogdetail' post.id %}")
+      } else {
+        showToast("Error", 'error');
+      }
+    },   
+    error: function() {
+      showToast("Error", 'error');
+    } 
+  });
+}
+
+$jq(document).on('submit', '.cmntupdateform', function(e){
+  e.preventDefault();
+  var form = $jq(this);
+  var id = form.find('input[id^="cmnt_id"]').val();
+  var newBody = form.find('textarea[id^="commentupdate"]').val();
+  
+  $jq.ajax({
+    type : "POST", 
+    url: "{% url 'blogdetail' post.id %}",
+    data: {
+      cmnt_id: id,
+      new_body: newBody,
+      csrfmiddlewaretoken: $jq('input[name=csrfmiddlewaretoken]').val(),
+      form: "cmntupdatefunction",
+    },           
+    success: function(data){
+      if(data.msg != "Error"){
+        $jq('#cmnt_body_old'+id).css("display","none");
+        $jq('#cmnt_body_new'+id).html(data.updated_body);
+        $jq('#cmnt_body_new'+id).css("display","block");
+        form.hide();
+        showToast("Comment Updated!", 'info');
+
+      } else {
+        showToast("Error updating!", 'error');
+      }
+    },   
+    error: function() {
+      showToast("Error updating!", 'error');
+
+    }
+  });
+});
+
+"{% if not post_is_commented and request.user.is_authenticated %}"
+  document.getElementById("cmnt_cancel").onclick = function() {
+    $jq('#comment').css('height','auto');
+    $jq('#cmnt_submit').hide();
+    $jq('#cmnt_cancel').hide();
+  };
+  
+  document.getElementById("comment").onclick = function() {
+    "{% if not request.user.is_authenticated %}"
+      window.location.assign("{% url 'login1' %}");
+    "{% else %}"
+      $jq('#cmnt_cancel').show();
+      $jq('#cmnt_submit').show();
+    "{% endif %}"
+  };
+"{% elif request.user.is_authenticated %}"
+  document.getElementById("commentupdate").onclick = function() {
+    $jq('#cmntupdateform').show()
+    $jq('#cmntupdate_submit').show(); 
+    $jq('#cmntupdatecancel').show();
+  };
+"{% endif %}"
+
+
+  function cmntupdate_cancel(id){
+    $jq('#cmntupdateform').hide();
+  }
+
+  function updatecmnt(id){
+    $jq('#cmntupdateform'+id).show();
+  }
+
+</script>
+
+
+  <script>
+
+    function adjustRootDiv() {
+      const rootDiv = document.getElementById('root');
+      const avatarMobile = document.getElementById('avatar-mobile');
+      const parentWrapper = document.querySelector('#sidebar-avatar'); 
+
+      if (window.innerWidth <= 768) {
+        if (avatarMobile && !avatarMobile.contains(rootDiv)) {
+          $jq("#play-pause-wrapper").css("margin-bottom","-5vh");
+          if($jq("#avatar-select-button").html() == "Close Avatar") {
+            $jq("#min-button-wrapper").css("display","block");
+          }
+          avatarMobile.appendChild(rootDiv);
+        }
+      } else {
+        if (parentWrapper && !parentWrapper.contains(rootDiv)) {
+          $jq("#play-pause-wrapper").css("margin-bottom","-8vh");
+          $jq("#min-button-wrapper").css("display","none");
+          parentWrapper.appendChild(rootDiv);
+        }
+      }
     }
 
-  if("{{error}}"){
-    document.getElementById("error_bar").innerHTML="{{error}}";
-    document.getElementById("error_bar").style.display="block";
+    window.addEventListener('load', adjustRootDiv);
+    window.addEventListener('resize', adjustRootDiv);
+  </script>
+  
+  <!-- <script src="{% static 'dist/assets/index-b101d2d1.js' %}"></script> -->
+  <script src="{% static 'blog/js/for-read.js' %}"></script>
+  <script>
+  function showToast(message, type = 'info') {
+    const toast = document.getElementById("toast");
+    const toastMsg = document.getElementById("toastMessage");
+
+    // Reset background color classes
+    toast.classList.remove("bg-yellow-100", "text-yellow-800", "bg-red-500", "text-white");
+
+    // Apply based on type
+    if (type === 'error') {
+      toast.classList.add("bg-red-500", "text-white");
+    } else {
+      toast.classList.add("bg-yellow-100", "text-yellow-800");
+    }
+
+    toastMsg.textContent = message;
+    toast.classList.remove("hidden");
+    toast.classList.add("opacity-100");
+
+    setTimeout(() => {
+      toast.classList.add("opacity-0");
+      setTimeout(() => {
+        toast.classList.add("hidden");
+        toast.classList.remove("opacity-100", "opacity-0");
+      }, 300);
+    }, 3000);
   }
+
+  "{% if error %}"
+    showToast("{{ error|escapejs }}", "error");
+  "{% endif %}"
+
   "{% for message in messages %}"
-    document.getElementById("error_bar").innerHTML="{{message}}";
-    document.getElementById("error_bar").style.display="block";       
+    showToast("{{ message|escapejs }}", "info");
   "{% endfor %}"
-    </script>
-    
-    
-</div>
+  </script>
 </body>
 </html>

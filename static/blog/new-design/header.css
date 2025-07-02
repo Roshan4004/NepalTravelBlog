@@ -1,0 +1,39 @@
+/* /static/blog/css/header.css */
+.nav-link {
+  position: relative;
+}
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  /* background: var(--accent-color); */
+  transition: width 0.3s;
+}
+.nav-link:hover::after {
+  width: 100%;
+}
+
+.mobile-menu {
+  display: none;
+}
+@media (max-width: 768px) {
+  .mobile-menu { display: block; }
+  .desktop-menu { display: none; }
+}
+
+.sticky-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  animation: slideDown 0.3s ease;
+  box-shadow: var(--shadow);
+}
+@keyframes slideDown {
+  from { transform: translateY(-100%); }
+  to { transform: translateY(0); }
+}

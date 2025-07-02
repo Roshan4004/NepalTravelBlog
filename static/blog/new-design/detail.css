@@ -89,14 +89,6 @@
       box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     }
     
-    .cmnt-info {
-      display: inline-block;
-      padding: 5px 10px;
-      border-radius: 4px;
-      margin-top: 5px;
-      font-size: 0.9rem;
-    }
-    
     @media (max-width: 768px) {
       .blog-hero-image {
         height: 300px;
@@ -104,10 +96,5 @@
       
       .flex-col-reverse-mobile {
         flex-direction: column-reverse;
-      }
-      
-      .action-button {
-        padding: 10px 15px;
-        font-size: 0.9rem;
       }
     }

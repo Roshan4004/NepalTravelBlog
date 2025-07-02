@@ -1089,14 +1089,17 @@ function start(){
         }
             
     };
-    $("#local_body").autocomplete(
-        {
-            source: display_names
-        },
-        {
-            autoFocus:true,
-            minLength:3,
-        });
+    $("#local_body").autocomplete({
+            source: display_names,
+            minLength: 3,
+            autoFocus: true,
+            open: function () {
+                const ac = $(".ui-autocomplete");
+                ac.css({
+                width: $("#local_body").outerWidth() + "px"
+                });
+            }
+    });
 }
 
 function start_ac(){
@@ -1111,18 +1114,6 @@ function start_ac(){
         }        
     };
 }
-// function select_sort(){
-//     var my_options = $("#exact_place option");
-//     var selected = $("#exact_place").val();
-//     my_options.sort(function(a,b) {
-//         if (a.text > b.text) return 1;
-//         if (a.text < b.text) return -1;
-//         return 0
-//     })
-
-//     $("#exact_place").empty().append( my_options );
-//     $("#exact_place").val(selected);
-// }
 
 const countries = [
     "Afghanistan",

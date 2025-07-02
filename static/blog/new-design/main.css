@@ -1,0 +1,31 @@
+/* /static/blog/css/main.css */
+:root {
+  --primary-bg: #FFF8E1;
+  --secondary-bg: #FFFFFF;
+  --highlighted-bg: #FFECB3;
+  --hover-bg: #FFD740;
+  --primary-text: #2A1D0D;
+  --secondary-text: #6B573F;
+  --highlight-text: #1A1208;
+  --accent-color: #ff0000;
+  --border-color: #D4AF37;
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* Reusable utility classes */
+.primary-bg { background-color: var(--primary-bg); }
+.secondary-bg { background-color: var(--secondary-bg); }
+.highlighted-bg { background-color: var(--highlighted-bg); }
+.hover-bg:hover { background-color: var(--hover-bg); }
+.primary-text { color: var(--primary-text); }
+.secondary-text { color: var(--secondary-text); }
+.highlight-text { color: var(--highlight-text); }
+.accent-text { color: var(--accent-color); }
+.border-color { border-color: var(--border-color); }
+
+body {
+  background-color: var(--primary-bg);
+  color: var(--primary-text);
+  font-family: 'Open Sans', sans-serif;
+  transition: background-color 0.3s, color 0.3s;
+}

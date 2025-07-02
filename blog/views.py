@@ -24,7 +24,7 @@ cloudinary.config(
   cloud_name = CLOUDINARY_NAME, 
   api_key =CLOUDINARY_KEY, 
   api_secret = CLOUDINARY_SECRET,
-  api_proxy = "http://proxy.server:3128"
+#   api_proxy = "http://proxy.server:3128"
 )
 
 import cloudinary.uploader
@@ -130,7 +130,7 @@ def PostDetail(request,pk):
     author=post.author
     author_posts=Post.objects.filter(author=author).exclude(id=post.id)
     context={'post':post,'number_of_likes':likes_connected.number_of_likes(),'post_is_liked':liked,'comment':comment,'post_is_commented':commented,'author_posts':author_posts[:2]}
-    return render(request,'blog/detail.html',context)
+    return render(request,'blog/detail-old.html',context)
 
 #Updating posts
 def UpdatePost(request,pk):

@@ -23,7 +23,7 @@ Since this website is not used to write blogs by myself due to unrelated reasons
 - **AI model**: Not sure, maybe Claude
 - **Image Generation**: Pollinations.ai and stable-diffusion
 - **Task Management**: Celery
-- **Message Broker**: Redis as of now, might change to RabbitMQ later
+- **Message Broker**: Redis
 
 ## Update (October 19, 2024)
 The project is now automated to generate and post travel blogs daily using AI. This allows consistent content posting without manual input.
@@ -36,20 +36,20 @@ The project is now automated to generate and post travel blogs daily using AI. T
 With this automation, the blog remains active and regularly updated with fresh content!
 
 ## Update (November 30, 2024)
-Taking the blog project a step further, an AI avatar feature will be integrated to enhance user interaction. Users will be able to click on a blog post to have it recited by an AI avatar in either Nepali or English.
+Taking the blog project a step further, an avatar feature will be integrated to enhance user interaction. Users will be able to click on a blog post to have it recited by an automated avatar in either Nepali or English with lipsync.
 
 ### AI Avatar Features
 - **Recitation Option**: Users can choose to have the blog recited in Nepali or English.
 - **Translation**: The blog content is translated from English to Nepali using a Generative AI model.
 - **Voice Synthesis**: Google’s GTTS (Google Text-to-Speech) will be used to generate high-quality voice outputs.
-- **Avatar Rendering**: The AI avatar is rendered using React Three Fiber.
+- **Avatar Rendering**: The avatar is rendered using React Three Fiber.
 - **Avatar Design**: The base design of the avatar will be created using Ready Player Me, with custom modifications made in Blender.
 - **Avatar's Lipsync**: Although, I am still figuring out and testing options, at first I will be using ["rhubarb-lip-sync"](https://github.com/DanielSWolf/rhubarb-lip-sync) which is a really cool project.
 
 With this feature, the travel blog will not only provide engaging content but also an immersive and interactive user experience.
 
 ## Update (January 15, 2025)
-The project now has an AI avatar which recites the blog contents for you!
+The project now has an automated avatar which recites the blog contents for you!
 
 - **Recitation Option**: Users can choose to have the blog recited in Nepali or English.
 - **In Avatar Options**: Users can select play/pause and reset option for respective performation of avatar.
@@ -59,7 +59,7 @@ The project now has an AI avatar which recites the blog contents for you!
 - A better translator will be used for translation of blog contents to nepali.
 - Currently used Google's TTS is not perfect so, a better and flexible tts will be used.
 
-**(Note: Only blogs written by the "automatic blog writer" has ability to show AI avatars but later it will be available for user written blogs as well.)**
+**(Note: Only blogs written by the "automatic blog writer" has ability to show avatars but later it will be available for user written blogs as well.)**
 
 ## Explore Celery Integration
 If you're interested in how Celery is set up separately for task management, check out the `celery_seperate` branch: [Separate Celery Branch](https://github.com/Roshan4004/NepalTravelBlog/tree/celery_seperate)

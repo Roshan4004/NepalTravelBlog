@@ -1,135 +1,196 @@
-{%load static%}
+{% load static %}
 <!DOCTYPE html>
-<html lang="en" >
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Posts</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-  <meta content="width=device-width, initial-scale=1" name="viewport" />
-  <link rel="stylesheet" href="{% static 'navbar.css'%}">  
-  <link rel="stylesheet" href="{% static 'blog/css/post_html.css'%}"> 
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/themes/base/jquery-ui.min.css" integrity="sha512-ELV+xyi8IhEApPS/pSj66+Jiw+sOT1Mqkzlh8ExXihe4zfqbWkxPRi8wptXIO9g73FSlhmquFlUOuMSoXz5IRw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+  <title>Create Post | Travel to Nepal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/static/blog/new-design/main.css">
+  <link rel="stylesheet" href="/static/blog/new-design/header.css">
+  <style>
+.ui-autocomplete {
+  max-height: 200px;
+  overflow-y: auto;
+  background-color: white;
+  border: 1px solid var(--border-color);
+  font-family: 'Open Sans', sans-serif;
+  box-sizing: border-box;
+  z-index: 9999 !important;
+}
+
+.ui-menu-item {
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.ui-menu-item:hover {
+  background-color: var(--highlighted-bg);
+}
+
+
+  </style>
 </head>
-<body >
-<section>
-  <div>
-    <p style="font-size:7vh;text-align: center;color: rgb(192, 53, 53);">
-        🇳🇵 Travel to Nepal 🇳🇵
-    </p>
-</div>
-<div style="max-height: 50px;" class="topnav" id="myTopnav">
-  <a href="{% url 'blog' %}" >Home</a>
-  <a href="{% url 'blogpost' %}" class="active">Post</a>
-  <a href="{% url 'logout' %}">Logout</a>
-  {% if request.user.is_authenticated%}<a href="{% url 'myblogs' request.user.username%}" >Myblogs</a>{%endif%}
-  <a class="icon" onclick="myFunction()">
-    <i class="fa fa-bars" aria-hidden="true"></i>
-  </a>
-  <a style="pointer-events: none;" id="profile" href="#">Hello, {{request.user.username}}</a>
-  <div class="search-container">
-    <form action="{% url 'blog'%}">
+<body class="primary-bg min-h-screen">
 
-      <input type="text" placeholder="Search.." name="search">
-      <button type="submit"><i class="fa fa-search"></i></button>
-    </form>
-  </div>
-</div>
-</section>
-<center><section class="col-md-10" style="filter: brightness(100%);border-radius: 15px; background-color: rgb(202, 202, 17); padding: 10px; margin-top: 4%; margin-left: 2%;margin-right: 2%;margin-bottom: 2%; color: blue;">
-    <form method="POST" class="row g-3" enctype="multipart/form-data" onSubmit="return form_validation()">
-      {% csrf_token %}
-      <div class="col-12">
-        <center><label style="font-size: 20px;" for="title1" class="form-label">Title*</label></center>
-        <input  type="text" class="form-control" id="title" placeholder="Enter title here" maxlength="50" name="title" required>
-      </div>     
-      <div class="col-md-6">
-          <center><label style="font-size: 20px" for="title1" class="form-label">Local Body Name*</label></center>
-          <input class="form-control"   type="text"  id="local_body" placeholder="Select an official name of the place.." name="local_body" required>
-          <center><div style="color:blue;" id="value_check" class="form-text">Start typing to select.</div></center>
-      </div>
-      <div class="col-md-6">
-        <center><label style="font-size: 20px" for="local_name" class="form-label">Local Name*</label></center>
-        <input type="text" class="form-control" id="local_name" name="local_name" placeholder="Enter local name of the place.." name="local_name" required>
-      </div>
-      <div class="col-md-12">
-        <center><label style="font-size: 20px" for="main_img" class="form-label">Main Image*</label></center>
-        <input class="form-control" type="file" id="main_img" name="main_img" required>
-      </div>
-      <div>
-      <center><img style=" padding: 5px; border-style: solid;color: rgb(78, 117, 167);" class="img_preview" id="img_preview" src="#" alt="  Main image  "></center>
-    </div>
-    <div class="form-outline mb-4">
-      <label style="font-size: 20px" for="content" class="form-label">Content of Blog*</label>
-      {{form.media}}
-      {{form.content}}
-      <!-- <textarea style="padding: 3px; border: #44bcb3 3px dashed;;color: #555555; background-color:#bee1f5;font-size: large;" class="form-control" id="content" rows="10" placeholder="Start typing.." name="content" required></textarea>
-      <div style="margin-top: 1%; color:#555555;float: right;" id="value_check" class="form-text"><a id="increase_row" href="javascript:increase()">Click</a> to Increase size of textbox.</div> -->
-    </div>
-    <div class="col-12">
-      <button type="submit" class="btn btn-primary">Submit</button>
-  </div>
-    </form>
-    <br>
-    <span id="error" style="color: maroon;font-size: large;display: none;"><strong></strong></span>
 
-</section></center>
-<div class="javascripts" style="display: none;">
+  {% include 'blog/header-nav.html' %}
+
+  <main class="container mx-auto px-4 py-10">
+    <div class="max-w-5xl mx-auto secondary-bg rounded-xl shadow-lg p-8">
+      <h1 class="text-3xl font-bold mb-6 accent-text text-center">📍 Share Your Travel Story</h1>
+
+      <form method="POST" enctype="multipart/form-data" onsubmit="return form_validation()" class="space-y-6">
+        {% csrf_token %}
+
+        <div class="flex justify-left">
+          <div  class="w-full md:w-1/2">
+            <label for="title" class="block font-semibold mb-2 primary-text">Title*</label>
+            <input type="text" id="title" name="title" maxlength="50" required
+                  placeholder="Enter title here"
+                  class="w-full border border-color rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-300 secondary-bg">
+          </div>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-6">
+          <div>
+            <label for="local_body" class="block font-semibold mb-2 primary-text">Local Body Name*</label>
+            <input type="text" id="local_body" name="local_body" required
+                   placeholder="Start typing..."
+                   class="w-full border border-color rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-300 secondary-bg">
+            <p id="value_check" class="text-sm mt-1 text-yellow-700">Must match an official name.</p>
+          </div>
+
+          <div>
+            <label for="local_name" class="block font-semibold mb-2 primary-text">Local Name*</label>
+            <input type="text" id="local_name" name="local_name" required
+                   placeholder="Enter local name..."
+                   class="w-full border border-color rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-300 secondary-bg">
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-semibold mb-2 primary-text">Main Image*</label>
+          <label for="main_img" class="cursor-pointer inline-flex items-center space-x-3 bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-lg shadow-md transition">
+            <i class="fas fa-upload"></i>
+            <span>Upload Image</span>
+          </label>
+          <input type="file" id="main_img" name="main_img" accept="image/*" required class="hidden">
+          <img id="img_preview" src="#" alt="Preview" class="mt-4 w-1/2 rounded border border-color hidden">
+        </div>
+
+        <div>
+          <label for="content" class="block font-semibold mb-2 primary-text">Blog Content*</label>
+          {{ form.media }}
+          {{ form.content }}
+        </div>
+
+        <div id="error" class="hidden text-red-600 font-semibold text-sm mt-2"></div>
+
+        <div class="flex justify-center">
+          <div class="w-full md:w-1/3">
+            <button type="submit"
+                    class="bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-6 rounded-lg transition w-full">
+              Publish Post
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <div id="toast" class="hidden fixed top-4 right-4 text-white px-4 py-3 rounded shadow-lg z-50 transition-opacity duration-300 z-[9999]">
+      <span id="toastMessage">Notification</span>
+    </div>
+  </main>
+
+
+  {% include 'blog/footer.html' %}
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+  <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+  <script src="{% static 'blog/js/local_level.js' %}"></script>
+
+  <script>
     
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
-    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js" integrity="sha256-xLD7nhI62fcsEZK2/v8LsBcb4lG7dgULkuXoXB/j91c="crossorigin="anonymous"></script>
-    <script src="{% static 'blog/js/local_level.js'%}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
-    <script>
-      window.onload = function(){  
-        document.getElementById("id_content_iframe").style.maxWidth="100%";
-        start();
-        };  
-      function myFunction() {
-        var x = document.getElementById("myTopnav");
-        if (x.className === "topnav") {
-          x.style.removeProperty("max-height");
-          document.getElementById("myTopnav").style.maxHeight ="";
-          document.getElementById("profile").style.float="none";
-          x.className += " responsive";
-        } else {
-          document.getElementById("myTopnav").style.maxHeight ="50px";
-          x.className = "topnav";
-        }
-      };
-      document.getElementById("local_body").onchange = function(){
-        if(display_names.includes(document.getElementById("local_body").value)){
-          value_check=document.getElementById("value_check");
-          value_check.style.color="green";
-          value_check.innerHTML="Selected!!";
-        }else{
-          value_check=document.getElementById("value_check");
-          value_check.style.color="red";
-          value_check.innerHTML="You must select from the given options!!";
-          document.getElementById("local_body").value="";
-        }
-      };
-      main_img.onchange = evt => {
-        const [file] = main_img.files
-        if (file) {
-          img_preview.src = URL.createObjectURL(file)
-        }
+    window.onload = function () {
+      const iframe = document.getElementById("id_content_iframe");
+      if (iframe) iframe.style.maxWidth = "100%";
+      start();
+    };
+
+    document.getElementById("local_body").onchange = function () {
+      const input = document.getElementById("local_body").value;
+      const check = document.getElementById("value_check");
+
+      if (display_names.includes(input)) {
+        check.style.color = "green";
+        check.innerHTML = "✓ Valid name selected.";
+      } else {
+        check.style.color = "red";
+        check.innerHTML = "You must select from the given options!";
+        document.getElementById("local_body").value = "";
       }
-      
-        function form_validation(){
-          var iframe = document.getElementById("id_content_iframe");
-          var elmnt = iframe.contentWindow.document.getElementsByClassName("note-editable card-block")[0].textContent;
-          if( elmnt != ""){
-            return true
-          }else{
-            $('#error').html("Content field can't be empty!!").css('display','block')
-            return false
-          }
-        }
-    
-    </script>
-  </div>
+    };
+
+    document.getElementById("main_img").onchange = evt => {
+      const [file] = evt.target.files;
+      if (file) {
+        const preview = document.getElementById("img_preview");
+        preview.src = URL.createObjectURL(file);
+        preview.classList.remove("hidden");
+      }
+    };
+
+    function form_validation() {
+      const iframe = document.getElementById("id_content_iframe");
+      const content = iframe?.contentWindow?.document?.querySelector(".note-editable.card-block")?.textContent;
+
+      if (content && content.trim() !== "") {
+        return true;
+      } else {
+        showToast("Content field can't be empty!", 'error');
+        return false;
+      }
+    }
+
+  </script>
+
+    <script>
+  function showToast(message, type = 'info') {
+    const toast = document.getElementById("toast");
+    const toastMsg = document.getElementById("toastMessage");
+
+    // Reset background color classes
+    toast.classList.remove("bg-yellow-100", "text-yellow-800", "bg-red-500", "text-white");
+
+    // Apply based on type
+    if (type === 'error') {
+      toast.classList.add("bg-red-500", "text-white");
+    } else {
+      toast.classList.add("bg-yellow-100", "text-yellow-800");
+    }
+
+    toastMsg.textContent = message;
+    toast.classList.remove("hidden");
+    toast.classList.add("opacity-100");
+
+    setTimeout(() => {
+      toast.classList.add("opacity-0");
+      setTimeout(() => {
+        toast.classList.add("hidden");
+        toast.classList.remove("opacity-100", "opacity-0");
+      }, 300);
+    }, 3000);
+  }
+
+  {% if error %}
+    showToast("{{ error|escapejs }}", "error");
+  {% endif %}
+
+  {% for message in messages %}
+    showToast("{{ message|escapejs }}", "info");
+  {% endfor %}
+</script>
 </body>
 </html>
-
-
