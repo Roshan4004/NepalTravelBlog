@@ -13,6 +13,8 @@
   <link rel="stylesheet" href="{% static 'blog/new-design/main.css' %}">
   <link rel="stylesheet" href="{% static 'blog/new-design/header.css' %}">
   <link rel="stylesheet" href="{% static 'blog/new-design/detail.css' %}">
+  <link rel="stylesheet" href="{% static 'blog/new-design/for-avatar.css' %}">
+
 
 </head>
 <body class="primary-bg">
@@ -58,23 +60,22 @@
     <div class="mb-8">
       <!-- Hero Section -->
       <div class="blog-hero-image mb-8" style="background-image: url('{{ post.m_img_url }}')">
-        <div class="blog-overlay">
+        <div class="blog-overlay max-sm:p-0">
           <div class="flex justify-between items-end">
             <div>
-              <h1 class="text-3xl md:text-4xl font-bold mb-2">{{ post.title }}</h1>
-              <div class="flex items-center space-x-4">
-                <span class="flex items-center">
+              <h1 class="text-3xl md:text-4xl font-bold mb-2 title-overlay max-sm:hidden">{{ post.title }}</h1>
+              <div class="flex items-left space-x-4 flex-col sm:flex-row sm:items-center p-0">
+                <span class="max-sm:hidden">
                   <i class="fas fa-map-marker-alt mr-2"></i> {{ post.styled_localbody }}
                 </span>
                 <span>
-                  <i class="fas fa-clock mr-2"></i> {{ post.created }} NST
+                  <i class="fas fa-clock mr-2 max-sm:font-extrabold"></i> {{ post.created }} NST
                 </span>
               </div>
             </div>
           </div>
         </div>
       </div>
-      
       <!-- Action Buttons -->
       <div class="flex flex-wrap gap-3 mb-8">
         {% if post.author == request.user %}
@@ -91,15 +92,14 @@
         
         <button onclick="avatar_options()" 
                 class="action-button secondary-bg border border-color group relative">
-          <i class="fas fa-robot mr-2"></i> AI Narration
-          <span class="tooltip group-hover:opacity-100">AI narration video</span>
+          <i class="fas fa-robot mr-2"></i> AI Narration Video
         </button>
       </div>
       
       <!-- Content Stats -->
       <div class="flex items-center justify-between mb-8 py-3 px-4 secondary-bg rounded-xl border border-color">
         <button onclick="location.hash = 'comment_area'" 
-                class="flex items-center space-x-2 hover-bg px-3 py-2 rounded-lg">
+                class="flex items-center space-x-2 hover-bg-details px-3 py-2 rounded-lg">
           <i class="fas fa-comment text-blue-500"></i>
           <span class="font-medium">{{ post.number_of_comment|make_list|first }}</span>
           <span class="secondary-text hidden md:inline">Comments</span>
@@ -131,6 +131,8 @@
       
       <!-- Blog Content -->
       <div class="blog-content secondary-bg rounded-2xl p-6 md:p-10 mb-8 border border-color">
+        <div class="sm:hidden secondary-text"><i class="fas fa-map-marker-alt mr-2 "></i> {{ post.styled_localbody }}</div>
+        <h1 class="text-3xl md:text-4xl font-bold mb-2 title-overlay text-center sm:hidden mt-5">{{ post.title }}</h1>
         {{ post.content|safe }}
       </div>
       
@@ -181,7 +183,7 @@
               <div class="space-y-4">
                 {% for a_post in author_posts %}
                   <a href="{% url 'blogdetail' a_post.id %}" 
-                     class="flex items-center space-x-3 hover-bg p-3 rounded-lg transition">
+                     class="flex items-center space-x-3 hover-bg-details p-3 rounded-lg transition">
                     <div class="w-16 h-16 rounded-lg overflow-hidden bg-gray-200">
                       <img src="{{ a_post.m_img_url }}" alt="{{ a_post.title }}" class="w-full h-full object-cover">
                     </div>
@@ -213,7 +215,7 @@
                 <div class="flex-1">
                   <textarea class="w-full px-4 py-3 rounded-lg border border-color focus:outline-none focus:ring-2 focus:ring-blue-300 secondary-bg" 
                             name="comment" id="comment" 
-                            placeholder="Share your thoughts..."></textarea>
+                            placeholder="Share your thoughts..." required></textarea>
                 </div>
               </div>
               <div class="flex justify-end space-x-3">
@@ -266,14 +268,14 @@
                 <div class="flex items-center space-x-4">
                   {% if request.user in cmnt.cmnt_likes.all %}        
                     <button onclick="commlikefunction('{{ cmnt.id }}')" 
-                            class="cmnt-like-button text-red-500">
-                      <i class="fas fa-heart" id="cmnt_like_icon"></i>
+                            class="cmnt-like-button_{{cmnt.id}} text-red-500">
+                      <i class="fas fa-heart" id="cmnt_like_icon_{{cmnt.id}}"></i>
                       <span id="number_of_comment_likes{{ cmnt.id }}" class="ml-1">{{ cmnt.number_of_comment_likes|make_list|first }}</span>
                     </button>
                   {% else %}
                     <button onclick="commlikefunction('{{ cmnt.id }}')" 
-                            class="cmnt-like-button hover:text-red-500">
-                      <i class="far fa-heart" id="cmnt_like_icon"></i>
+                            class="cmnt-like-button_{{cmnt.id}} hover:text-red-500">
+                      <i class="far fa-heart" id="cmnt_like_icon_{{cmnt.id}}"></i>
                       <span id="number_of_comment_likes{{ cmnt.id }}" class="ml-1">{{ cmnt.number_of_comment_likes|make_list|first }}</span>
                     </button>
                   {% endif %}
@@ -291,6 +293,7 @@
                       </div>
                       <div class="flex-1">
                         <input type="text" id="cmnt_id{{ cmnt.id }}" value="{{ cmnt.id }}" hidden>
+                        {% comment %} <input type="text" id="original_comment" value="{{cmnt.body}}"> {% endcomment %}
                         <input type="text" id="cmnt_real_body{{ cmnt.id }}" value="{{ cmnt.body }}" hidden>
                         <textarea class="w-full px-4 py-3 rounded-lg border border-color focus:outline-none focus:ring-2 focus:ring-blue-300 secondary-bg " 
                                   name="commentupdate" id="commentupdate{{ cmnt.id }}">{{ cmnt.body }}</textarea>
@@ -319,6 +322,7 @@
       <span id="toastMessage">Notification</span>
     </div>
 
+    {% include 'blog/avatar-overlay.html' %}
   <!-- Footer -->
   {% include 'blog/footer.html' %}
 
@@ -379,14 +383,12 @@ function commlikefunction(a){
         
         if (data.color != "red") {
           $jq('#number_of_comment_likes'+a).html(" "+num_of_comm_likes);
-
-          $jq('#cmnt_like_icon').removeClass('fas').addClass('far');
-          $jq('.cmnt-like-button').removeClass('text-red-500').addClass('hover:text-red-500');
+          $jq('#cmnt_like_icon_'+a).removeClass('fas').addClass('far');
+          $jq('.cmnt-like-button_'+a).removeClass('text-red-500').addClass('hover:text-red-500');
         } else {  
           $jq('#number_of_comment_likes'+a).html(" "+num_of_comm_likes);
-          // $jq('#commlike_button'+a).removeClass('far').addClass('fas');
-          $jq('#cmnt_like_icon').removeClass('far').addClass('fas');
-          $jq('.cmnt-like-button').removeClass('hover:text-red-500').addClass('text-red-500');
+          $jq('#cmnt_like_icon_'+a).removeClass('far').addClass('fas');
+          $jq('.cmnt-like-button_'+a).removeClass('hover:text-red-500').addClass('text-red-500');
         }
       },   
       error: function() {
@@ -425,33 +427,42 @@ $jq(document).on('submit', '.cmntupdateform', function(e){
   var form = $jq(this);
   var id = form.find('input[id^="cmnt_id"]').val();
   var newBody = form.find('textarea[id^="commentupdate"]').val();
-  
+  var oldBody= $jq("#cmnt_real_body"+id).val()
+  console.log(oldBody)
+
+  if(oldBody==newBody){
+    showToast("Make change before submitting!", 'error');
+    return;
+  }else if(newBody==""){
+    showToast("Comment can't be empty!", 'error');
+    return;
+  }
   $jq.ajax({
-    type : "POST", 
-    url: "{% url 'blogdetail' post.id %}",
-    data: {
-      cmnt_id: id,
-      new_body: newBody,
-      csrfmiddlewaretoken: $jq('input[name=csrfmiddlewaretoken]').val(),
-      form: "cmntupdatefunction",
-    },           
-    success: function(data){
-      if(data.msg != "Error"){
-        $jq('#cmnt_body_old'+id).css("display","none");
-        $jq('#cmnt_body_new'+id).html(data.updated_body);
-        $jq('#cmnt_body_new'+id).css("display","block");
-        form.hide();
-        showToast("Comment Updated!", 'info');
+  type : "POST", 
+  url: "{% url 'blogdetail' post.id %}",
+  data: {
+    cmnt_id: id,
+    new_body: newBody,
+    csrfmiddlewaretoken: $jq('input[name=csrfmiddlewaretoken]').val(),
+    form: "cmntupdatefunction",
+  },           
+  success: function(data){
+    if(data.msg != "Error"){
+      $jq('#cmnt_body_old'+id).css("display","none");
+      $jq('#cmnt_body_new'+id).html(data.updated_body);
+      $jq('#cmnt_body_new'+id).css("display","block");
+      form.hide();
+      showToast("Comment Updated!", 'info');
 
-      } else {
-        showToast("Error updating!", 'error');
-      }
-    },   
-    error: function() {
+    } else {
       showToast("Error updating!", 'error');
-
     }
-  });
+  },   
+  error: function() {
+    showToast("Error updating!", 'error');
+
+  }
+});
 });
 
 "{% if not post_is_commented and request.user.is_authenticated %}"
@@ -516,9 +527,7 @@ $jq(document).on('submit', '.cmntupdateform', function(e){
     window.addEventListener('load', adjustRootDiv);
     window.addEventListener('resize', adjustRootDiv);
   </script>
-  
-  <!-- <script src="{% static 'dist/assets/index-b101d2d1.js' %}"></script> -->
-  <script src="{% static 'blog/js/for-read.js' %}"></script>
+
   <script>
   function showToast(message, type = 'info') {
     const toast = document.getElementById("toast");
@@ -552,8 +561,11 @@ $jq(document).on('submit', '.cmntupdateform', function(e){
   "{% endif %}"
 
   "{% for message in messages %}"
-    showToast("{{ message|escapejs }}", "info");
+    showToast("{{ message|escapejs }}", "{{ message.level_tag }}");
   "{% endfor %}"
   </script>
+
+  <script src="{% static 'blog/new-design/for-avatar.js' %}"></script>
+  <script src="{% static 'dist/assets/index-b101d2d1.js' %}"></script>
 </body>
 </html>

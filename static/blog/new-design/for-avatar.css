@@ -1,0 +1,278 @@
+    #ai-narration-container {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 15px;
+      transition: all 0.3s ease;
+      opacity: 100%;
+    }
+
+    /* Trigger Button */
+    #ai-trigger-button {
+      background: var(--secondary-bg);
+      color: var(--primary-text);
+      border: 1px solid var(--border-color);
+      border-radius: 50px;
+      padding: 12px 20px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      transition: all 0.3s ease;
+      min-width: 140px;
+    }
+
+    #ai-trigger-button:hover {
+      background: var(--hover-bg);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    #ai-trigger-button i {
+      margin-right: 8px;
+      font-size: 1.1rem;
+    }
+
+    /* Options Panel */
+    #avatar-options-panel {
+      background: var(--secondary-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: var(--shadow);
+      width: 280px;
+      display: none;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.3s ease;
+    }
+
+    #avatar-options-panel.visible {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .panel-title {
+      font-weight: 600;
+      color: var(--primary-text);
+      font-size: 1.1rem;
+    }
+
+    .close-panel {
+      background: none;
+      border: none;
+      color: var(--secondary-text);
+      cursor: pointer;
+      font-size: 1.2rem;
+      transition: color 0.2s;
+    }
+
+    .close-panel:hover {
+      color: var(--accent-color);
+    }
+
+    .option-group {
+      margin-bottom: 20px;
+    }
+
+    .option-label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 0.9rem;
+      color: var(--secondary-text);
+      font-weight: 500;
+    }
+
+    #avatar-select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      background: var(--primary-bg);
+      color: var(--primary-text);
+      font-size: 0.95rem;
+      cursor: pointer;
+    }
+
+    #avatar-select:focus {
+      outline: none;
+      border-color: var(--accent-color);
+    }
+
+    #avatar-select-button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      background: var(--border-color);
+      color: var(--highlight-text);
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
+      margin-top: 5px;
+    }
+
+    #avatar-select-button:hover {
+      background: var(--accent-color);
+      transform: translateY(-2px);
+    }
+
+    #avatar-select-button.primary {
+      background: var(--border-color);
+    }
+
+    #avatar-select-button.danger {
+      background: #e53e3e;
+    }
+
+    /* Avatar Container */
+    #avatar-container {
+      position: fixed;
+      bottom: 100px;
+      right: 30px;
+      z-index: 999;
+      display: none;
+      background: var(--secondary-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      width: 320px;
+      max-width: 90vw;
+      height: auto;
+      transition: all 0.3s ease;
+    }
+
+    .avatar-header {
+      flex-shrink: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 15px;
+      background: var(--primary-bg);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .avatar-title {
+      font-weight: 600;
+      color: var(--primary-text);
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .avatar-title i {
+      color: var(--accent-color);
+    }
+
+    .avatar-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .avatar-action-btn {
+      background: none;
+      border: none;
+      color: var(--secondary-text);
+      cursor: pointer;
+      font-size: 1.1rem;
+      transition: color 0.2s;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .avatar-action-btn:hover {
+      /* background: var(--hover-bg); */
+      color: var(--accent-color);
+    }
+
+    #root {
+      flex-grow: 1;
+      min-height: 240px;
+      max-height: 400px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--highlighted-bg);
+      overflow: hidden;
+    }
+
+    @media (max-height: 400px) {
+        #root {
+            height: 200px;
+        }
+    }
+
+    @media (min-height: 401px) {
+        #root {
+            height: 350px;
+        }
+    }
+
+    @media (min-height: 401px) and (min-width: 1201px) {
+        #root {
+            height: 450px;
+        }
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+      #ai-narration-container {
+        bottom: 20px;
+        right: 20px;
+      }
+      
+      #avatar-container {
+        bottom: 80px;
+        right: 20px;
+        width: 280px;
+      }
+      
+      #ai-trigger-button {
+        padding: 10px 16px;
+        min-width: auto;
+      }
+      
+      #ai-trigger-button span {
+        display: none;
+      }
+      
+      #ai-trigger-button i {
+        margin-right: 0;
+        font-size: 1.3rem;
+      }
+    }
+
+    /* Animation for avatar */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .avatar-visible {
+      display: flex !important;
+      animation: fadeIn 0.4s ease-out;
+      flex-direction: column;
+    }

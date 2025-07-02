@@ -1,30 +1,4 @@
-{%load static%}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Narration Overlay</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <style>
-    :root {
-      --primary-bg: #FFF8E1;
-      --secondary-bg: #FFFFFF;
-      --highlighted-bg: #FFECB3;
-      --hover-bg: #FFD740;
-      --primary-text: #2A1D0D;
-      --secondary-text: #6B573F;
-      --highlight-text: #1A1208;
-      --accent-color: #ff0000;
-      --border-color: #D4AF37;
-      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    }
-
-  </style>
-</head>
-<body>
-  <div id="ai-narration-container">
+<div id="ai-narration-container">
     <button id="ai-trigger-button" onclick="avatar_options()">
       <i class="fas fa-robot"></i>
       <span>AI Narration</span>
@@ -68,11 +42,7 @@
         </div>
       </div>
       
-      <div id="root" data-avatarId="48" data-language="" data-token="{{csrf_token}}"></div>
+      <div id="root" data-avatarId="{{post.id}}" data-language="" data-token="{{csrf_token}}"></div>
     
     </div>
   </div>
-      <script src="{% static 'blog/new-design/for-avatar.js' %}"></script>
-      <script src="{% static 'dist/assets/index-b101d2d1.js' %}"></script>
-</body>
-</html>

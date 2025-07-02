@@ -10,6 +10,7 @@
   --accent-color: #ff0000;
   --border-color: #D4AF37;
   --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --hover-detail_page: #f5e7b3;
 }
 
 /* Reusable utility classes */
@@ -17,6 +18,7 @@
 .secondary-bg { background-color: var(--secondary-bg); }
 .highlighted-bg { background-color: var(--highlighted-bg); }
 .hover-bg:hover { background-color: var(--hover-bg); }
+.hover-bg-details:hover { background-color: var(--hover-detail_page); }
 .primary-text { color: var(--primary-text); }
 .secondary-text { color: var(--secondary-text); }
 .highlight-text { color: var(--highlight-text); }

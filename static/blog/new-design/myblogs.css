@@ -1,0 +1,59 @@
+    .profile-card {
+      transition: transform 0.3s, box-shadow 0.3s;
+      border-radius: 16px;
+      overflow: hidden;
+    }
+    
+    .profile-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+    
+    .post-card {
+      transition: transform 0.3s;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    
+    .post-card:hover {
+      transform: translateY(-3px);
+    }
+    
+    .social-icon {
+      transition: transform 0.3s;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .social-icon:hover {
+      transform: scale(1.1);
+    }
+    
+    .stat-badge {
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      display: inline-flex;
+      align-items: center;
+    }
+    
+    .post-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    @media (max-width: 768px) {
+      .post-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .profile-info {
+        flex-direction: column;
+        text-align: center;
+      }
+    }

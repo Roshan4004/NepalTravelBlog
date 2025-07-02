@@ -71,7 +71,7 @@
 
   <script>
     // Post content truncation
-    {% for post in post_list %}
+    "{% for post in post_list %}"
       var title = document.getElementById('{{post.id}}title');
       var content = document.getElementById('{{post.id}}content');
       
@@ -86,7 +86,7 @@
           content.textContent = content.textContent.substring(0, 120) + '...';
         }
       }
-    {% endfor %}
+    "{% endfor %}"
   </script>
 
   <script>
@@ -118,13 +118,13 @@
   }
 
   // Show error if it exists
-  {% if error %}
+  "{% if error %}"
     showToast("{{ error|escapejs }}", "error");
-  {% endif %}
+  "{% endif %}"
 
-  {% for message in messages %}
-    showToast("{{ message|escapejs }}", "info");
-  {% endfor %}
+  "{% for message in messages %}"
+    showToast("{{ message|escapejs }}", "{{ message.level_tag }}");
+  "{% endfor %}"
 </script>
 
 

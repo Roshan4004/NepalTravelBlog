@@ -184,13 +184,13 @@
     }, 3000);
   }
 
-  {% if error %}
+  "{% if error %}"
     showToast("{{ error|escapejs }}", "error");
-  {% endif %}
+  "{% endif %}"
 
-  {% for message in messages %}
-    showToast("{{ message|escapejs }}", "info");
-  {% endfor %}
+  "{% for message in messages %}"
+    showToast("{{ message|escapejs }}", "{{ message.level_tag }}");
+  "{% endfor %}"
 </script>
 </body>
 </html>
