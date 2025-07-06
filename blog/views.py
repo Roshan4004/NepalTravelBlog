@@ -129,7 +129,12 @@ def PostDetail(request,pk):
         liked=True
     author=post.author
     author_posts=Post.objects.filter(author=author).exclude(id=post.id)
-    context={'post':post,'number_of_likes':likes_connected.number_of_likes(),'post_is_liked':liked,'comment':comment,'post_is_commented':commented,'author_posts':author_posts[:2]}
+
+    if request.user != post.author:
+        post.views_count = post.views_count + 1
+        post.save(update_fields=["views_count"])
+
+    context={'post':post,'number_of_likes':likes_connected.number_of_likes(),'post_is_liked':liked,'comment':comment,'post_is_commented':commented,'author_posts':author_posts[:2], 'views':post.views_count}
     return render(request,'blog/detail-old.html',context)
 
 #Updating posts

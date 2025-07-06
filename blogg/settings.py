@@ -53,9 +53,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     'corsheaders',
     'rest_framework',
-    'django_celery_beat'
+    'django_celery_beat',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.github',
 ]
 
 MIDDLEWARE = [
@@ -66,8 +72,14 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'blogg.middleware.ensure_profile.EnsureProfileMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "allauth.account.middleware.AccountMiddleware",
+
 ]
+
+SITE_ID = 1
+
 
 ROOT_URLCONF = 'blogg.urls'
 
@@ -154,13 +166,47 @@ STATICFILES_DIRS=[os.path.join(BASE_DIR,'static')]
 MEDIA_URL='/media/'
 MEDIA_ROOT=os.path.join(BASE_DIR,'media')
 
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
 
+LOGIN_REDIRECT_URL = '/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+SOCIALACCOUNT_AUTO_SIGNUP = True
+ACCOUNT_EMAIL_VERIFICATION = "none"
+ACCOUNT_LOGIN_METHODS = {'username'}
+ACCOUNT_SIGNUP_FIELDS = ['username*','email']
+
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE' : [
+            'profile',
+            'email'
+        ],
+        'APP': {
+            'client_id': os.environ['GOOGLE_CLIENT_ID'],
+            'secret': os.environ['GOOGLE_CLIENT_SECRET'],
+        },
+        'AUTH_PARAMS': {
+            'access_type':'online',
+        }
+    },
+    'github': {
+        'METHOD': 'oauth2',
+        'SCOPE': ['user:email'],
+        'APP': {
+            'client_id': os.environ['GITHUB_CLIENT_ID'],
+            'secret': os.environ['GITHUB_CLIENT_SECRET'],
+        }
+    }
+}
 
 #Email Credentials
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

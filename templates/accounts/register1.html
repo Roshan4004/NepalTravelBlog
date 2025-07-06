@@ -1,4 +1,6 @@
 {% load static %}
+{% load socialaccount %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -141,10 +143,10 @@
 
                         <div class="flex justify-between max-sm:flex-col max-sm:gap-2">
                             <div class="flex gap-3 justify-between max-sm:justify-center">
-                                <button type="button" class="oauth-btn google-btn">
+                                <button type="button" class="oauth-btn google-btn" onclick="javascript:oauth_caller('google')">
                                     <i class="fa-brands fa-google"></i>
                                 </button>
-                                <button type="button" class="oauth-btn github-btn">
+                                <button type="button" class="oauth-btn github-btn" onclick="javascript:oauth_caller('github')">
                                     <i class="fa-brands fa-github"></i>
                                 </button>
                             </div>
@@ -220,6 +222,16 @@
             </div>
         </div>
     </div>
+
+    <div class="hidden">
+        <form action="{% provider_login_url 'google'  %}" method="POST" id="google_oauth">
+            {% csrf_token %}
+        </form>
+        <form action="{% provider_login_url 'github'  %}" method="POST" id="github_oauth">
+            {% csrf_token %}
+        </form>
+    </div>
+
     <div id="toast" class="hidden fixed top-4 right-4 text-white px-4 py-3 rounded shadow-lg z-50 transition-opacity duration-300 z-[9999]">
       <span id="toastMessage">Notification</span>
     </div>
@@ -309,6 +321,14 @@
             setTimeout(() => {
                 formInfo.style.display = 'none';
             }, 5000);
+        }
+
+        function oauth_caller(a){
+            if (a == 'github'){
+                $("#github_oauth").submit();
+            }else{
+                $("#google_oauth").submit();
+            }
         }
 
         // Password strength indicator

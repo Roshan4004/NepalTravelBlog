@@ -18,6 +18,7 @@ class Post(models.Model):
     images=models.FileField(null=True,blank=True)
     likes = models.ManyToManyField(User, related_name='blogpost_like',blank=True)
     for_avatar=JSONField(blank=True, null=True)
+    views_count = models.PositiveIntegerField(default=0)
 
     class Meta:
         ordering=['-created']

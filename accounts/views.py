@@ -204,3 +204,24 @@ def generateOTP() :
      for i in range(6) :
          OTP += digits[math.floor(random.random() * 10)]
      return OTP
+
+def onboarding(request):
+    if request.method == "POST":
+        fname=request.POST.get("fname")
+        lname=request.POST.get("lname")
+        main_img=request.FILES.get("main_img")
+        country=request.POST.get("country")
+        local_body=request.POST.get("local_body")
+        bio=request.POST.get("bio")
+        links={"twitter":request.POST.get('twitter',"None"),"instagram":request.POST.get('instagram',"None"),"facebook":request.POST.get('facebook',"None"),"youtube":request.POST.get('youtube',"None")}
+        User.objects.filter(username=request.user.username).update(first_name=fname,last_name=lname)
+        Profile.objects.create(user=request.user,country=country,local_address=local_body,bio=bio,links=json.dumps(links))
+        if main_img:
+            obj=Profile.objects.get(user=request.user)
+            prev_pp=obj.profile_img
+            obj.profile_img=main_img
+            obj.save(update_fields=['profile_img'])
+            prev_pp.delete(False)
+        messages.info(request,"Congratulations! Onboarding complete.")
+        return redirect("myblogs", pk=request.user.username)
+    return render(request,'accounts/onboarding.html')
