@@ -135,7 +135,7 @@ def PostDetail(request,pk):
         post.save(update_fields=["views_count"])
 
     context={'post':post,'number_of_likes':likes_connected.number_of_likes(),'post_is_liked':liked,'comment':comment,'post_is_commented':commented,'author_posts':author_posts[:2], 'views':post.views_count}
-    return render(request,'blog/detail-old.html',context)
+    return render(request,'blog/detail-new.html',context)
 
 #Updating posts
 def UpdatePost(request,pk):
