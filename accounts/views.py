@@ -58,7 +58,7 @@ def login1(request):
             return redirect("blog")
         else:
             list(messages.get_messages(request))
-            messages.info(request,'Check your Credentials..')
+            messages.error(request,'Check your Credentials..')
             return redirect("login1")
     else:
         return render(request,'accounts/login1.html')    

@@ -1,0 +1,197 @@
+body {
+    background: linear-gradient(135deg, var(--primary-bg) 0%, var(--highlighted-bg) 100%);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    min-height: 100vh;
+}
+
+.step-indicator {
+    background: linear-gradient(90deg, var(--border-color) 0%, var(--hover-bg) 100%);
+}
+
+.step-indicator.active {
+    background: linear-gradient(90deg, #ff416c, #ff4b2b);
+}
+
+.form-input {
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    background: var(--secondary-bg);
+    transition: all 0.3s ease;
+    color: var(--primary-text);
+}
+
+.form-input:focus {
+    border-color: #725906;
+    outline: none;
+}
+
+.form-input:valid {
+    border-color: #10b981;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #ff416c, #ff4b2b);
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-weight: 600;
+    padding: 12px 24px;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 65, 108, 0.3);
+}
+
+.btn-secondary {
+    background: var(--secondary-bg);
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    color: var(--primary-text);
+    font-weight: 600;
+    padding: 12px 24px;
+    transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+    background: var(--highlighted-bg);
+    border-color: var(--hover-bg);
+}
+
+.oauth-btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease;
+}
+
+.google-btn {
+    background-color: #4285F4;
+    color: white;
+}
+
+.google-btn:hover {
+    background-color: #357ae8;
+}
+
+.github-btn {
+    background-color: #333;
+    color: white;
+}
+
+.github-btn:hover {
+    background-color: #000;
+}
+
+
+.card {
+    background: var(--secondary-bg);
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border-color);
+}
+
+.progress-bar {
+    background: linear-gradient(90deg, #ff416c, #ff4b2b);
+    border-radius: 10px;
+    transition: width 0.5s ease;
+}
+
+.social-input {
+    position: relative;
+}
+
+.social-input i {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--secondary-text);
+}
+
+.social-input input {
+    padding-left: 40px;
+}
+
+.file-upload {
+    border: 2px dashed var(--border-color);
+    border-radius: 12px;
+    background: var(--primary-bg);
+    transition: all 0.3s ease;
+}
+
+.file-upload:hover {
+    border-color: #ff416c;
+    background: var(--highlighted-bg);
+}
+
+.error-message {
+    color: #ef4444;
+    font-size: 0.875rem;
+    margin-top: 4px;
+}
+
+.success-message {
+    color: #10b981;
+    font-size: 0.875rem;
+    margin-top: 4px;
+}
+
+.step-content {
+    display: none;
+}
+
+.step-content.active {
+    display: block;
+    animation: fadeInUp 0.5s ease;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.password-strength {
+    height: 4px;
+    border-radius: 2px;
+    background: #e5e7eb;
+    overflow: hidden;
+    margin-top: 8px;
+}
+
+.password-strength-bar {
+    height: 100%;
+    transition: all 0.3s ease;
+}
+
+.strength-weak { background: #ef4444; width: 25%; }
+.strength-fair { background: #f59e0b; width: 50%; }
+.strength-good { background: #10b981; width: 75%; }
+.strength-strong { background: #059669; width: 100%; }
+
+@media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+    }
+    
+    .card {
+        margin: 1rem;
+    }
+}
+
+.navbar {
+    background: var(--secondary-bg);
+    border-bottom: 1px solid var(--border-color);
+    box-shadow: var(--shadow);
+}

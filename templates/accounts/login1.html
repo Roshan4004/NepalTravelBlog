@@ -1,165 +1,258 @@
 <!doctype html>
-<html>
-    <head>
-        <meta charset='utf-8'>
-        <meta name='viewport' content='width=device-width, initial-scale=1'>
-        <title>Login page</title>
-        <link href='' rel='stylesheet'>
-        <link href='' rel='stylesheet'>
-        <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
-    <style>
-* {
-    margin: 0;
-    /* padding: 0; */
-    box-sizing: border-box;
-    font-family: "poppins", sans-serif
-}
+<html lang="en">
+<head>
+    <meta charset='utf-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <title>Welcome Back - Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="/static/blog/new-design/main.css" rel="stylesheet">
+    <link href="/static/blog/new-design/login.css" rel="stylesheet">
+    <link href="/static/blog/new-design/header.css" rel="stylesheet">
 
-body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 80vh;
-    background-color: #000
-}
-
-.container {
-    background: rgb(15, 15, 15);
-    width: 350px;
-    height: 390px;
-    border-radius: 20px;
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    color: #fff;
-    padding: 2em
-}
-
-.heading {
-    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif !important;
-    text-align: center;
-    padding: 3px;
-    border-width: thin;
-    border-style: solid;
-    border-radius: 7px;
-    font-size: 2em;
-    margin-bottom: 0.5em
-}
-
-.box {
-    margin-top: 15px;
-}
-
-.container .box p {
-    font-size: 1.3em;
-    color: rgba(255, 255, 255, 0.701)
-}
-
-.container .box div {
-    position: relative;
-    width: 100%;
-    height: 40px;
-    margin: 0.2em 0
-}
-
-.container .box input {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background: rgba(19, 19, 19);
-    color: #fff;
-    border: none;
-    outline: none;
-    padding-left: 0.8em;
-    border-radius: 10px;
-    transition: all 0.5s
-}
-
-.container .box input:focus::placeholder {
-    color: #fff
-}
-
-.container .box div::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 102%;
-    height: 105%;
-    border-radius: 10px;
-    background: linear-gradient(to right, #ff416c, #ff4b2b)
-}
-
-.loginBtn {
-    font-size: 1.3em;
-    width: 102%;
-    height: 40px;
-    border-radius: 10px;
-    margin: 0.2em 0;
-    transform: translate(-1%);
-    cursor: pointer;
-    color: #fff;
-    background: linear-gradient(to right, #ff416c, #ff4b2b);
-    transition: all 0.5s
-}
-
-.loginBtn:hover {
-    transform: translate(-1%, 5%);
-    box-shadow: 0 0 10px #ff416d65
-}
-
-.text {
-    font-size: 1em;
-    margin-top: 0.5em;
-    text-align: center;
-    color: rgba(255, 255, 255, 0.625)
-}
-
-.text a {
-    color: rgba(255, 255, 255, 0.911);
-    font-size: 1em;
-}
-    </style>
 </head>
-<body oncontextmenu='return false' class='snippet-body'>
-<form action="login1" method="POST">
-    {% csrf_token %}
-    <div class="container">
-    <p class="heading">Login Credentials</p>
-    <input type="text" name="previous" value="{{previous}}" hidden>
-    <input type="text" name="next" value="{{next}}" hidden>
-    <div class="box">
-        <p>Username*</p>
-        <div> <input type="text" required="required" name="username" placeholder="Enter your username"> </div>
+<body>
+    <!-- Floating Background Shapes -->
+    <div class="floating-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
     </div>
-    <div class="box" style="margin-bottom: 2%;">
-        <p>Password*</p>
-        <div> <input type="password" required="required" name="password" autocomplete="off" placeholder="Enter your password"> </div>
-    </div>
-    <div><button class="loginBtn">Login</button></div>
-    <p class="text">Don't have an account? <a style="color:cyan ;text-decoration: none;" href="{% url 'register' %}"><strong>Signup</strong></a></p>   
-    </div>
-    <br> 
-    <center><span style="margin-top:20px;font-size: 25px;" id="form_info"></span></center>
-</form>
 
-<div style="display: none;" class="javascripts">
+{% include 'blog/header-nav.html' %}
+    
+
+    <!-- Login Form -->
+    <div class="flex items-center justify-center min-h-screen py-8 px-4">
+        <div class="login-container w-full max-w-md p-8">
+            <div class="login-form">
+                <!-- Header -->
+                <div class="text-center mb-8">
+                    <div class="welcome-text text-4xl font-bold mb-2">
+                        Welcome Back!
+                    </div>
+                    <p class="text-lg" style="color: var(--secondary-text);">
+                        Sign in to your account
+                    </p>
+                </div>
+
+                <!-- Login Form -->
+                <form action="login1" method="POST">
+                    {% csrf_token %}
+                    <input type="text" name="previous" value="{{previous}}" hidden>
+                    <input type="text" name="next" value="{{next}}" hidden>
+                    
+                    <!-- Username Field -->
+                    <div class="mb-6">
+                        <label for="username" class="block text-md font-medium mb-2" style="color: var(--primary-text);">
+                            Username <span class="text-red-500">*</span>
+                        </label>
+                        <div class="input-group">
+                            <input 
+                                type="text" 
+                                name="username" 
+                                id="username"
+                                class="form-input with-icon w-full p-4 pr-12" 
+                                placeholder="Enter your username" 
+                                required
+                            >
+                            <i class="input-icon fas fa-user"></i>
+                        </div>
+                    </div>
+
+                    <!-- Password Field -->
+                    <div class="mb-6">
+                        <label for="password" class="block text-md font-medium mb-2" style="color: var(--primary-text);">
+                            Password <span class="text-red-500">*</span>
+                        </label>
+                        <div class="input-group">
+                            <input 
+                                type="password" 
+                                name="password" 
+                                id="password"
+                                class="form-input with-icon w-full p-4 pr-12" 
+                                placeholder="Enter your password" 
+                                autocomplete="current-password"
+                                required
+                            >
+                            <i class="input-icon fas fa-lock"></i>
+                            <i class="password-toggle fas fa-eye" onclick="togglePassword()"></i>
+                        </div>
+                    </div>
+
+                    <!-- Remember Me & Forgot Password -->
+                    <div class="flex justify-between mb-6 max-sm:flex-col sm:items-center max-sm:gap-3">
+                        <label class="flex items-center">
+                            <input type="checkbox" class="mr-2 rounded border-gray-300" style="accent-color: #ff416c;">
+                            <span class="text-md" style="color: var(--secondary-text);">Remember me</span>
+                        </label>
+                        <a href="#" class="forgot-password text-md">Forgot password?</a>
+                    </div>
+
+                    <!-- Login Button -->
+                    <button type="submit" class="btn-primary w-full text-lg font-semibold">
+                        <i class="fas fa-sign-in-alt mr-2"></i>
+                        Sign In
+                    </button>
+
+                    <div class="flex gap-3 justify-center m-2">
+                        <button type="button" class="oauth-btn google-btn">
+                            <i class="fa-brands fa-google"></i>
+                        </button>
+                        <button type="button" class="oauth-btn github-btn">
+                            <i class="fa-brands fa-github"></i>
+                        </button>
+                    </div>
+
+                    <!-- Message Display -->
+                    <div id="form_info" class="text-md" style="display: none;"></div>
+                </form>
+
+                <!-- Divider -->
+                <div class="divider">
+                    <span>or</span>
+                </div>
+
+                <!-- Sign Up Link -->
+                <div class="text-center">
+                    <p class="text-md" style="color: var(--secondary-text);">
+                        Don't have an account? 
+                        <a href="{% url 'register' %}" class="font-semibold" style="color: #ff416c; text-decoration: none;">
+                            Create one now
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% include 'blog/footer.html' %}
+
+
+    <!-- Scripts -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
-    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js" integrity="sha256-xLD7nhI62fcsEZK2/v8LsBcb4lG7dgULkuXoXB/j91c="crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+    
     <script>
-        "{% for message in messages %}"
-        console.log("{{message}}")
-        "{%if message.tags == 'error'%}"
-        $("#form_info").css("color","red");
-        "{%else%}"
-        $("#form_info").css("color","green");
-        "{% endif %}"
-        $("#form_info").html("{{message}}");
-        $("#form_info").css("display","block");         
-        "{% endfor %}"
+        // Password toggle functionality
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const toggleIcon = document.querySelector('.password-toggle');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.classList.remove('fa-eye');
+                toggleIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.classList.remove('fa-eye-slash');
+                toggleIcon.classList.add('fa-eye');
+            }
+        }
+
+        // Form input animations
+        document.querySelectorAll('.form-input').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.classList.add('focused');
+            });
+            
+            input.addEventListener('blur', function() {
+                this.parentElement.classList.remove('focused');
+            });
+        });
+
+        // Handle Django messages
+        document.addEventListener('DOMContentLoaded', function() {
+            "{% for message in messages %}"
+                const formInfo = document.getElementById('form_info');
+                "{% if message.tags == 'error' %}"
+                    formInfo.className = 'error-message';
+                "{% else %}"
+                    formInfo.className = 'success-message';
+                "{% endif %}"
+                formInfo.innerHTML = '<i class="fas fa-info-circle mr-2"></i>{{ message }}';
+                formInfo.style.display = 'block';
+                
+                // Auto-hide after 5 seconds
+                setTimeout(() => {
+                    formInfo.style.display = 'none';
+                }, 5000);
+            "{% endfor %}"
+        });
+
+        // Add ripple effect to button
+        document.querySelector('.btn-primary').addEventListener('click', function(e) {
+            const button = e.target;
+            const ripple = document.createElement('span');
+            const rect = button.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            const x = e.clientX - rect.left - size / 2;
+            const y = e.clientY - rect.top - size / 2;
+            
+            ripple.style.width = ripple.style.height = size + 'px';
+            ripple.style.left = x + 'px';
+            ripple.style.top = y + 'px';
+            ripple.classList.add('ripple');
+            
+            button.appendChild(ripple);
+            
+            setTimeout(() => {
+                ripple.remove();
+            }, 600);
+        });
+
+        // Form validation feedback
+        document.querySelectorAll('input[required]').forEach(input => {
+            input.addEventListener('invalid', function() {
+                this.style.borderColor = '#ef4444';
+                this.style.boxShadow = '0 0 0 3px rgba(239, 68, 68, 0.1)';
+            });
+            
+            input.addEventListener('input', function() {
+                if (this.validity.valid) {
+                    this.style.borderColor = '#10b981';
+                    this.style.boxShadow = '0 0 0 3px rgba(16, 185, 129, 0.1)';
+                } else {
+                    this.style.borderColor = 'var(--border-color)';
+                    this.style.boxShadow = 'none';
+                }
+            });
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                const inputs = document.querySelectorAll('input[type="text"], input[type="password"]');
+                const currentIndex = Array.from(inputs).findIndex(input => input === document.activeElement);
+                
+                if (currentIndex < inputs.length - 1) {
+                    e.preventDefault();
+                    inputs[currentIndex + 1].focus();
+                }
+            }
+        });
     </script>
 
-</div>
+    <style>
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.6);
+            transform: scale(0);
+            animation: ripple-animation 0.6s linear;
+            pointer-events: none;
+        }
+
+        @keyframes ripple-animation {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+
+        .focused .input-icon {
+            color: #ff416c !important;
+        }
+    </style>
 </body>
 </html>

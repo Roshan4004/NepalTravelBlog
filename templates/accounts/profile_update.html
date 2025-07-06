@@ -1,339 +1,293 @@
 {% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset='utf-8'>
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
-    <title>Registeration</title>
+    <title>Update Your Profile</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
-    <style>
-.form-control {
-  /* border-radius: 10px; */
-  background: linear-gradient(white, white) padding-box,linear-gradient(to right, #ff416c, #ff4b2b) border-box;
-  border: 2px solid transparent;
-}
-.form-select{
-  background: linear-gradient(white, white) padding-box,linear-gradient(to right, #ff416c, #ff4b2b) border-box;
-  border: 2px solid transparent;
-}
-.heading {
-  width: 80%;
-  color: white;
-  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif !important;
-  text-align: center;
-  padding: 3px;
-  border-color: white;
-  border-width: thin;
-  border-style: solid;
-  border-radius: 7px;
-  font-size: 2em;
-  margin-bottom: 0.5em
-}
-.img_preview{
-  width: 100%;
-}
-@media screen and (min-width: 900px) {
-  .img_preview{
-    width: 50%;
-  }
-}
-@media screen and (max-width: 900px) {
-  #pass_infoo{
-    display: none;
-  }
-}
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="/static/blog/new-design/main.css" rel="stylesheet">
+    <link href="/static/blog/new-design/header.css" rel="stylesheet">
+    <link href="/static/blog/new-design/profile_update.css" rel="stylesheet">
 
-    </style>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 </head>
-<body style=" background-color:black; ">
+<body>
+{% include 'blog/header-nav.html' %}
 
-    <center>
-    <div style="width: 80%;padding: 8px;background: rgb(15, 15, 15);margin-top: 2%;border-radius: 4px;margin-bottom: 2%;">
-        <p class="heading">Profile Update for {{user.username}}</p>
-    <form style="color: white ;margin-top: 3%;width: 90%;" method="post" enctype='multipart/form-data'>
-        {% csrf_token %}
-        <input value="{{links}}" name="links" id="links" hidden>
-        <input value="" name="sent_otp" id="sent_otp" hidden>
-        <div class="row g-4">
-            <div class="col-sm-4">
-                <center><label style="font-size: 20px" for="fname" class="form-label">Firstname*</label></center>
-              <input type="text" class="form-control" placeholder="First name" aria-label="First name" id="fname" name="fname" value="{{user.first_name}}" required>
+    <div class="container mx-auto py-8 px-4">
+        <div class="max-w-4xl mx-auto">
+            <!-- Header -->
+            <div class="text-center mb-8">
+                <h1 class="text-3xl font-bold mb-2" style="color: var(--primary-text);">
+                    <i class="fas fa-user-edit mr-3"></i>Update Your Profile
+                </h1>
+                <p class="text-lg" style="color: var(--accent-color);">Keep your information up to date</p>
             </div>
-            <div class="col-sm-4">
-                <center><label style="font-size: 20px" for="lname" class="form-label">Lastname</label></center>
-              <input type="text" class="form-control" placeholder="Last name" aria-label="Last name" id="lname" name="lname" value="{{user.last_name}}">
+
+            <!-- Profile Update Form -->
+            <div class="card p-8">
+                <form id="update_form" method="post" enctype='multipart/form-data' style="color: var(--primary-text);">
+                    {% csrf_token %}
+                    <input value="{{links}}" name="links" id="links" hidden>
+
+                    <!-- Profile Image Section -->
+                    <div class="text-center mb-8">
+                        <div class="profile-image-container mb-4">
+                            <img id="img_preview" class="profile-image" src="/{{user.profile.get_pp}}" alt="Profile Picture">
+                        </div>
+                        <div class="file-upload p-6 max-w-md mx-auto">
+                            <input type="file" class="hidden" id="main_img" name="main_img" accept="image/*">
+                            <label for="main_img" class="cursor-pointer">
+                                <i class="fas fa-camera text-3xl mb-2" style="color: var(--secondary-text);"></i>
+                                <p class="text-sm" style="color: var(--secondary-text);">Click to update profile picture</p>
+                                <p class="text-xs mt-1" style="color: var(--secondary-text);">PNG, JPG, GIF up to 10MB</p>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Basic Information -->
+                    <div class="mb-8">
+                        <h2 class="text-xl font-semibold mb-6" style="color: var(--primary-text);">
+                            <i class="fas fa-user mr-2"></i>Basic Information
+                        </h2>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="fname" class="block text-sm font-medium mb-2" style="color: var(--primary-text);">
+                                    First Name <span class="text-red-500">*</span>
+                                </label>
+                                <input type="text" class="form-input w-full p-3" placeholder="Enter your first name" id="fname" name="fname" value="{{user.first_name}}" required>
+                            </div>
+                            <div>
+                                <label for="lname" class="block text-sm font-medium mb-2" style="color: var(--primary-text);">Last Name</label>
+                                <input type="text" class="form-input w-full p-3" placeholder="Enter your last name" id="lname" name="lname" value="{{user.last_name}}">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Location Information -->
+                    <div class="mb-8">
+                        <h2 class="text-xl font-semibold mb-6" style="color: var(--primary-text);">
+                            <i class="fas fa-map-marker-alt mr-2"></i>Location
+                        </h2>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="country" class="block text-sm font-medium mb-2" style="color: var(--primary-text);">
+                                    Country <span class="text-red-500">*</span>
+                                </label>
+                                <select class="form-input w-full p-3" id="country" name="country" required>
+                                    {%if user.profile.country == "Nepal" %}<option value="Nepal" selected="selected">Nepal</option>
+                                    {%else%}<option value="Nepal">Nepal</option>
+                                    {%endif%}
+                                </select>
+                            </div>
+                            <div>
+                                <label for="local_body" class="block text-sm font-medium mb-2" style="color: var(--primary-text);">Local Address</label>
+                                {% if user.profile.country == "Nepal"%}
+                                <select class="form-input w-full p-3" id="local_body" name="local_body">
+                                </select>
+                                {% else %}
+                                <select class="form-input w-full p-3" id="local_body" name="local_body" disabled>
+                                    <option>Select address if country is Nepal</option>
+                                </select>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bio Section -->
+                    <div class="mb-8">
+                        <h2 class="text-xl font-semibold mb-6" style="color: var(--primary-text);">
+                            <i class="fas fa-info-circle mr-2"></i>About You
+                        </h2>
+                        <label for="bio" class="block text-sm font-medium mb-2" style="color: var(--primary-text);">Short Bio</label>
+                        <textarea class="form-input w-full p-3 h-24 resize-none" placeholder="Tell us a bit about yourself..." id="bio" name="bio">{{user.profile.bio}}</textarea>
+                    </div>
+
+                    <!-- Social Media Links -->
+                    <div class="mb-8">
+                        <h2 class="text-xl font-semibold mb-6" style="color: var(--primary-text);">
+                            <i class="fas fa-share-alt mr-2"></i>Social Media Links
+                        </h2>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div class="social-input">
+                                <i class="fab fa-twitter"></i>
+                                <input type="text" class="form-input w-full p-3" placeholder="https://twitter.com/username" id="twitter" name="twitter" {% if links.twitter == "" %} value ="" {%else%} value="{{links.twitter}}" {%endif%}>
+                            </div>
+                            <div class="social-input">
+                                <i class="fab fa-instagram"></i>
+                                <input type="text" class="form-input w-full p-3" placeholder="https://instagram.com/username" id="instagram" name="instagram" {% if links.instagram == "" %} value ="" {%else%} value="{{links.instagram}}" {%endif%}>
+                            </div>
+                            <div class="social-input">
+                                <i class="fab fa-facebook"></i>
+                                <input type="text" class="form-input w-full p-3" placeholder="https://facebook.com/username" id="facebook" name="facebook" {% if links.facebook == "" %} value ="" {%else%} value="{{links.facebook}}" {%endif%}>
+                            </div>
+                            <div class="social-input">
+                                <i class="fab fa-youtube"></i>
+                                <input type="text" class="form-input w-full p-3" placeholder="https://youtube.com/channel/..." id="youtube" name="youtube" {% if links.youtube == "" %} value ="" {%else%} value="{{links.youtube}}" {%endif%}>
+                            </div>
+                        </div>
+                        <div id="links_info" class="error-message text-center mt-4" style="display: none;">Please enter valid URLs</div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex justify-between max-sm:flex-col max-sm:gap-4">
+                        <a href="{% url 'myblogs' request.user.username%}" class="btn-secondary px-8 py-3 text-center no-underline">
+                            <i class="fas fa-arrow-left mr-2"></i>Back to Profile
+                        </a>
+                        <button type="submit" class="btn-primary px-8 py-3" id="form_submit">
+                            <i class="fas fa-save mr-2"></i>Update Profile
+                        </button>
+                    </div>
+
+                    <div id="form_info" class="error-message text-center mt-4" style="display: none;"></div>
+                </form>
             </div>
-            <div class="col-md-4">
-                <center><label style="font-size: 20px" for="main_img" class="form-label">Profile Image</label></center>
-                <input class="form-control" type="file" id="main_img" name="main_img">
-            </div>
-            <div>
-              <center><img style="margin-bottom: 2%; padding: 5px; border-style: solid;color: rgb(78, 117, 167);display: block;" class="img_preview" id="img_preview" src="https://neptravelblog.pythonanywhere.com/{{user.profile.get_pp}}" alt="  Main image  " ></center>
-            </div>
-            <!-- <div class="col-sm-7">
-                <center><label style="font-size: 20px" for="email" class="form-label" >Email*</label></center>
-                <button onclick="send_otp()" type="button" style="width:23%; float: right;" class="btn btn-info " id="otp_btn">Get OTP</button>
-                <input style="width: 75%;margin-right: 2px;" type="email" class="form-control" placeholder="Email" aria-label="email" id="email" name="email" value="{{user.email}}" required>
-                <span style="display: none; color: red;" id="otp_info"></span>
-                <span id="loadingbar" style="display: none;"><img style="margin-top: 2px;" src="{%static 'loading_bar3.gif'%}"></span>
-              </div>
-            <div class="col-sm-5">
-              <center><label style="font-size: 20px" for="otp" class="form-label">Email OTP</label></center>
-              <input type="number" class="form-control" placeholder="Enter OTP from Email" aria-label="otp" id="otp" name="otp" >
-              <span style="display: none; color: red;" id="otp_info2"></span>
-            </div> -->
-            <div class="col-md-6">
-              <center><label style="font-size: 20px" for="country" class="form-label">Country*</label></center>
-              <select class="form-select" id="country" name="country" required>
-                <!-- <option selected="selected">{{user.profile.country}}</option> -->
-                {%if user.profile.country == "Nepal" %}<option value="Nepal" selected="selected">Nepal</option>
-                {%else%}<option value="Nepal">Nepal</option>
-                {%endif%}
-              </select>
-            </div>
-            <div class="col-md-6">
-              {% if user.profile.country == "Nepal"%}
-              <center><label style="font-size: 20px" for="local_body" class="form-label">Local Address</label></center>
-              <select class="form-select" id="local_body" name="local_body">
-              </select>
-              {% else %}
-              <center><label style="font-size: 20px" for="local_body" class="form-label">Local Address</label></center>
-              <select class="form-select" id="local_body" name="local_body" disabled>
-                <option>Select address if county is Nepal</option>
-              </select>
-              {% endif %}
-            </div>
-            <div class="col-sm-12">
-              <center><label style="font-size: 20px" for="bio" class="form-label">Short Bio</label></center>
-              <input type="text" class="form-control" placeholder="Bio" aria-label="Last name" id="bio" name="bio" value="{{user.profile.bio}}">
-            </div>
-            <div class="col-sm-3">
-              <center><label style="font-size: 20px" for="twitter" class="form-label">Twitter Link</label></center>
-              <input type="text" class="form-control" placeholder="Twitter link" aria-label="Last name" id="twitter" name="twitter" {% if links.twitter == "" %} value ="" {%else%} value="{{links.twitter}}" {%endif%}>
-            </div>
-            <div class="col-sm-3">
-              <center><label style="font-size: 20px" for="instagram" class="form-label">Instagram Link</label></center>
-              <input type="text" class="form-control" placeholder="Instagram link" aria-label="Last name" id="instagram" name="instagram" {% if links.instagram == "" %} value ="" {%else%} value="{{links.instagram}}" {%endif%}>
-            </div>
-            <div class="col-sm-3">
-              <center><label style="font-size: 20px" for="facebook" class="form-label">Facebook Link</label></center>
-              <input type="text" class="form-control" placeholder="Facebook link" aria-label="Last name" id="facebook" name="facebook" {% if links.facebook == "" %} value ="" {%else%} value="{{links.facebook}}" {%endif%}>
-            </div>
-            <div class="col-sm-3">
-              <center><label style="font-size: 20px" for="youtube" class="form-label">Youtube Link</label></center>
-              <input type="text" class="form-control" placeholder="Youtube link" aria-label="Last name" id="youtube" name="youtube" {% if links.youtube == "" %} value ="" {%else%} value="{{links.youtube}}" {%endif%}>
-            </div>
-            <center><span style="display: none; color: red;font-size: large;" id="links_info">Invalid Link</span></center>
         </div>
-        <div style="margin-top: 2%;padding-top: 2%;">
-          <p style="display: none;color: red;" id="form_info"></p>
-            <button style="margin-bottom: 1%;background:linear-gradient(to right, #ff416c, #ff4b2b) ;color: white;" type="submit" class="btn" id="form_submit">Submit</button>
-            <a style="margin-bottom: 1%;background:linear-gradient(to right, #ff416c, #ff4b2b) ;color: white;" class='btn' href="{% url 'myblogs' request.user.username%}" >Return to my Profile</a>
-        </div>
-      </form>
     </div>
-    </center>
-{{ links|json_script:"mylinks" }}
-<div style="display: none;">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
-  <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js" integrity="sha256-xLD7nhI62fcsEZK2/v8LsBcb4lG7dgULkuXoXB/j91c="crossorigin="anonymous"></script>
-  <script src="{% static 'blog/js/local_level.js'%}"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="hidden fixed top-4 right-4 text-white px-4 py-3 rounded shadow-lg z-50 transition-opacity duration-300 z-[9999]">
+        <span id="toastMessage">Notification</span>
+    </div>
+
+    {{ links|json_script:"mylinks" }}
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+    <script src="{% static 'blog/js/local_level.js'%}"></script>
+    
     <script>
-      var interval;
-
-    function countdown() {
-      clearInterval(interval);
-      interval = setInterval( function() {
-      var timer = $('.js-timeout').html();
-      timer = timer.split(':');
-      var minutes = timer[0];
-      var seconds = timer[1];
-      seconds -= 1;
-      if (minutes < 0) return;
-      else if (seconds < 0 && minutes != 0) {
-          minutes -= 1;
-          seconds = 59;
-      }
-      else if (seconds < 10 && length.seconds != 2) seconds = '0' + seconds;
-
-      $('.js-timeout').html(minutes + ':' + seconds);
-
-      if (minutes == 0 && seconds == 0) {
-        clearInterval(interval);
-        console.log("over");
-        $('#otp_btn').prop('disabled',false);
-      };
-      }, 1000);
-    };
-
-      function send_otp() {
-        $('#otp_info').css('display','none');
-        $("#otp_btn").prop("disabled",true);
-        $('#loadingbar').css("display","inline");
-        var email=document.getElementById("email").value;
-        if(email !=""){
-          $.ajax({
-            type : "POST", 
-            url: "{% url 'register' %}",
-            data: {
-            email:$('#email').val(),
-            csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
-            form:"otp",
-            },  
-            success: function(data){
-              $('#loadingbar').css("display","none");
-              if(data.msg !="Error"){
-                $('#sent_otp').val(data.otp_sent);
-                $('#otp_info').css('color','green');
-                $('#otp_info').css('display','inline');
-                countdown();
-                $('#otp_info').html(data.msg+" Resend after "+ "<span style='color:white' class='js-timeout'>1:30</span> mins.");
-                $('#otp_btn').html("Resend");
-              }else{
-                $("#otp_btn").prop("disabled",false);
-                $('#otp_info').css('color','red');
-                $('#otp_info').css('display','inline');
-                $('#otp_info').html('Internal Error, please try again later');
-              }
-            },   
-            failure: function() {
-              $("#otp_btn").prop("disabled",false);
-              $('#loadingbar').css("display","none");
-              $('#otp_info').css('color','red');
-              $('#otp_info').css('display','inline');
-              $('#otp_info').html('Internal Error, please try again later');
-            } 
-          });
-        }else{
-          $("#otp_btn").prop("disabled",false);
-          $('#loadingbar').css("display","none");
-          $('#otp_info').css('color','red');
-          $('#otp_info').css('display','inline');
-          $('#otp_info').html('Please provide Email for OTP!');
-        }
-      };
-
-      // $('#password1, #password2').on('change', function() {
-      //   if($('#password1').val()==$('#password2').val()){
-      //     $('#pass_info').css('color','green');
-      //     $('#pass_info').css('display','inline');
-      //     $('#pass_info').html('Passwords Matching..');
-      //   }else{
-      //     $('#pass_info').css('color','red');
-      //     $('#pass_info').css('display','inline');
-      //     $('#pass_info').html('Passwords not Matching..');
-      //   }
-      // });
-    </script>
-    <script>
-      $("#form_submit").on('click',function(e){
-        if($('#password1').val()==$('#password2').val()){
-          $("#form_submit").submit();
-        }else{
-          $("#form_info").html("Fix the above error");
-          $("#form_info").css("display","block");
-        }
-      })
-
-      $("#country").on('change',function(e){
-        if($("#country").val()=="Nepal"){
-        $("#local_body").removeAttr("disabled");
-      }else{
-        $("#local_body").prop("disabled",true);
-      }
-      })
-      // function checkPassword(){
-      //   // console.log($("#sent_otp").val() +","+$('#otp').val());
-      //   if($('#password1').val()==$('#password2').val()){
-      //     if($("#sent_otp").val()==$('#otp').val()){
-      //       // if($("#twitter".val()))
-      //       return true
-      //     }else{
-      //       $("#otp_info2").css("display","inline");
-      //       $("#otp_info2").css("color","red");
-      //       $("#otp_info2").html("<strong>Invalid OTP</strong>");
-      //       return false
-      //     }
-      //   }else{
-      //     $("#form_info").html("Fix the above error");
-      //     $("#form_info").css("display","block");
-      //     return false
-      //   }
-      // }
-      const isValidUrl = urlString=> {
-	  	var urlPattern = new RegExp('^(https?:\\/\\/)?'+ // validate protocol
-	    '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // validate domain name
-	    '((\\d{1,3}\\.){3}\\d{1,3}))'+ // validate OR ip (v4) address
-	    '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // validate port and path
-	    '(\\?[;&a-z\\d%_.~+=-]*)?'+ // validate query string
-	    '(\\#[-a-z\\d_]*)?$','i'); // validate fragment locator
-	  return !!urlPattern.test(urlString);
-	}
-      $("#youtube, #twitter, #facebook, #instagram").change(function(){
-        if(isValidUrl(this.value)){
-          $("#links_info").css('display','none');
-        }else{
-          name=this.name
-          const mylink=JSON.parse(document.getElementById('mylinks').textContent);
-          this.value=mylink[String(name)]         
-          $("#links_info").css('display','block');
-        }
-      });
-    </script>
-      <script>
-        window.onload=function(){
-          country_opt_update();
-          start_ac_update();
-          "{% for message in messages %}"
-          "{%if message.tags == 'error'%}"
-          $("#form_info").css("color","red");
-          "{%else%}"
-          $("#form_info").css("color","grren");
-          "{% endif %}"
-          $("#form_info").html("{{message}}");
-          $("#form_info").css("display","block");         
-          "{% endfor %}"
-        }
-        main_img.onchange = evt => {
-        const [file] = main_img.files
-        if (file) {
-          img_preview.src = URL.createObjectURL(file)
-        }
-        $('#img_preview').css('display','block');
-      }
-function country_opt_update(){
-    box=document.getElementById("country");
-    var iterator = countries.values();
-    for (let elements of iterator){
-        newOption = new Option(elements,elements);
-        if("{{user.profile.country}}" == elements){
-            box.add(newOption,0);
-            document.getElementById('country').getElementsByTagName('option')[0].selected = 'selected';
-        }else{
-            box.add(newOption,undefined);
-        }
-    }
-};
-function start_ac_update(){
-    local_select=document.getElementById("local_body");
-    for (a in local_level){
-        for (aa in local_level[a]){
-            for(aaa in local_level[a][aa]){
-              final=(aaa+" ("+a+")");
-              newOption = new Option(final,final);
-              if("{{user.profile.local_address}}"==final){
-                local_select.add(newOption,0);
-                document.getElementById('local_body').getElementsByTagName('option')[0].selected = 'selected';
-              }else{
-                local_select.add(newOption,undefined);
-              }
+        
+        $("#update_form").on('submit', function(e) {
+            if ($('#password1').val() == $('#password2').val()) {
+              console.log($('#country').val())
+                if( $('#country').val() =="Nepal" && $('#local_body').val() == "Select address if country is Nepal" ){
+                  showToast("Please fill Local Address field", "error");
+                  return false;
+                }else{
+                  $("#form_submit").submit();
+                }
+            } else {
+                showToast("Fix the above error", "error");
+                return false;
             }
-        }        
-    };
-};
+        })
+
+        $("#country").on('change', function(e) {
+            if ($("#country").val() == "Nepal") {
+                $("#local_body").removeAttr("disabled");
+            } else {
+                $("#local_body").prop("disabled", true);
+            }
+        })
+
+        const isValidUrl = urlString => {
+            var urlPattern = new RegExp('^(https?:\\/\\/)?' + // validate protocol
+                '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // validate domain name
+                '((\\d{1,3}\\.){3}\\d{1,3}))' + // validate OR ip (v4) address
+                '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // validate port and path
+                '(\\?[;&a-z\\d%_.~+=-]*)?' + // validate query string
+                '(\\#[-a-z\\d_]*)?$', 'i'); // validate fragment locator
+            return !!urlPattern.test(urlString);
+        }
+
+        $("#youtube, #twitter, #facebook, #instagram").change(function() {
+            if (this.value === "" || isValidUrl(this.value)) {
+            } else {
+                name = this.name
+                const mylink = JSON.parse(document.getElementById('mylinks').textContent);
+                this.value = mylink[String(name)]
+                showToast("Invalid URL format", "error");
+            }
+        });
+
+        // Toast notification function
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById("toast");
+            const toastMsg = document.getElementById("toastMessage");
+
+            // Reset background color classes
+            toast.classList.remove("bg-yellow-100", "text-yellow-800", "bg-red-500", "text-white", "bg-green-500");
+
+            // Apply based on type
+            if (type === 'error') {
+                toast.classList.add("bg-red-500", "text-white");
+            } else if (type === 'success') {
+                toast.classList.add("bg-green-500", "text-white");
+            } else {
+                toast.classList.add("bg-yellow-100", "text-yellow-800");
+            }
+
+            toastMsg.textContent = message;
+            toast.classList.remove("hidden");
+            toast.classList.add("opacity-100");
+
+            setTimeout(() => {
+                toast.classList.add("opacity-0");
+                setTimeout(() => {
+                    toast.classList.add("hidden");
+                    toast.classList.remove("opacity-100", "opacity-0");
+                }, 300);
+            }, 3000);
+        }
+
+        // Image preview
+        document.getElementById('main_img').addEventListener('change', function(evt) {
+            const [file] = this.files;
+            if (file) {
+                const preview = document.getElementById('img_preview');
+                preview.src = URL.createObjectURL(file);
+            }
+        });
+
+        function country_opt_update() {
+            box = document.getElementById("country");
+            var iterator = countries.values();
+            for (let elements of iterator) {
+                newOption = new Option(elements, elements);
+                if ("{{user.profile.country}}" == elements) {
+                    box.add(newOption, 0);
+                    document.getElementById('country').getElementsByTagName('option')[0].selected = 'selected';
+                } else {
+                    box.add(newOption, undefined);
+                }
+            }
+        };
+
+        function start_ac_update() {
+            local_select = document.getElementById("local_body");
+            for (a in local_level) {
+                for (aa in local_level[a]) {
+                    for (aaa in local_level[a][aa]) {
+                        final = (aaa + " (" + a + ")");
+                        newOption = new Option(final, final);
+                        if ("{{user.profile.local_address}}" == final) {
+                            local_select.add(newOption, 0);
+                            document.getElementById('local_body').getElementsByTagName('option')[0].selected = 'selected';
+                        } else {
+                            local_select.add(newOption, undefined);
+                        }
+                    }
+                }
+            };
+        };
+
+        // Initialize
+        window.onload = function() {
+            country_opt_update();
+            start_ac_update();
+            
+            // Handle Django messages
+            "{% for message in messages %}"
+            "{% if message.tags == 'error' %}"
+            showToast("{{ message|escapejs }}", "error");
+            "{% else %}"
+            showToast("{{ message|escapejs }}", "success");
+            "{% endif %}"
+            "{% endfor %}"
+        }
     </script>
-</div>
 </body>
 </html>

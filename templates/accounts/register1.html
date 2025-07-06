@@ -1,316 +1,534 @@
 {% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset='utf-8'>
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
-    <title>Registeration</title>
+    <title>Create Your Account</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
-    <style>
-.form-control {
-  /* border-radius: 10px; */
-  background: linear-gradient(white, white) padding-box,linear-gradient(to right, #ff416c, #ff4b2b) border-box;
-  border: 2px solid transparent;
-}
-.form-select{
-  background: linear-gradient(white, white) padding-box,linear-gradient(to right, #ff416c, #ff4b2b) border-box;
-  border: 2px solid transparent;
-}
-.heading {
-  width: 80%;
-  color: white;
-  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif !important;
-  text-align: center;
-  padding: 3px;
-  border-color: white;
-  border-width: thin;
-  border-style: solid;
-  border-radius: 7px;
-  font-size: 2em;
-  margin-bottom: 0.5em
-}
-.img_preview{
-  width: 100%;
-}
-@media screen and (min-width: 900px) {
-  .img_preview{
-    width: 50%;
-  }
-}
-@media screen and (max-width: 900px) {
-  #pass_infoo{
-    display: none;
-  }
-}
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="/static/blog/new-design/main.css" rel="stylesheet">
+    <link href="/static/blog/new-design/header.css" rel="stylesheet">
+    <link href="/static/blog/new-design/register.css" rel="stylesheet">
 
-    </style>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 </head>
-<body style=" background-color:black; ">
+<body>
+{% include 'blog/header-nav.html' %}
 
-    <center>
-    <div style="width: 80%;padding: 8px;background: rgb(15, 15, 15);margin-top: 2%;border-radius: 4px;margin-bottom: 2%;">
-        <p class="heading">Registration Credentials</p>
-    <form style="color: white ;margin-top: 3%;width: 90%;" method="post" id="register" onSubmit="return checkPassword()" enctype='multipart/form-data'>
-        {% csrf_token %}
-        <input value="" name="sent_otp" id="sent_otp" hidden>
-        <div class="row g-4">
-            <div class="col-sm-4">
-                <center><label style="font-size: 20px" for="fname" class="form-label">Firstname*</label></center>
-              <input type="text" class="form-control" placeholder="First name" aria-label="First name" id="fname" name="fname" required>
+    <div class="container mx-auto py-8 px-4">
+        <div class="max-w-4xl mx-auto">
+            <!-- Progress Header -->
+            <div class="text-center mb-8">
+                <h1 class="text-3xl font-bold mb-2" style="color: var(--primary-text);">Create Your Account</h1>
+                <p class="text-lg" style="color: var(--secondary-text);">Join our community in just 2 simple steps</p>
             </div>
-            <div class="col-sm-4">
-                <center><label style="font-size: 20px" for="lname" class="form-label">Lastname</label></center>
-              <input type="text" class="form-control" placeholder="Last name" aria-label="Last name" id="lname" name="lname">
+
+            <!-- Progress Bar -->
+            <div class="mb-8">
+                <div class="flex justify-between items-center mb-4">
+                    <div class="flex items-center">
+                        <div class="step-indicator active w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm mr-3" id="step1-indicator">1</div>
+                        <span class="text-sm font-medium" style="color: var(--primary-text);">Basic Information</span>
+                    </div>
+                    <div class="flex-1 h-2 bg-gray-200 rounded-full mx-4">
+                        <div class="progress-bar h-full" id="progress-bar" style="width: 50%"></div>
+                    </div>
+                    <div class="flex items-center">
+                        <div class="step-indicator w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm mr-3" id="step2-indicator">2</div>
+                        <span class="text-sm font-medium" style="color: var(--primary-text);">Profile & Links</span>
+                    </div>
+                </div>
             </div>
-            <div class="col-sm-4">
-                <center><label style="font-size: 20px" for="username" class="form-label">Username*</label></center>
-                <input type="text" class="form-control" placeholder="Username" aria-label="First name" id="username" name="username" minlength="8" required>
-            </div>
-            <div class="col-sm-7">
-                <center><label style="font-size: 20px" for="email" class="form-label">Email*</label></center>
-                <button onclick="send_otp()" type="button" style="width:23%; float: right;" class="btn btn-info " id="otp_btn">Get OTP</button>
-                <input style="width: 75%;margin-right: 2px;" type="email" class="form-control" placeholder="Email" aria-label="email" id="email" name="email" required>
-                <span style="display: none; color: red;" id="otp_info"></span>
-                <span id="loadingbar" style="display: none;"><img style="margin-top: 2px;" src="{%static 'loading_bar3.gif'%}"></span>
-              </div>
-            <div class="col-sm-5">
-              <center><label style="font-size: 20px" for="otp" class="form-label">Email OTP*</label></center>
-              <input type="number" class="form-control" placeholder="Enter OTP from Email" aria-label="otp" id="otp" name="otp" required>
-              <span style="display: none; color: red;" id="otp_info2"></span>
-            </div>
-            <div class="col-sm-5">
-                <center><label style="font-size: 20px" for="password1" class="form-label">Password*</label></center>
-                <input type="password" class="form-control" placeholder="Password" aria-label="Password" id="password1" name="password1" required>
-            </div>
-            <div class="col-sm-5">
-                <center><label style="font-size: 20px" for="password2" class="form-label">Confirm Password*</label></center>
-                <input type="password" class="form-control" placeholder="Retype Password" aria-label="Password" id="password2" name="password2" required>
-            </div>
-            <div class="col-sm-2">
-              <center><label style="font-size: 10px;visibility: hidden;" for="" class="form-label" id="pass_infoo">Passwords Check</label></center>
-              <span id="pass_info" style="display: none;font-size: 20px;">Passwords Matching</span>
-            </div>
-            <div class="col-md-6">
-              <center><label style="font-size: 20px" for="country" class="form-label">Country*</label></center>
-              <select class="form-select" id="country" name="country" required="required">
-                <option value="">Select Your Country</option>
-                <option value="Nepal">Nepal</option>
-              </select>
-            </div>
-            <div class="col-md-6">
-              <center><label style="font-size: 20px" for="local_body" class="form-label">Local Address</label></center>
-              <select class="form-select" id="local_body" name="local_body" disabled>
-                <option>Select address if county is Nepal</option>
-              </select>
-            </div>
-            <div class="col-sm-12">
-              <center><label style="font-size: 20px" for="bio" class="form-label">Short Bio</label></center>
-              <input type="text" class="form-control" placeholder="Bio" aria-label="Last name" id="bio" name="bio">
-            </div>
-            <div class="col-sm-3">
-              <center><label style="font-size: 20px" for="twitter" class="form-label">Twitter Link</label></center>
-              <input type="text" class="form-control" placeholder="Twitter link" aria-label="Last name" id="twitter" name="twitter">
-            </div>
-            <div class="col-sm-3">
-              <center><label style="font-size: 20px" for="instagram" class="form-label">Instagram Link</label></center>
-              <input type="text" class="form-control" placeholder="Instagram link" aria-label="Last name" id="instagram" name="instagram">
-            </div>
-            <div class="col-sm-3">
-              <center><label style="font-size: 20px" for="facebook" class="form-label">Facebook Link</label></center>
-              <input type="text" class="form-control" placeholder="Facebook link" aria-label="Last name" id="facebook" name="facebook">
-            </div>
-            <div class="col-sm-3">
-              <center><label style="font-size: 20px" for="youtube" class="form-label">Youtube Link</label></center>
-              <input type="text" class="form-control" placeholder="Youtube link" aria-label="Last name" id="youtube" name="youtube">
-            </div>
-            <center><span style="display: none; color: red;font-size: large;" id="links_info">Invalid Link</span></center>
-            <div class="col-md-12">
-                <center><label style="font-size: 20px" for="main_img" class="form-label">Profile Image</label></center>
-                <input class="form-control" type="file" id="main_img" name="main_img">
-            </div>
-            <div>
-              <center><img style="margin-bottom: 2%; padding: 5px; border-style: solid;color: rgb(78, 117, 167);display: none;" class="img_preview" id="img_preview" src="#" alt="  Main image  " ></center>
+
+            <!-- Registration Form -->
+            <div class="card p-8">
+                <form method="post" id="register" onSubmit="return checkPassword()" enctype='multipart/form-data'>
+                    {% csrf_token %}
+                    <input value="" name="sent_otp" id="sent_otp" hidden>
+                    <input value="" name="sent_email" id="sent_email" hidden>
+
+                    <!-- Step 1: Basic Information -->
+                    <div class="step-content active" id="step1">
+                        <h2 class="text-2xl font-semibold mb-6 text-center" style="color: var(--primary-text);">
+                            <i class="fas fa-user-circle mr-2"></i>Basic Information
+                        </h2>
+
+                        <div class="grid md:grid-cols-2 gap-6 mb-6">
+                            <div>
+                                <label for="fname" class="block text-sm font-medium mb-2" style="color: var(--primary-text);">
+                                    First Name <span class="text-red-500">*</span>
+                                </label>
+                                <input type="text" class="form-input w-full p-3" placeholder="Enter your first name" id="fname" name="fname" required>
+                            </div>
+                            <div>
+                                <label for="lname" class="block text-sm font-medium mb-2" style="color: var(--primary-text);">Last Name</label>
+                                <input type="text" class="form-input w-full p-3" placeholder="Enter your last name" id="lname" name="lname" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-6">
+                            <label for="username" class="block text-sm font-medium mb-2" style="color: var(--primary-text);">
+                                Username <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" class="form-input w-full p-3" placeholder="Choose a unique username (min 8 characters)" id="username" name="username" minlength="8" required>
+                        </div>
+
+                        <div class="grid md:grid-cols-3 gap-4 mb-6">
+                            <div class="md:col-span-2">
+                                <label for="email" class="block text-sm font-medium mb-2" style="color: var(--primary-text);">
+                                    Email Address <span class="text-red-500">*</span>
+                                </label>
+                                <div class="flex gap-2 max-sm:flex-col">
+                                    <input type="email" class="form-input flex-1 p-3" placeholder="Enter your email address" id="email" name="email" required>
+                                    <button type="button" class="btn-primary px-4 py-2 whitespace-nowrap max-sm:w-1/2" id="otp_btn" onclick="send_otp()">
+                                        <i class="fas fa-paper-plane mr-1"></i>Get OTP
+                                    </button>
+                                </div>
+                                <div id="otp_info" class="error-message" style="display: none;"></div>
+                                <div id="loadingbar" style="display: none;" class="mt-2">
+                                    <div class="flex items-center">
+                                        <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-500 mr-2"></div>
+                                        <span class="text-sm" style="color: var(--secondary-text);">Sending OTP...</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <label for="otp" class="block text-sm font-medium mb-2" style="color: var(--primary-text);">
+                                    Email OTP <span class="text-red-500">*</span>
+                                </label>
+                                <input type="number" class="form-input sm:w-full p-3" placeholder="Enter OTP" id="otp" name="otp" required>
+                                <div id="otp_info2" class="error-message" style="display: none;"></div>
+                            </div>
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-6 mb-6">
+                            <div>
+                                <label for="password1" class="block text-sm font-medium mb-2" style="color: var(--primary-text);">
+                                    Password <span class="text-red-500">*</span>
+                                </label>
+                                <input type="password" class="form-input w-full p-3" placeholder="Create a strong password" id="password1" name="password1" required>
+                                <div class="password-strength">
+                                    <div class="password-strength-bar" id="password-strength-bar"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <label for="password2" class="block text-sm font-medium mb-2" style="color: var(--primary-text);">
+                                    Confirm Password <span class="text-red-500">*</span>
+                                </label>
+                                <input type="password" class="form-input w-full p-3" placeholder="Confirm your password" id="password2" name="password2" required>
+                                <div id="pass_info" class="mt-2 text-sm" style="display: none;"></div>
+                            </div>
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-6 mb-8">
+                            <div>
+                                <label for="country" class="block text-sm font-medium mb-2" style="color: var(--primary-text);">
+                                    Country <span class="text-red-500">*</span>
+                                </label>
+                                <select class="form-input w-full p-3" id="country" name="country" required>
+                                    <option value="">Select Your Country</option>
+                                    <option value="Nepal">Nepal</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="local_body" class="block text-sm font-medium mb-2" style="color: var(--primary-text);">Local Address</label>
+                                <select class="form-input w-full p-3" id="local_body" name="local_body" disabled>
+                                    <option>Select address if country is Nepal</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-between max-sm:flex-col max-sm:gap-2">
+                            <div class="flex gap-3 justify-between max-sm:justify-center">
+                                <button type="button" class="oauth-btn google-btn">
+                                    <i class="fa-brands fa-google"></i>
+                                </button>
+                                <button type="button" class="oauth-btn github-btn">
+                                    <i class="fa-brands fa-github"></i>
+                                </button>
+                            </div>
+                            <button type="button" class="btn-primary px-8 py-3" onclick="nextStep()">
+                                Continue <i class="fas fa-arrow-right ml-2"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Profile & Links -->
+                    <div class="step-content" id="step2">
+                        <h2 class="text-2xl font-semibold mb-6 text-center" style="color: var(--primary-text);">
+                            <i class="fas fa-user-edit mr-2"></i>Profile & Social Links
+                        </h2>
+
+                        <div class="mb-6">
+                            <label for="bio" class="block text-sm font-medium mb-2" style="color: var(--primary-text);">About You</label>
+                            <textarea class="form-input w-full p-3 h-24 resize-none" placeholder="Tell us a bit about yourself..." id="bio" name="bio"></textarea>
+                        </div>
+
+                        <div class="mb-6">
+                            <h3 class="text-lg font-semibold mb-4" style="color: var(--primary-text);">
+                                <i class="fas fa-share-alt mr-2"></i>Social Media Links
+                            </h3>
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div class="social-input">
+                                    <i class="fab fa-twitter"></i>
+                                    <input type="url" class="form-input w-full p-3" placeholder="https://twitter.com/username" id="twitter" name="twitter">
+                                </div>
+                                <div class="social-input">
+                                    <i class="fab fa-instagram"></i>
+                                    <input type="url" class="form-input w-full p-3" placeholder="https://instagram.com/username" id="instagram" name="instagram">
+                                </div>
+                                <div class="social-input">
+                                    <i class="fab fa-facebook"></i>
+                                    <input type="url" class="form-input w-full p-3" placeholder="https://facebook.com/username" id="facebook" name="facebook">
+                                </div>
+                                <div class="social-input">
+                                    <i class="fab fa-youtube"></i>
+                                    <input type="url" class="form-input w-full p-3" placeholder="https://youtube.com/channel/..." id="youtube" name="youtube">
+                                </div>
+                            </div>
+                            <div id="links_info" class="error-message text-center mt-2" style="display: none;">Please enter valid URLs</div>
+                        </div>
+
+                        <div class="mb-8">
+                            <label for="main_img" class="block text-sm font-medium mb-2" style="color: var(--primary-text);">Profile Picture</label>
+                            <div class="file-upload p-6 text-center">
+                                <input type="file" class="hidden" id="main_img" name="main_img" accept="image/*">
+                                <label for="main_img" class="cursor-pointer">
+                                    <i class="fas fa-cloud-upload-alt text-3xl mb-2" style="color: var(--secondary-text);"></i>
+                                    <p class="text-sm" style="color: var(--secondary-text);">Click to upload your profile picture</p>
+                                    <p class="text-xs mt-1" style="color: var(--secondary-text);">PNG, JPG, GIF up to 10MB</p>
+                                </label>
+                            </div>
+                            <div class="mt-4 text-center">
+                                <img id="img_preview" class="max-md:max-w-full hidden mx-auto rounded-lg shadow-lg  max-w-md object-cover" alt="Preview">
+                            </div>
+                        </div>
+
+                        <div class="flex justify-between max-sm:flex-col max-sm:gap-2">
+                            <button type="button" class="btn-secondary px-8 py-3" onclick="prevStep()">
+                                <i class="fas fa-arrow-left mr-2"></i>Back
+                            </button>
+                            <button type="submit" class="btn-primary px-8 py-3" id="form_submit">
+                                <i class="fas fa-user-check mr-2"></i>Create Account
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="form_info" class="error-message text-center mt-4" style="display: none;"></div>
+                </form>
             </div>
         </div>
-        <div style="margin-top: 2%;padding-top: 2%;">
-          <p style="display: none;color: red;" id="form_info"></p>
-            <button style="margin-bottom: 1%;background:linear-gradient(to right, #ff416c, #ff4b2b) ;color: white;" type="submit" class="btn" id="form_submit">Submit</button>
-            <a style="margin-bottom: 1%;background:linear-gradient(to right, #ff416c, #ff4b2b) ;color: white;" class='btn' href="login1" >Already have an account</a>
-        </div>
-      </form>
     </div>
-    </center>
-<div style="display: none;">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
-  <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js" integrity="sha256-xLD7nhI62fcsEZK2/v8LsBcb4lG7dgULkuXoXB/j91c="crossorigin="anonymous"></script>
-  <script src="{% static 'blog/js/local_level.js'%}"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+    <div id="toast" class="hidden fixed top-4 right-4 text-white px-4 py-3 rounded shadow-lg z-50 transition-opacity duration-300 z-[9999]">
+      <span id="toastMessage">Notification</span>
+    </div>
+
+{% include 'blog/footer.html' %}
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+    <script src="{% static 'blog/js/local_level.js'%}"></script>
+    
     <script>
-      var interval;
+        let currentStep = 1;
+        let interval;
 
-    function countdown() {
-      clearInterval(interval);
-      interval = setInterval( function() {
-      var timer = $('.js-timeout').html();
-      timer = timer.split(':');
-      var minutes = timer[0];
-      var seconds = timer[1];
-      seconds -= 1;
-      if (minutes < 0) return;
-      else if (seconds < 0 && minutes != 0) {
-          minutes -= 1;
-          seconds = 59;
-      }
-      else if (seconds < 10 && length.seconds != 2) seconds = '0' + seconds;
-
-      $('.js-timeout').html(minutes + ':' + seconds);
-
-      if (minutes == 0 && seconds == 0) {
-        clearInterval(interval);
-        console.log("over");
-        $('#otp_btn').prop('disabled',false);
-      };
-      }, 1000);
-    };
-
-      function send_otp() {
-        $('#otp_info').css('display','none');
-        $("#otp_btn").prop("disabled",true);
-        $('#loadingbar').css("display","inline");
-        var email=document.getElementById("email").value;
-        if(email !=""){
-          $.ajax({
-            type : "POST", 
-            url: "{% url 'register' %}",
-            data: {
-            email:$('#email').val(),
-            csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
-            form:"otp",
-            },  
-            success: function(data){
-              $('#loadingbar').css("display","none");
-              if(data.msg !="Error"){
-                $('#sent_otp').val(data.otp_sent);
-                $('#otp_info').css('color','green');
-                $('#otp_info').css('display','inline');
-                countdown();
-                $('#otp_info').html(data.msg+" Resend after "+ "<span style='color:white' class='js-timeout'>1:30</span> mins.");
-                $('#otp_btn').html("Resend");
-              }else{
-                $("#otp_btn").prop("disabled",false);
-                $('#otp_info').css('color','red');
-                $('#otp_info').css('display','inline');
-                $('#otp_info').html('Internal Error, please try again later');
-              }
-            },   
-            failure: function() {
-              $("#otp_btn").prop("disabled",false);
-              $('#loadingbar').css("display","none");
-              $('#otp_info').css('color','red');
-              $('#otp_info').css('display','inline');
-              $('#otp_info').html('Internal Error, please try again later');
-            } 
-          });
-        }else{
-          $("#otp_btn").prop("disabled",false);
-          $('#loadingbar').css("display","none");
-          $('#otp_info').css('color','red');
-          $('#otp_info').css('display','inline');
-          $('#otp_info').html('Please provide Email for OTP!');
+        // Step Navigation
+        function nextStep() {
+            if (validateStep1()) {
+                currentStep = 2;
+                updateStepDisplay();
+            }
         }
-      };
 
-      $('#password1, #password2').on('change', function() {
-        if ($('#password2').val()!=""){
-            if($('#password1').val()==$('#password2').val()){
-            $('#pass_info').css('color','green');
-            $('#pass_info').css('display','inline');
-            $('#pass_info').html('Passwords Matching..');
-          }else{
-            $('#pass_info').css('color','red');
-            $('#pass_info').css('display','inline');
-            $('#pass_info').html('Passwords not Matching..');
-          }
+        function prevStep() {
+            currentStep = 1;
+            updateStepDisplay();
         }
-      });
+
+        function updateStepDisplay() {
+            document.querySelectorAll('.step-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            document.getElementById(`step${currentStep}`).classList.add('active');
+            
+            // Update progress bar
+            const progressBar = document.getElementById('progress-bar');
+            progressBar.style.width = currentStep === 1 ? '50%' : '100%';
+            
+            // Update step indicators
+            document.getElementById('step1-indicator').classList.toggle('active', currentStep >= 1);
+            document.getElementById('step2-indicator').classList.toggle('active', currentStep >= 2);
+        }
+
+        function validateStep1() {
+            const fname = document.getElementById('fname').value;
+            const username = document.getElementById('username').value;
+            const email = document.getElementById('email').value;
+            const otp = document.getElementById('otp').value;
+            const password1 = document.getElementById('password1').value;
+            const password2 = document.getElementById('password2').value;
+            const country = document.getElementById('country').value;
+
+            if (!fname || !username || !email || !otp || !password1 || !password2 || !country) {
+                showToast('Please fill in all required fields','error');
+                return false;
+            }
+
+            if (username.length < 8) {
+                showToast('Username must be at least 8 characters long','error');
+                return false;
+            }
+
+            if (password1 !== password2) {
+                showToast('Passwords do not match','error');
+                return false;
+            }
+
+            if (document.getElementById('sent_otp').value !== otp) {
+                showToast('Invalid OTP','error');
+                return false;
+            }
+
+            if (document.getElementById('sent_email').value !== email) {
+                showToast('Email Changed, Verify OTP again!','error');
+                return false;
+            }
+
+            return true;
+        }
+
+        function showError(message) {
+            const formInfo = document.getElementById('form_info');
+            formInfo.textContent = message;
+            formInfo.style.display = 'block';
+            formInfo.style.color = '#ef4444';
+            setTimeout(() => {
+                formInfo.style.display = 'none';
+            }, 5000);
+        }
+
+        // Password strength indicator
+        function checkPasswordStrength(password) {
+            const strengthBar = document.getElementById('password-strength-bar');
+            let strength = 0;
+            
+            if (password.length >= 8) strength++;
+            if (/[a-z]/.test(password)) strength++;
+            if (/[A-Z]/.test(password)) strength++;
+            if (/[0-9]/.test(password)) strength++;
+            if (/[^A-Za-z0-9]/.test(password)) strength++;
+            
+            strengthBar.className = 'password-strength-bar';
+            if (strength === 1) strengthBar.classList.add('strength-weak');
+            else if (strength === 2) strengthBar.classList.add('strength-fair');
+            else if (strength === 3) strengthBar.classList.add('strength-good');
+            else if (strength >= 4) strengthBar.classList.add('strength-strong');
+        }
+
+        document.getElementById('password1').addEventListener('input', function() {
+            checkPasswordStrength(this.value);
+        });
+
+        // OTP countdown
+        function countdown() {
+            clearInterval(interval);
+            interval = setInterval(function() {
+                var timer = $('.js-timeout').html();
+                timer = timer.split(':');
+                var minutes = timer[0];
+                var seconds = timer[1];
+                seconds -= 1;
+                if (minutes < 0) return;
+                else if (seconds < 0 && minutes != 0) {
+                    minutes -= 1;
+                    seconds = 59;
+                }
+                else if (seconds < 10 && String(seconds).length != 2) seconds = '0' + seconds;
+
+                $('.js-timeout').html(minutes + ':' + seconds);
+
+                if (minutes == 0 && seconds == 0) {
+                    clearInterval(interval);
+                    $('#otp_btn').prop('disabled', false);
+                }
+            }, 1000);
+        }
+
+        // Send OTP function
+        function send_otp() {
+            $('#otp_info').css('display', 'none');
+            $("#otp_btn").prop("disabled", true);
+            $('#loadingbar').css("display", "block");
+            var email = document.getElementById("email").value;
+            
+            if (email != "") {
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'register' %}",
+                    data: {
+                        email: $('#email').val(),
+                        csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                        form: "otp",
+                    },
+                    success: function(data) {
+                        $('#loadingbar').css("display", "none");
+                        if (data.msg != "Error") {
+                            $('#sent_otp').val(data.otp_sent);
+                            $('#sent_email').val(email);
+                            console.log($('#sent_email').val());
+                            $('#otp_info').removeClass('error-message').addClass('success-message');
+                            $('#otp_info').css('display', 'block');
+                            countdown();
+                            $('#otp_info').html(data.msg + " Resend after " + "<span style='color:#6B573F' class='js-timeout'>1:30</span> mins.");
+                            $('#otp_btn').html('<i class="fas fa-redo mr-1"></i>Resend');
+                        } else {
+                            $("#otp_btn").prop("disabled", false);
+                            $('#otp_info').removeClass('success-message').addClass('error-message');
+                            $('#otp_info').css('display', 'block');
+                            $('#otp_info').html('Internal Error, please try again later');
+                        }
+                    },
+                    error: function() {
+                        $("#otp_btn").prop("disabled", false);
+                        $('#loadingbar').css("display", "none");
+                        $('#otp_info').removeClass('success-message').addClass('error-message');
+                        $('#otp_info').css('display', 'block');
+                        $('#otp_info').html('Internal Error, please try again later');
+                    }
+                });
+            } else {
+                $("#otp_btn").prop("disabled", false);
+                $('#loadingbar').css("display", "none");
+                $('#otp_info').removeClass('success-message').addClass('error-message');
+                $('#otp_info').css('display', 'block');
+                $('#otp_info').html('Please provide Email for OTP!');
+            }
+        }
+
+        // Password matching check
+        $('#password1, #password2').on('input', function() {
+            if ($('#password2').val() != "") {
+                if ($('#password1').val() == $('#password2').val()) {
+                    $('#pass_info').removeClass('error-message').addClass('success-message');
+                    $('#pass_info').css('display', 'block');
+                    $('#pass_info').html('<i class="fas fa-check mr-1"></i>Passwords match');
+                } else {
+                    $('#pass_info').removeClass('success-message').addClass('error-message');
+                    $('#pass_info').css('display', 'block');
+                    $('#pass_info').html('<i class="fas fa-times mr-1"></i>Passwords do not match');
+                }
+            }
+        });
+
+        // Country selection
+        $("#country").on('change', function(e) {
+            if ($("#country").val() == "Nepal") {
+                $("#local_body").removeAttr("disabled");
+            } else {
+                $("#local_body").prop("disabled", true);
+            }
+        });
+
+        // Form validation
+        function checkPassword() {
+            if ($('#password1').val() == $('#password2').val()) {
+                if ($("#sent_otp").val() == $('#otp').val()) {
+                    return true;
+                } else {
+                    $("#otp_info2").css("display", "block");
+                    $("#otp_info2").html("<i class='fas fa-exclamation-triangle mr-1'></i><strong>Invalid OTP</strong>");
+                    return false;
+                }
+            } else {
+                showError("Passwords do not match");
+                return false;
+            }
+        }
+
+        // URL validation
+        const isValidUrl = urlString => {
+            var urlPattern = new RegExp('^(https?:\\/\\/)?' +
+                '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' +
+                '((\\d{1,3}\\.){3}\\d{1,3}))' +
+                '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' +
+                '(\\?[;&a-z\\d%_.~+=-]*)?' +
+                '(\\#[-a-z\\d_]*)?$', 'i');
+            return !!urlPattern.test(urlString);
+        }
+
+        $("#youtube, #twitter, #facebook, #instagram").on('input', function() {
+            if (this.value && !isValidUrl(this.value)) {
+                $("#links_info").css('display', 'block');
+                // this.setCustomValidity('Please enter a valid URL');
+                showToast('Please enter a valid URL','error');
+            } else {
+                $("#links_info").css('display', 'none');
+                // this.setCustomValidity('');
+            }
+        });
+
+        // Image preview
+        document.getElementById('main_img').addEventListener('change', function(evt) {
+            const [file] = this.files;
+            if (file) {
+                const preview = document.getElementById('img_preview');
+                preview.src = URL.createObjectURL(file);
+                preview.classList.remove('hidden');
+            }
+        });
+
+        // Initialize
+        window.onload = function() {
+            if (typeof country_opt === 'function') country_opt();
+            if (typeof start_ac === 'function') start_ac();
+            
+            // Handle Django messages
+            "{% for message in messages %}"
+                showToast("{{ message|escapejs }}", "{{ message.level_tag }}");
+            "{% endfor %}"
+        }
     </script>
-    <script>
-      $("#form_submit").on('click',function(e){
-        if($('#password1').val()==$('#password2').val()){
-          $("#form_submit").submit();
-        }else{
-          $("#form_info").html("Fix the above error");
-          $("#form_info").css("display","block");
-        }
-      })
 
-      $("#country").on('change',function(e){
-        if($("#country").val()=="Nepal"){
-        $("#local_body").removeAttr("disabled");
-      }else{
-        $("#local_body").prop("disabled",true);
-      }
-      })
-      function checkPassword(){
-        // console.log($("#sent_otp").val() +","+$('#otp').val());
-        if($('#password1').val()==$('#password2').val()){
-          if($("#sent_otp").val()==$('#otp').val()){
-            // if($("#twitter".val()))
-            return true
-          }else{
-            $("#otp_info2").css("display","inline");
-            $("#otp_info2").css("color","red");
-            $("#otp_info2").html("<strong>Invalid OTP</strong>");
-            return false
-          }
-        }else{
-          $("#form_info").html("Fix the above error");
-          $("#form_info").css("display","block");
-          return false
-        }
-      }
-      const isValidUrl = urlString=> {
-	  	var urlPattern = new RegExp('^(https?:\\/\\/)?'+ // validate protocol
-	    '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // validate domain name
-	    '((\\d{1,3}\\.){3}\\d{1,3}))'+ // validate OR ip (v4) address
-	    '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // validate port and path
-	    '(\\?[;&a-z\\d%_.~+=-]*)?'+ // validate query string
-	    '(\\#[-a-z\\d_]*)?$','i'); // validate fragment locator
-	  return !!urlPattern.test(urlString);
-	}
-      $("#youtube, #twitter, #facebook, #instagram").change(function(){
-        if(isValidUrl(this.value)){
-          $("#links_info").css('display','none');
-        }else{
-          console.log(isValidUrl(this.value))
-          this.value="";
-          $("#links_info").css('display','block');
-        }
-      });
-    </script>
       <script>
-        window.onload=function(){
-          country_opt();
-          start_ac();
-          "{% for message in messages %}"
-          "{%if message.tags == 'error'%}"
-          $("#form_info").css("color","red");
-          "{%else%}"
-          $("#form_info").css("color","grren");
-          "{% endif %}"
-          $("#form_info").html("{{message}}");
-          $("#form_info").css("display","block");         
-          "{% endfor %}"
-        }
-        main_img.onchange = evt => {
-        const [file] = main_img.files
-        if (file) {
-          img_preview.src = URL.createObjectURL(file)
-        }
-        $('#img_preview').css('display','block');
-      }
-    </script>
-</div>
+  function showToast(message, type = 'info') {
+    const toast = document.getElementById("toast");
+    const toastMsg = document.getElementById("toastMessage");
+
+    // Reset background color classes
+    toast.classList.remove("bg-yellow-100", "text-yellow-800", "bg-red-500", "text-white");
+
+    // Apply based on type
+    if (type === 'error') {
+      toast.classList.add("bg-red-500", "text-white");
+    } else {
+      toast.classList.add("bg-yellow-100", "text-yellow-800");
+    }
+
+    toastMsg.textContent = message;
+    toast.classList.remove("hidden");
+    toast.classList.add("opacity-100");
+
+    setTimeout(() => {
+      toast.classList.add("opacity-0");
+      setTimeout(() => {
+        toast.classList.add("hidden");
+        toast.classList.remove("opacity-100", "opacity-0");
+      }, 300);
+    }, 3000);
+  }
+
+  // Show error if it exists
+  "{% if error %}"
+    showToast("{{ error|escapejs }}", "error");
+  "{% endif %}"
+
+  "{% for message in messages %}"
+    showToast("{{ message|escapejs }}", "{{ message.level_tag }}");
+  "{% endfor %}"
+</script>
 </body>
 </html>

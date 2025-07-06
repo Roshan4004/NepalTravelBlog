@@ -1,0 +1,105 @@
+body {
+    background: linear-gradient(135deg, var(--primary-bg) 0%, var(--highlighted-bg) 100%);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    min-height: 100vh;
+}
+.form-input {
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    background: var(--secondary-bg);
+    transition: all 0.3s ease;
+    color: var(--primary-text);
+}
+.form-input:focus {
+    border-color: #725906;
+    outline: none;
+}
+.form-input:valid {
+    border-color: #10b981;
+}
+.btn-primary {
+    background: linear-gradient(135deg, #ff416c, #ff4b2b);
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-weight: 600;
+    padding: 12px 24px;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow);
+}
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 65, 108, 0.3);
+}
+.btn-secondary {
+    background: var(--secondary-bg);
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    color: var(--primary-text);
+    font-weight: 600;
+    padding: 12px 24px;
+    transition: all 0.3s ease;
+}
+.btn-secondary:hover {
+    background: var(--highlighted-bg);
+    border-color: var(--hover-bg);
+}
+.card {
+    background: var(--secondary-bg);
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border-color);
+}
+.social-input {
+    position: relative;
+}
+.social-input i {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--secondary-text);
+}
+.social-input input {
+    padding-left: 40px;
+}
+.file-upload {
+    border: 2px dashed var(--border-color);
+    border-radius: 12px;
+    background: var(--primary-bg);
+    transition: all 0.3s ease;
+}
+.file-upload:hover {
+    border-color: #ff416c;
+    background: var(--highlighted-bg);
+}
+.error-message {
+    color: #ef4444;
+    font-size: 0.875rem;
+    margin-top: 4px;
+}
+.success-message {
+    color: #10b981;
+    font-size: 0.875rem;
+    margin-top: 4px;
+}
+.profile-image-container {
+    position: relative;
+    display: inline-block;
+}
+.profile-image {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid var(--border-color);
+    box-shadow: var(--shadow);
+}
+@media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+    }
+    .card {
+        margin: 1rem;
+    }
+}

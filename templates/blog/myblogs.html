@@ -6,10 +6,9 @@
   <title>My Blogs - Travel to Nepal</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
   
-  <!-- Theme CSS -->
   <link rel="stylesheet" href="{% static 'blog/new-design/main.css' %}">
   <link rel="stylesheet" href="{% static 'blog/new-design/header.css' %}">
   <link rel="stylesheet" href="{% static 'blog/new-design/myblogs.css' %}">
@@ -89,25 +88,25 @@
               </div>
               
               <div class="flex space-x-3">
-                {% if links.instagram %}
+                {% if links.instagram != "None" and links.instagram != "" %}
                   <a href="{{links.instagram}}" class="social-icon bg-gradient-to-br from-fuchsia-500 to-purple-600 text-white">
                     <i class="fab fa-instagram"></i>
                   </a>
                 {% endif %}
                 
-                {% if links.twitter %}
-                  <a href="{{links.twitter}}" class="social-icon bg-blue-400 text-white">
-                    <i class="fab fa-twitter"></i>
+                {% if links.twitter != "None" and links.twitter != "" %}
+                  <a href="{{links.twitter}}" class="social-icon bg-blue-400 text-white" target="_blank">
+                    <i class="fa-brands fa-square-x-twitter"></i>
                   </a>
                 {% endif %}
                 
-                {% if links.facebook %}
+                {% if links.facebook != "None" and links.facebook != "" %}
                   <a href="{{links.facebook}}" class="social-icon bg-blue-600 text-white">
                     <i class="fab fa-facebook-f"></i>
                   </a>
                 {% endif %}
                 
-                {% if links.youtube %}
+                {% if links.youtube != "None" and links.youtube != "" %}
                   <a href="{{links.youtube}}" class="social-icon bg-red-600 text-white">
                     <i class="fab fa-youtube"></i>
                   </a>

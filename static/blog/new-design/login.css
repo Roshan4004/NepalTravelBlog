@@ -1,0 +1,313 @@
+:root {
+    --primary-bg: #FFF8E1;
+    --secondary-bg: #FFFFFF;
+    --highlighted-bg: #FFECB3;
+    --hover-bg: #FFD740;
+    --primary-text: #2A1D0D;
+    --secondary-text: #6B573F;
+    --highlight-text: #1A1208;
+    --accent-color: #ff0000;
+    --border-color: #D4AF37;
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --hover-detail_page: #f5e7b3;
+}
+
+body {
+    background: linear-gradient(135deg, var(--primary-bg) 0%, var(--highlighted-bg) 100%);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    min-height: 100vh;
+}
+
+.login-container {
+    background: var(--secondary-bg);
+    border-radius: 24px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border-color);
+    backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+}
+
+.login-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #ff416c, #ff4b2b);
+}
+
+.form-input {
+    border: 2px solid var(--border-color);
+    border-radius: 16px;
+    background: var(--secondary-bg);
+    transition: all 0.3s ease;
+    color: var(--primary-text);
+    position: relative;
+}
+
+.form-input:focus {
+    border-color: #ff416c;
+    box-shadow: 0 0 0 3px rgba(255, 65, 108, 0.1);
+    outline: none;
+    transform: translateY(-2px);
+}
+
+.form-input::placeholder {
+    color: var(--secondary-text);
+}
+
+.input-group {
+    position: relative;
+}
+
+.input-icon {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--secondary-text);
+    transition: all 0.3s ease;
+    z-index: 10;
+}
+
+.form-input:focus + .input-icon {
+    color: #ff416c;
+}
+
+.form-input.with-icon {
+    padding-left: 48px;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #ff416c, #ff4b2b);
+    border: none;
+    border-radius: 16px;
+    color: white;
+    font-weight: 600;
+    padding: 16px 32px;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.btn-primary:hover::before {
+    left: 100%;
+}
+
+.btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 40px rgba(255, 65, 108, 0.4);
+}
+
+.btn-primary:active {
+    transform: translateY(-1px);
+}
+
+.floating-shapes {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: -1;
+}
+
+.shape {
+    position: absolute;
+    opacity: 0.1;
+    animation: float 6s ease-in-out infinite;
+}
+
+.shape-1 {
+    top: 10%;
+    left: 10%;
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(45deg, #ff416c, #ff4b2b);
+    border-radius: 50%;
+    animation-delay: 0s;
+}
+
+.shape-2 {
+    top: 60%;
+    right: 10%;
+    width: 120px;
+    height: 120px;
+    background: linear-gradient(45deg, var(--border-color), var(--hover-bg));
+    border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+    animation-delay: 2s;
+}
+
+.shape-3 {
+    bottom: 20%;
+    left: 20%;
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(45deg, #ff416c, #ff4b2b);
+    border-radius: 20% 80% 80% 20% / 20% 20% 80% 80%;
+    animation-delay: 4s;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-20px) rotate(180deg); }
+}
+
+.welcome-text {
+    background: linear-gradient(135deg, #ff416c, #ff4b2b);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent;
+}
+
+.error-message {
+    color: #ef4444;
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin-top: 16px;
+    font-size: 0.875rem;
+    animation: shake 0.5s ease-in-out;
+}
+
+.success-message {
+    color: #10b981;
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin-top: 16px;
+    font-size: 0.875rem;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+.navbar {
+    background: var(--secondary-bg);
+    border-bottom: 1px solid var(--border-color);
+    box-shadow: var(--shadow);
+}
+
+.login-form {
+    animation: fadeInUp 0.8s ease;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.password-toggle {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: var(--secondary-text);
+    transition: all 0.3s ease;
+    z-index: 10;
+}
+
+.password-toggle:hover {
+    color: #ff416c;
+}
+
+.forgot-password {
+    color: var(--secondary-text);
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.forgot-password:hover {
+    color: #002fff;
+    text-decoration: underline;
+}
+
+.oauth-btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease;
+}
+
+.google-btn {
+    background-color: #4285F4;
+    color: white;
+}
+
+.google-btn:hover {
+    background-color: #357ae8;
+}
+
+.github-btn {
+    background-color: #333;
+    color: white;
+}
+
+.github-btn:hover {
+    background-color: #000;
+}
+
+.divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 24px 0;
+}
+
+.divider::before,
+.divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border-color);
+}
+
+.divider span {
+    padding: 0 16px;
+    color: var(--secondary-text);
+    font-size: 0.875rem;
+}
+
+@media (max-width: 768px) {
+    .login-container {
+        margin: 1rem;
+        border-radius: 16px;
+    }
+    
+    .form-input {
+        border-radius: 12px;
+    }
+    
+    .btn-primary {
+        border-radius: 12px;
+    }
+}
