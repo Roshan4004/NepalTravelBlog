@@ -10,5 +10,4 @@ urlpatterns=[
     path('token',views.token_sent,name="token_sent"),
     path('verify/<auth_tokens>',views.verify,name="verify"),
     path('onboarding',views.onboarding,name="onboarding"),
-
 ]
