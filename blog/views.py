@@ -15,14 +15,16 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 import base64
 from django.core.mail import send_mail
-import re
+import re, os
 import requests
 from django.views.decorators.csrf import csrf_exempt
+from django.conf import settings # To access MEDIA_ROOT
+from django.core.files.storage import default_storage
 
 #for cloudinary
-cloudinary.config( 
-  cloud_name = CLOUDINARY_NAME, 
-  api_key =CLOUDINARY_KEY, 
+cloudinary.config(
+  cloud_name = CLOUDINARY_NAME,
+  api_key =CLOUDINARY_KEY,
   api_secret = CLOUDINARY_SECRET,
   api_proxy = "http://proxy.server:3128"
 )
@@ -140,7 +142,7 @@ def PostDetail(request,pk):
 #Updating posts
 def UpdatePost(request,pk):
     post=Post.objects.get(id=pk)
-    context={'post':post,'form':PostForm(request.POST or None, instance=post)}    
+    context={'post':post,'form':PostForm(request.POST or None, instance=post)}
     if request.method=="POST":
         content_old=Post.objects.get(id=pk).content
         title=request.POST.get('title')
@@ -153,11 +155,30 @@ def UpdatePost(request,pk):
         new_imgs=[]
         for url in re.findall(r"<img[^>]* src=\"([^\"]*)\"[^>]*>", content_old):
             old_imgs.append(url)
-        for url in re.findall(r"<img[^>]* src=\"([^\"]*)\"[^>]*>", content):
-            new_imgs.append(url)
-            if not url in old_imgs:
-                upload=cloudinary.uploader.upload(request.build_absolute_uri(url), public_id = url[36:],folder="summernote")
-                new_content=new_content.replace(url,upload["url"])
+        # for url in re.findall(r"<img[^>]* src=\"([^\"]*)\"[^>]*>", content):
+        #     new_imgs.append(url)
+        #     if not url in old_imgs:
+        #         upload=cloudinary.uploader.upload(request.build_absolute_uri(url), public_id = url[36:],folder="summernote")
+        #         new_content=new_content.replace(url,upload["url"])
+        for original_src_url  in re.findall(r"<img[^>]* src=\"([^\"]*)\"[^>]*>", content):
+            relative_path = original_src_url.replace(settings.MEDIA_URL, '', 1)
+            local_file_path = os.path.join(settings.MEDIA_ROOT, relative_path.lstrip('/'))
+            if not os.path.exists(local_file_path):
+                print(f"Warning: Local file not found for URL: {original_src_url}. Path: {local_file_path}")
+                continue
+            if original_src_url in old_imgs:
+                continue
+            filename_with_ext = os.path.basename(local_file_path)
+            public_id_from_filename = os.path.splitext(filename_with_ext)[0]
+            with open(local_file_path, 'rb') as f:
+                upload_result = cloudinary.uploader.upload(
+                    f, # Pass the file object directly
+                    public_id=public_id_from_filename,
+                    folder="summernote",
+                    timeout=60 # A higher timeout is still good practice for larger files
+                )
+                new_cloudinary_url = upload_result["url"]
+                new_content = new_content.replace(original_src_url, new_cloudinary_url)
         for test in old_imgs:
             if test not in new_imgs:
                 cloudinary.uploader.destroy("summernote/"+test[72:len(test)-4])
@@ -211,10 +232,24 @@ def postcreate(request):
         main_img=request.FILES.get("main_img")
         content=request.POST.get('content')
         new_content=content
-        m_img_url=cloudinary.uploader.upload(main_img,folder="main_imgs")    
-        for url in re.findall(r"<img[^>]* src=\"([^\"]*)\"[^>]*>", content):
-            upload=cloudinary.uploader.upload(request.build_absolute_uri(url), public_id = url[36:],folder="summernote")
-            new_content=new_content.replace(url,upload["url"])
+        m_img_url=cloudinary.uploader.upload(main_img,folder="main_imgs")
+        for original_src_url  in re.findall(r"<img[^>]* src=\"([^\"]*)\"[^>]*>", content):
+            relative_path = original_src_url.replace(settings.MEDIA_URL, '', 1)
+            local_file_path = os.path.join(settings.MEDIA_ROOT, relative_path.lstrip('/'))
+            if not os.path.exists(local_file_path):
+                print(f"Warning: Local file not found for URL: {original_src_url}. Path: {local_file_path}")
+                continue
+            filename_with_ext = os.path.basename(local_file_path)
+            public_id_from_filename = os.path.splitext(filename_with_ext)[0]
+            with open(local_file_path, 'rb') as f:
+                upload_result = cloudinary.uploader.upload(
+                    f, # Pass the file object directly
+                    public_id=public_id_from_filename,
+                    folder="summernote",
+                    timeout=60 # A higher timeout is still good practice for larger files
+                )
+                new_cloudinary_url = upload_result["url"]
+                new_content = new_content.replace(original_src_url, new_cloudinary_url)
         Post.objects.create(title=title,local_body=local_body,local_name=local_name,content=new_content,author=request.user,m_img_url=m_img_url["url"])
         return redirect("blog")
     return render(request, 'blog/post.html',context)
@@ -255,13 +290,13 @@ def post_ai(request):
     main_img=request.data.get("main_img")
     content=request.data.get('content')
     for_avatar=request.data.get('for_avatar')
-    
-    image = base64.b64decode(str(main_img))       
+
+    image = base64.b64decode(str(main_img))
     imagePath = 'temp_ai.jpeg'
     img = Image.open(io.BytesIO(image))
     img.save(imagePath, 'jpeg')
 
-    m_img_url=cloudinary.uploader.upload('temp_ai.jpeg',folder="main_imgs")    
+    m_img_url=cloudinary.uploader.upload('temp_ai.jpeg',folder="main_imgs")
     Post.objects.create(title=title,local_body=local_body,local_name="NA",content=content,author=User.objects.get(id=2),m_img_url=m_img_url["url"],for_avatar=for_avatar)
     send_mail_about_new_blog(title,content,m_img_url["url"])
     return Response({"msg":"Done!"})
